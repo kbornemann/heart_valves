@@ -31,7 +31,7 @@
 % Size parameter
 % Number of points on free edge of each leaflet 
 % 
-N_each_range = 2^7; %2.^(6:7); 
+N_each_range = 2^5; %2.^(6:7); 
 
 for N_each = N_each_range
 
@@ -49,13 +49,16 @@ for N_each = N_each_range
     pulm = false; 
     true_bicuspid = false;
     fish = false;
+    quad = true;
     
     if pulm
         valve = initialize_valve_data_structures_pulm_mri_box(N); 
     elseif true_bicuspid
         valve = initialize_valve_data_structures_aortic_true_bicuspid(N); 
     elseif fish
-        valve = initialize_valve_data_structures_aortic_bicuspid_fish(N); 
+        valve = initialize_valve_data_structures_aortic_bicuspid_fish(N);
+    elseif quad
+        valve = initialize_valve_data_structures_aortic_quad(N);
     else 
         valve = initialize_valve_data_structures_aortic_generic(N); 
     end 
@@ -93,7 +96,7 @@ for N_each = N_each_range
         fig = figure; 
         fig = valve_plot(valve_with_reference, fig); 
         title('Relaxed configuration radial fibers, reference config based constitutive law'); 
-        saveas(fig, strcat(valve.base_name, '_relaxed'), 'fig'); 
+        saveas(fig, strcat(valve.base_name, '_relaxed'), 'fig');
     end 
     
     tension_plots = false; 

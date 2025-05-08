@@ -42,9 +42,12 @@ N = leaflet.N;
 if isfield(leaflet, 'variety') && strcmp(leaflet.variety, 'bicuspid') 
     N_each = N/2; 
     N_leaflets = 2; 
+elseif isfield(leaflet, 'variety') && strcmp(leaflet.variety, 'quadricuspid')
+    N_each = N/4;
+    N_leaflets = 4;
 else 
     % number for each leaflet 
-    N_each = N/3; 
+    N_each =  N/3; 
     N_leaflets = 3; 
     if N_each ~= round(N_each)
         error('Numerical error in N, must be multiple of three')
@@ -58,9 +61,9 @@ end
 if mod(N,2) ~= 0 
     error("N must be multiple of 2")
 end 
-if mod(N,3) ~= 0 
-    error("N must be multiple of 3")
-end 
+%if mod(N,3) ~= 0 
+%    error("N must be multiple of 3")
+%end 
 % redundant 
 % if mod(N,6) ~= 0 
 %     error("N must be multiple of 6")
@@ -74,7 +77,7 @@ leaflet.N_each = N_each;
 leaflet.N_leaflets = N_leaflets; 
 
 % max possible k is determined by j 
-k_max = N/6 + 1; % N_each/2 + 1 in standard tricuspid case 
+k_max = N_each/2 + 1; %N/6 + 1; % N_each/2 + 1 in standard tricuspid case 
 
 leaflet.j_max                = j_max; 
 leaflet.j_max_all_leaflets   = j_max * N_leaflets; 
