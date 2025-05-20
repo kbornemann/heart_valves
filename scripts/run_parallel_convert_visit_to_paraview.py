@@ -92,7 +92,7 @@ if __name__ == '__main__':
     script_dir = "~/heart_valves/scripts/"
     # script_dir = "~/heart_valves/scripts/"
 
-    lag_name_base_to_check = ['aortic', 'vessel', 'aorta_384.', 'aorta_192.']
+    lag_name_base_to_check = ['aortic', 'vessel', 'aorta_384.', 'aorta_192.', 'aorta_256.', 'aorta_512.', 'aorta_1024.']
 
     if os.path.isfile('done.txt'):
         

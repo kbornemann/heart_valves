@@ -71,14 +71,20 @@ SetActiveView(renderView2)
 # setup the data processing pipelines
 # ----------------------------------------------------------------
 
-if '_96_' in os.getcwd(): 
+if '_96_' in os.getcwd():
     resolution_string = '96'
-if '_192_' in os.getcwd(): 
+if '_192_' in os.getcwd():
     resolution_string = '192'
-if '_384_' in os.getcwd(): 
+if '_256_' in os.getcwd():
+    resolution_string = '256'
+if '_384_' in os.getcwd():
     resolution_string = '384'
-if '_768_' in os.getcwd(): 
+if '_512_' in os.getcwd():
+    resolution_string = '512'
+if '_768_' in os.getcwd():
     resolution_string = '768'
+if '_1024_' in os.getcwd():
+    resolution_string = '1024'
 
 use_faces_valve = True 
 if use_faces_valve:
