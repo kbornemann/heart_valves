@@ -1,11 +1,11 @@
-% Script to build valve 
+% Script to build valve
 
 % Copyright (c) 2019, Alexander D. Kaiser
 % All rights reserved.
 % 
 % Redistribution and use in source and binary forms, with or without
 % modification, are permitted provided that the following conditions are met:
-% 
+% _
 % 1. Redistributions of source code must retain the above copyright notice, this
 %    list of conditions and the following disclaimer.
 % 
@@ -31,25 +31,32 @@
 % Size parameter
 % Number of points on free edge of each leaflet 
 % 
-N_each_range = 2^5; %2.^(6:7); 
+N_each_range = 2^7; %2.^(6:7); alph
 
 for N_each = N_each_range
 
     clearvars -except N_each
     
     N_each
-    N = 3*N_each; 
+
+    pulm = false; 
+    true_bicuspid = false;
+    fish = false;
+    quad = true;
+
+    if quad
+        N = 3*N_each; 
+    elseif true_bicuspid
+        N = 2*N_each
+    else
+        N = 3*N_each;
+    end
     
     % Show some output 
     plots = false; 
 
     % Initialize structures 
     % Many parameters are in this script 
-
-    pulm = false; 
-    true_bicuspid = false;
-    fish = false;
-    quad = true;
     
     if pulm
         valve = initialize_valve_data_structures_pulm_mri_box(N); 
@@ -59,7 +66,7 @@ for N_each = N_each_range
         valve = initialize_valve_data_structures_aortic_bicuspid_fish(N);
     elseif quad
         valve = initialize_valve_data_structures_aortic_quad(N);
-    else 
+    else
         valve = initialize_valve_data_structures_aortic_generic(N); 
     end 
     

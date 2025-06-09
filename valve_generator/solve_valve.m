@@ -141,6 +141,9 @@ if interactive && pass_all
     fig = figure; 
     valve_plot(valve, fig); 
     title('Valve in interactive mode'); 
+
+    valver = add_rotated_leaflets_aortic(valve);
+    valve_plot(valver,fig);
     
     fig_dissection_plot = figure; 
     if isfield(valve, 'name') && strcmp(valve.name, 'aortic') 
@@ -426,7 +429,7 @@ if build_reference
 
         max_continuations_relaxed = 6; 
 
-        fprintf('\n\nRefernece configuration initial solve:\n')
+        fprintf('\n\nReference configuration initial solve:\n')
         [valve_with_reference.leaflets(i) pass err any_passed] = solve_valve_pressure_auto_continuation(leaflet, tol_global, max_it, max_continuations_relaxed, p_easy, p_goal, max_consecutive_fails, max_total_fails); 
 
 
@@ -528,6 +531,7 @@ if build_reference
         
         if isfield(valve, 'rotate_identical_leaflets') && valve.rotate_identical_leaflets 
             valve_with_reference = add_rotated_leaflets_aortic(valve_with_reference);
+            valve = add_rotated_leaflets_aortic(valve);
         end 
         
         if pass
