@@ -66,7 +66,7 @@ def morph_extender(mesh,
 if __name__== "__main__":
 
     res_192 = False
-    run_384_shell = True
+    run_384_shell = False
     if res_192:
         fname = "5_aorta_remeshed_pt5mm_2_cm_extender_layers.stl"
         # fname_out = "6_aorta_remeshed_pt5mm_2cm_extender_layers_constriction.stl"
@@ -94,15 +94,14 @@ if __name__== "__main__":
 
     else:
         # basic 
-        fname = "4_aorta_remeshed_pt25_3cm_extenders_3_layer_5_layer_extender.stl"
-        # fname_out = "4_aorta_remeshed_pt25mm_3cm_extender_layers_constriction.stl"
-        fname_out = "6_aorta_remeshed_pt25mm_3cm_extenders_layers_double_constriction.stl"
+        fname = "aorta_truncal_postop_extender_layers.stl"
+        fname_out = "aorta_truncal_postop_extender_layers_constriction.stl"
 
-        bdry_filename = 'lvot_boundary_layer_3.vtu'
-        bdry_filename_out = 'lvot_bdry_384_layer_3_constriction.vtu'
+        bdry_filename = 'lvot_bdry.vtu'
+        bdry_filename_out = 'lvot_bdry_constriction.vtu'
 
-        bdry_filename_aorta = 'aorta_boundary_layer_3.vtu'
-        bdry_filename_aorta_out = 'aorta_bdry_384_layer_3_constriction.vtu'
+        bdry_filename_aorta = 'aorta_bdry.vtu'
+        bdry_filename_aorta_out = 'aorta_bdry_constriction.vtu'
 
     
     mesh = pyvista.read(fname)
@@ -114,14 +113,14 @@ if __name__== "__main__":
     normal_direction = 0
 
     # mesh in mm
-    masking_width = 15.0
+    masking_width = 10.5/2
 
     # if true, adjusts x component to be exactly equal to this value 
     enforce_flat_bdry = True
     flat_bdry_tolerance = 1.0e-3
 
     # 1 mm out at the ends 
-    extension_value = 5.0
+    extension_value = 10.5/6
 
     cos_interpolation = True
 
@@ -152,8 +151,8 @@ if __name__== "__main__":
     # pyvista.plot(mesh_boundary_adjusted)
 
     # aorta side 
-    normal_direction = 2
-    masking_width = 15.0
+    normal_direction = 1
+    masking_width = 10.5/2
     mesh_adjusted = morph_extender(mesh_adjusted, 
                                    fname_out, 
                                    mesh_boundary_aorta, 

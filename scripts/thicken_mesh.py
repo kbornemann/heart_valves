@@ -74,7 +74,7 @@ def expand_mesh(mesh,
 if __name__== "__main__":
                 
     run_192 = False
-    run_384_shell = True
+    run_384_shell = False
     if run_192:
         fname_in = "4_aorta_remeshed_pt5mm_2_cm_extender.stl"
         fname_out = "5_aorta_remeshed_pt5mm_2_cm_extender_layers.stl"
@@ -86,8 +86,8 @@ if __name__== "__main__":
         ds = 0.5
 
     elif run_384_shell:
-        fname_in = "3_aorta_remeshed_pt25_3cm_extenders_no_cap.stl"
-        fname_out = "3_aorta_remeshed_pt25_3cm_extenders_no_cap_two_layer.stl"
+        fname_in = "aorta_truncal_postop_extender.stl"
+        fname_out = "aorta_truncal_postop_extender_2layer.stl"
 
         n_layers_full = 2
         n_layers_extenders = 0
@@ -96,8 +96,8 @@ if __name__== "__main__":
         ds = 0.5
 
     else:
-        fname_in = "2_aorta_remeshed_pt25mm_3cm_extender.stl"
-        fname_out = "3_aorta_remeshed_pt25mm_3cm_extender_layers.stl"
+        fname_in = "aorta_truncal_postop_extender.stl"
+        fname_out = "aorta_truncal_postop_extender_layers.stl"
 
         n_layers_full = 3
         n_layers_extenders = 2
@@ -108,9 +108,9 @@ if __name__== "__main__":
     mesh = pyvista.read(fname_in)
 
 
-    extender_direction_idx = [0,2]
+    extender_direction_idx = [0,1]
     extender_top = True
-    extender_width = [30.0, 10.0]
+    extender_width = [10.5, 10.5]
     extract_edge_layer = 2
 
     mesh_combined, edges = expand_mesh(mesh,
@@ -124,12 +124,13 @@ if __name__== "__main__":
 
     mesh_combined.save(fname_out)
 
-    boundary_meshes = False
+    boundary_meshes = True
 
     if boundary_meshes:
 
+        x_max = np.max(mesh_combined.points[:,0])
         z_max = np.max(mesh_combined.points[:,2])
-        tol_edges = 1.0e-1
+        tol_edges = 1.0e-5
 
         print(f"x_max = {x_max:.16f}")
         print(f"z_max = {z_max:.16f}")
@@ -146,7 +147,7 @@ if __name__== "__main__":
 
         n_regions = max(conn.point_data['RegionId'] + 1)
 
-        min_points_valid_bdry = 50
+        min_points_valid_bdry = 0
 
         # if n_regions != 2:
         #     print("n_regions =", n_regions)
@@ -161,15 +162,16 @@ if __name__== "__main__":
 
             # print("bdry_mesh = ", bdry_mesh, "bdry_mesh.points = ", bdry_mesh.points)
             print("bdry_mesh = ", bdry_mesh)
-
+            print("bdry_mesh.n_points = ",bdry_mesh.n_points)
+        
             if bdry_mesh.n_points > min_points_valid_bdry:
-
-                if all(abs(bdry_mesh.points[:,0] - x_max) < tol_edges):
-                    bdry_mesh_name = edge_name_const_x
-                    name_found = True 
-                elif all(abs(bdry_mesh.points[:,2] - z_max) < tol_edges):
-                    bdry_mesh_name = edge_name_const_z
-                    name_found = True 
+                
+                #if all(abs(bdry_mesh.points[:,0] - x_max) < tol_edges):
+                bdry_mesh_name = edge_name_const_x
+                name_found = True 
+                #elif all(abs(bdry_mesh.points[:,2] - z_max) < tol_edges):
+                bdry_mesh_name = edge_name_const_z
+                name_found = True 
 
                 if name_found:
                     bdry_mesh.save(bdry_mesh_name)
