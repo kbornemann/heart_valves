@@ -93,8 +93,8 @@ if valve.in_heart
     % for normal_3
     th = 2*pi/3; 
     valve.initial_translation_aortic = -0.05 * [cos(th); sin(th); 0]; 
-    valve.initial_rotation_aortic = rotation_matrix_z(pi/3 + pi/12 + pi/48 + (cusp_fused * 2*pi/3));
-    valve.transformation_vertex_file = 'aortic_annulus.vertex';
+    valve.initial_rotation_aortic = rotation_matrix_z(pi/3 + pi/12 + 19*pi/90 + pi/48 + (cusp_fused * 2*pi/3));
+    valve.transformation_vertex_file = 'aortic_annulus_truncal_postop.vertex';
     
 else 
     valve.base_name = sprintf('aortic_%d', N);
@@ -155,7 +155,7 @@ valve.annulus_flattened_normalized = [
 
 valve.normal_thicken = true; 
 % nominal aortic valve thickness
-valve.normal_thickness = 0.044 * (512/N); %0.044 * (384/N); 
+valve.normal_thickness = 0.022 * (512/N); %0.044 * (384/N); 
 
 valve.extrusion_out = true;
 
@@ -207,8 +207,8 @@ valve.p_final = 0 * MMHG_TO_CGS;
 
 valve.L = 2.25; 
 
-r_stj = 2.5/2; % 25 mm valve 
-r_temp = 2.5/2; % vbr radius
+r_stj = 0.8/2; % 25 mm valve 
+r_temp = 0.8/2; % vbr radius
 hc = 0.5*r_stj; %0.5 * r_stj; 
 h1 = 1.4 * r_stj - hc; 
 r_commissure = r_stj; 
@@ -291,7 +291,7 @@ if valve.in_heart
     valve.ds = dx/2; %2*pi*valve.skeleton.r / N; 
 
     % if min radius lower than 2.5cm, increase ring thickness accordingly 
-    thickness_cylinder = 0.3 + (2.5/2 - valve.r); 
+    thickness_cylinder = 0.3 + (r_stj/2 - valve.r); 
     valve.n_layers_cylinder = ceil(thickness_cylinder/valve.ds) + 1; 
 
     h_scaffold_min = -0.05;
