@@ -9,7 +9,7 @@ def expand_mesh(mesh,
                 n_layers_extenders=0,
                 extender_direction_idx=None, 
                 extender_top=True,
-                extender_width=1.0,
+                extender_width=10.5,
                 extract_edge_layer=None):
 
     mesh.compute_normals(cell_normals=False, point_normals=True, split_vertices=True, inplace=True, feature_angle=70)
@@ -72,10 +72,10 @@ def expand_mesh(mesh,
 
 def find_boundary_meshes(mesh, 
                          edges,
-                         tol_edges_rel = 1.0e-3,
-                         min_points_valid_bdry = 50,
+                         tol_edges_rel = 5.0e-2,
+                         min_points_valid_bdry = 20,
                          debug_output = True, 
-                         enforce_flat = True):
+                         enforce_flat = False):
     '''
     Find all boundary meshes among connected component of edge meshs 
     '''
@@ -85,6 +85,8 @@ def find_boundary_meshes(mesh,
     sides = []
 
     conn = edges.connectivity()
+
+    conn.save('conn.vtp')
 
     if debug_output:
         print("conn = ", conn, "conn.point_data = ", conn.point_data)
@@ -96,6 +98,8 @@ def find_boundary_meshes(mesh,
         print("testing region ", region_id)
 
         bdry_mesh = conn.threshold([region_id, region_id + 0.5], scalars="RegionId", all_scalars=True)
+
+        print("bdry_mesh = ", bdry_mesh, "bdry_mesh.point_data = ", bdry_mesh.point_data)
 
         print("bdry_mesh.n_points = ", bdry_mesh.n_points)
 
@@ -109,6 +113,8 @@ def find_boundary_meshes(mesh,
 
                     # mesh_combined.bounds (x_min, x_max, y_min, y_max, z_min, z_max)
                     boundary_value = mesh_combined.bounds[2*component + side]
+
+                    #print("Max: ",abs(bdry_mesh.points[:,component] - boundary_value)/box_width)
 
                     if all(abs(bdry_mesh.points[:,component] - boundary_value)/box_width < tol_edges_rel):
 
@@ -132,13 +138,11 @@ def find_boundary_meshes(mesh,
     return boundary_meshes
 
 
-def extra_radius(x, x_min, x_max, extension_value, cos_interpolation=False):
+def extra_radius(x, x_min, x_max, extension_value, cos_interpolation=True):
 
     if x < x_min:
         return 0.0
     elif x < x_max:
-        # 0*(x - x_max)/(x_min - x_max) + extension_value*(x - x_min)/(x_max - x_min)
-        # linearly interpolate from 0 to extension_value
         if cos_interpolation:
             arg = (x - x_min)/(x_max - x_min)
             return extension_value * 0.5*(-math.cos(math.pi * arg) + 1.0)
@@ -155,7 +159,7 @@ def morph_extender(mesh,
                    masking_width, 
                    enforce_flat_bdry = True, 
                    flat_bdry_tolerance = 1.0e-3,
-                   cos_interpolation = False):
+                   cos_interpolation = True):
 
 
     # max to mask over 
@@ -184,7 +188,7 @@ def morph_extender(mesh,
                 pt[normal_direction] = pt_normal_max
 
         mesh_adjusted.points[idx] = pt + increment 
-
+    
     return mesh_adjusted
 
 
@@ -447,21 +451,21 @@ def process_ring_to_vertex(mesh, base_name_out, scaling=1.0):
 if __name__== "__main__":
     
 
-    fname_in = "2_aorta_lv_extender.stl"
-    fname_out = "3_aorta_lv_extender_layers.stl"
+    fname_in = "aorta_truncal_preop_extender.stl"
+    fname_out = "aorta_truncal_preop_extenter_layers.stl"
 
     n_layers_full = 3
     n_layers_extenders = 2
 
     # extrude length in mm 
-    ds = 0.5        
+    ds = (0.5/2)/2.5        
 
     mesh = pyvista.read(fname_in)
 
 
-    extender_direction_idx = [0,2] # extra mesh layers at inlet and outlet 
+    extender_direction_idx = [0,1] # extra mesh layers at inlet and outlet 
     extender_top = True
-    extender_width = [30.0, 10.0]
+    extender_width = [10.5, 10.5]
     extract_edge_layer = 2
 
     mesh_combined, edges = expand_mesh(mesh,
@@ -473,33 +477,41 @@ if __name__== "__main__":
                                        extender_width,
                                        extract_edge_layer)
 
+    mesh_combined.save('mesh_combined.stl')
+
     boundary_meshes = find_boundary_meshes(mesh_combined, edges)
 
-    # for idx, bdry_mesh in enumerate(boundary_meshes):
-    #     bdry_mesh.save('boundary_mesh' + str(idx).zfill(4) + '.vtu')
+    for idx, bdry_mesh in enumerate(boundary_meshes):
+        bdry_mesh.save('boundary_mesh' + str(idx).zfill(4) + '.vtu')
 
-    # 
+     
     mesh = mesh_combined
-    mesh_boundary = boundary_meshes[0]
-    mesh_boundary_aorta = boundary_meshes[1]
+
+    print("Boundary_meshes: ", boundary_meshes)    
+
+    mesh_boundary_in0 = boundary_meshes[0]
+    mesh_boundary_in1 = boundary_meshes[1]
+    mesh_boundary_out0 = boundary_meshes[2]
+    mesh_boundary_out1 = boundary_meshes[3]
+    mesh_boundary_out2 = boundary_meshes[4]
 
     # x direction 
     normal_direction = 0
 
     # mesh in mm
-    masking_width = 15.0
+    masking_width = 10.5
 
     # if true, adjusts x component to be exactly equal to this value 
     enforce_flat_bdry = True
-    flat_bdry_tolerance = 1.0e-3
+    flat_bdry_tolerance = 1.0e-2
 
     # 1 mm out at the ends 
-    extension_value = 5.0
+    extension_value = 5/2.5
 
     cos_interpolation = True
 
     mesh_adjusted = morph_extender(mesh, 
-                                   mesh_boundary, 
+                                   mesh_boundary_in0, 
                                    normal_direction, 
                                    extension_value,
                                    masking_width, 
@@ -507,12 +519,20 @@ if __name__== "__main__":
                                    flat_bdry_tolerance, 
                                    cos_interpolation)
 
-    # pyvista.plot(mesh_adjusted)
+    mesh_adjusted = morph_extender(mesh_adjusted,
+                                   mesh_boundary_in1,
+                                   normal_direction,
+                                   extension_value,
+                                   masking_width,
+                                   enforce_flat_bdry,
+                                   flat_bdry_tolerance,
+                                   cos_interpolation)
 
-    mesh_boundary_copy = mesh_boundary
+    mesh_boundary_copy_in0 = mesh_boundary_in0
+    mesh_boundary_copy_in1 = mesh_boundary_in1
 
-    mesh_boundary_adjusted = morph_extender(mesh_boundary_copy, 
-                                            mesh_boundary, 
+    mesh_boundary_adjusted_in0 = morph_extender(mesh_boundary_copy_in0, 
+                                            mesh_boundary_in0, 
                                             normal_direction, 
                                             extension_value,
                                             masking_width,
@@ -520,33 +540,86 @@ if __name__== "__main__":
                                             flat_bdry_tolerance,
                                             cos_interpolation)
 
+    mesh_boundary_adjusted_in1 = morph_extender(mesh_boundary_copy_in1,
+                                            mesh_boundary_in1,
+                                            normal_direction,
+                                            extension_value,
+                                            masking_width,
+                                            enforce_flat_bdry,
+                                            flat_bdry_tolerance,
+                                            cos_interpolation)
+
+    mesh_adjusted.save("vessel_preop_morph_int.stl")
+    mesh_boundary_adjusted_in0.save("in0_bdry_morph_int.vtu")
+    mesh_boundary_adjusted_in1.save("in1_bdry_morph_int.vtu")
+
+
     # pyvista.plot(mesh_boundary_adjusted)
 
     # aorta side 
-    normal_direction = 2
-    masking_width = 15.0
+    normal_direction = 1
+    masking_width = 10.5
     mesh_adjusted = morph_extender(mesh_adjusted, 
-                                   mesh_boundary_aorta, 
+                                   mesh_boundary_out0, 
                                    normal_direction, 
                                    extension_value,
                                    masking_width, 
                                    enforce_flat_bdry, 
                                    flat_bdry_tolerance, 
+                                   cos_interpolation)
+
+    mesh_adjusted = morph_extender(mesh_adjusted,
+                                   mesh_boundary_out1, 
+                                   normal_direction,
+                                   extension_value,
+                                   masking_width,
+                                   enforce_flat_bdry,
+                                   flat_bdry_tolerance,
+                                   cos_interpolation)
+
+    mesh_adjusted = morph_extender(mesh_adjusted,
+                                   mesh_boundary_out2, 
+                                   normal_direction,
+                                   extension_value,
+                                   masking_width,
+                                   enforce_flat_bdry,
+                                   flat_bdry_tolerance,
                                    cos_interpolation)        
 
-    mesh_aorta_boundary_adjusted = morph_extender(mesh_boundary_aorta, 
-                                            mesh_boundary_aorta, 
+    mesh_boundary_adjusted_out0 = morph_extender(mesh_boundary_out0, 
+                                            mesh_boundary_out0, 
                                             normal_direction, 
                                             extension_value,
                                             masking_width,
                                             enforce_flat_bdry, 
                                             flat_bdry_tolerance,
+                                            cos_interpolation)
+
+    mesh_boundary_adjusted_out1 = morph_extender(mesh_boundary_out1,   
+                                            mesh_boundary_out1, 
+                                            normal_direction,
+                                            extension_value,
+                                            masking_width,
+                                            enforce_flat_bdry,
+                                            flat_bdry_tolerance,
+                                            cos_interpolation)
+
+    mesh_boundary_adjusted_out2 = morph_extender(mesh_boundary_out2,   
+                                            mesh_boundary_out2, 
+                                            normal_direction,
+                                            extension_value,
+                                            masking_width,
+                                            enforce_flat_bdry,
+                                            flat_bdry_tolerance,
                                             cos_interpolation)    
 
 
-    mesh_adjusted.save("vessel_post_morph.stl")
-    mesh_boundary_adjusted.save("lvot_bdry_morph.vtu")
-    mesh_aorta_boundary_adjusted.save("aorta_bdry_morph.vtu")
+    mesh_adjusted.save("vessel_post_morph_preop.stl")
+    mesh_boundary_adjusted_in0.save("in0_bdry_morph_preop.vtu")
+    mesh_boundary_adjusted_in1.save("in1_bdry_morph_preop.vtu")
+    mesh_boundary_adjusted_out0.save("out0_bdry_morph_preop.vtu")
+    mesh_boundary_adjusted_out1.save("out1_bdry_morph_preop.vtu")
+    mesh_boundary_adjusted_out2.save("out2_bdry_morph_preop.vtu")
 
 
     # this is in mm 
@@ -578,12 +651,20 @@ if __name__== "__main__":
 
     scaling = 0.1
 
-    base_name_out = "aorta_bdry_384"
-    process_ring_to_vertex(mesh_aorta_boundary_adjusted, base_name_out, scaling)
+    base_name_out = "in0_bdry_384"
+    process_ring_to_vertex(mesh_boundary_adjusted_in0, base_name_out, scaling)
 
-    base_name_out = "lvot_bdry_384"
-    process_ring_to_vertex(mesh_boundary_adjusted, base_name_out, scaling)
+    base_name_out = "in1_bdry_384"
+    process_ring_to_vertex(mesh_boundary_adjusted_in1, base_name_out, scaling)
 
+    base_name_out = "out0_bdry_384"
+    process_ring_to_vertex(mesh_boundary_adjusted_out0, base_name_out, scaling)
+
+    base_name_out = "out1_bdry_384"
+    process_ring_to_vertex(mesh_boundary_adjusted_out1, base_name_out, scaling)
+
+    base_name_out = "out2_bdry_384"
+    process_ring_to_vertex(mesh_boundary_adjusted_out2, base_name_out, scaling)
 
 
 
