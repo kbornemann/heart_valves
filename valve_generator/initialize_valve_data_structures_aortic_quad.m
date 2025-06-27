@@ -155,7 +155,7 @@ valve.annulus_flattened_normalized = [
 
 valve.normal_thicken = true; 
 % nominal aortic valve thickness
-valve.normal_thickness = (0.044/2.5) * (512/N); %0.044 * (384/N); 
+valve.normal_thickness = 0.013 * (384/N); %0.044 * (384/N); 
 
 valve.extrusion_out = true;
 
@@ -207,8 +207,8 @@ valve.p_final = 0 * MMHG_TO_CGS;
 
 valve.L = 2.25; 
 
-r_stj = 0.8/2; % 25 mm valve 
-r_temp = 0.8/2; % vbr radius
+r_stj = 0.89/2; % 25 mm valve 
+r_temp = 0.89/2; % vbr radius
 hc = 0.5*r_stj; %0.5 * r_stj; 
 h1 = 1.4 * r_stj - hc; 
 r_commissure = r_stj; 

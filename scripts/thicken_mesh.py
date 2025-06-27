@@ -129,6 +129,7 @@ if __name__== "__main__":
     if boundary_meshes:
 
         x_max = np.max(mesh_combined.points[:,0])
+        y_max = np.max(mesh_combined.points[:,1])
         z_max = np.max(mesh_combined.points[:,2])
         tol_edges = 1.0e-5
 
@@ -137,7 +138,7 @@ if __name__== "__main__":
 
         # write out edge meshes 
         edge_name_const_x = "lvot_bdry.vtu"
-        edge_name_const_z = "aorta_bdry.vtu"
+        edge_name_const_y = "aorta_bdry.vtu"
 
         conn = edges.connectivity()
 
@@ -170,7 +171,7 @@ if __name__== "__main__":
                 bdry_mesh_name = edge_name_const_x
                 name_found = True 
                 #elif all(abs(bdry_mesh.points[:,2] - z_max) < tol_edges):
-                bdry_mesh_name = edge_name_const_z
+                bdry_mesh_name = edge_name_const_y
                 name_found = True 
 
                 if name_found:

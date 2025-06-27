@@ -171,6 +171,8 @@ def morph_extender(mesh,
     centroid = np.mean(mesh_boundary.points, axis=0)
     print("centroid = ", centroid)
 
+    print("extension value =",extension_value)
+
     mesh_adjusted = mesh 
 
     for idx, pt in enumerate(mesh.points):
@@ -519,7 +521,16 @@ if __name__== "__main__":
                                    flat_bdry_tolerance, 
                                    cos_interpolation)
 
-    mesh_adjusted = morph_extender(mesh_adjusted,
+    mesh_boundary_adjusted_in0 = morph_extender(mesh_boundary_in0,
+                                            mesh_boundary_in0,
+                                            normal_direction,
+                                            extension_value,
+                                            masking_width,
+                                            enforce_flat_bdry,
+                                            flat_bdry_tolerance,
+                                            cos_interpolation)
+
+    mesh_adjusted = morph_extender(mesh,
                                    mesh_boundary_in1,
                                    normal_direction,
                                    extension_value,
@@ -528,19 +539,7 @@ if __name__== "__main__":
                                    flat_bdry_tolerance,
                                    cos_interpolation)
 
-    mesh_boundary_copy_in0 = mesh_boundary_in0
-    mesh_boundary_copy_in1 = mesh_boundary_in1
-
-    mesh_boundary_adjusted_in0 = morph_extender(mesh_boundary_copy_in0, 
-                                            mesh_boundary_in0, 
-                                            normal_direction, 
-                                            extension_value,
-                                            masking_width,
-                                            enforce_flat_bdry, 
-                                            flat_bdry_tolerance,
-                                            cos_interpolation)
-
-    mesh_boundary_adjusted_in1 = morph_extender(mesh_boundary_copy_in1,
+    mesh_boundary_adjusted_in1 = morph_extender(mesh_boundary_in1,
                                             mesh_boundary_in1,
                                             normal_direction,
                                             extension_value,
@@ -559,59 +558,59 @@ if __name__== "__main__":
     # aorta side 
     normal_direction = 1
     masking_width = 10.5
-    mesh_adjusted = morph_extender(mesh_adjusted, 
-                                   mesh_boundary_out0, 
-                                   normal_direction, 
-                                   extension_value,
-                                   masking_width, 
-                                   enforce_flat_bdry, 
-                                   flat_bdry_tolerance, 
-                                   cos_interpolation)
+    #mesh_adjusted = morph_extender(mesh_adjusted, 
+    #                               mesh_boundary_out0, 
+    #                               normal_direction, 
+    #                               extension_value,
+    #                               masking_width, 
+    #                               enforce_flat_bdry, 
+    #                               flat_bdry_tolerance, 
+    #                               cos_interpolation)
 
-    mesh_adjusted = morph_extender(mesh_adjusted,
-                                   mesh_boundary_out1, 
-                                   normal_direction,
-                                   extension_value,
-                                   masking_width,
-                                   enforce_flat_bdry,
-                                   flat_bdry_tolerance,
-                                   cos_interpolation)
+    #mesh_adjusted = morph_extender(mesh_adjusted,
+    #                               mesh_boundary_out1, 
+    #                               normal_direction,
+    #                               extension_value,
+    #                               masking_width,
+    #                               enforce_flat_bdry,
+    #                               flat_bdry_tolerance,
+    #                               cos_interpolation)
 
-    mesh_adjusted = morph_extender(mesh_adjusted,
-                                   mesh_boundary_out2, 
-                                   normal_direction,
-                                   extension_value,
-                                   masking_width,
-                                   enforce_flat_bdry,
-                                   flat_bdry_tolerance,
-                                   cos_interpolation)        
+    #mesh_adjusted = morph_extender(mesh_adjusted,
+    #                               mesh_boundary_out2, 
+    #                               normal_direction,
+    #                               extension_value,
+    #                               masking_width,
+    #                               enforce_flat_bdry,
+    #                               flat_bdry_tolerance,
+    #                               cos_interpolation)        
 
-    mesh_boundary_adjusted_out0 = morph_extender(mesh_boundary_out0, 
-                                            mesh_boundary_out0, 
-                                            normal_direction, 
-                                            extension_value,
-                                            masking_width,
-                                            enforce_flat_bdry, 
-                                            flat_bdry_tolerance,
-                                            cos_interpolation)
+    #mesh_boundary_adjusted_out0 = morph_extender(mesh_boundary_out0, 
+    #                                        mesh_boundary_out0, 
+    #                                        normal_direction, 
+    #                                        extension_value,
+    #                                        masking_width,
+    #                                        enforce_flat_bdry, 
+    #                                        flat_bdry_tolerance,
+    #                                        cos_interpolation)
 
-    mesh_boundary_adjusted_out1 = morph_extender(mesh_boundary_out1,   
-                                            mesh_boundary_out1, 
-                                            normal_direction,
-                                            extension_value,
-                                            masking_width,
-                                            enforce_flat_bdry,
-                                            flat_bdry_tolerance,
-                                            cos_interpolation)
+    #mesh_boundary_adjusted_out1 = morph_extender(mesh_boundary_out1,   
+    #                                        mesh_boundary_out1, 
+    #                                        normal_direction,
+    #                                        extension_value,
+    #                                        masking_width,
+    #                                        enforce_flat_bdry,
+    #                                        flat_bdry_tolerance,
+    #                                        cos_interpolation)
 
-    mesh_boundary_adjusted_out2 = morph_extender(mesh_boundary_out2,   
-                                            mesh_boundary_out2, 
-                                            normal_direction,
-                                            extension_value,
-                                            masking_width,
-                                            enforce_flat_bdry,
-                                            flat_bdry_tolerance,
-                                            cos_interpolation)    
+    #mesh_boundary_adjusted_out2 = morph_extender(mesh_boundary_out2,   
+    #                                        mesh_boundary_out2, 
+    #                                        normal_direction,
+    #                                        extension_value,
+    #                                        masking_width,
+    #                                        enforce_flat_bdry,
+    #                                        flat_bdry_tolerance,
+    #                                        cos_interpolation)    
 
 
     mesh_adjusted.save("vessel_post_morph_preop.stl")

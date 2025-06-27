@@ -573,7 +573,7 @@ if __name__== "__main__":
 
         process_vtk_file_pyvista(file_name, base_name_out, kappa_rel, target_strength, damping_strength, scaling, zero_springs)
 
-    aorta_192_files_bicuspidization = False
+    aorta_192_files_bicuspidization = True
     if aorta_192_files_bicuspidization:
 
         # this is in mm 
@@ -595,13 +595,13 @@ if __name__== "__main__":
         # file_name = "8_5_layer_pt5mm_lv_cropped.stl"
         # file_name = "9_aorta_remeshed_pt5mm_2_cm_extender_5_layer_constriction.stl"
         # file_name = '6_aorta_remeshed_pt5mm_2cm_extender_layers_constriction.stl'
-        file_name = '7_aorta_remeshed_pt5mm_2cm_extender_layers_double_constriction.stl'
+        file_name = 'aorta_truncal_postop_extender_layers_constriction.stl'
 
         base_name_out = "aorta_192"
 
         process_vtk_file_pyvista(file_name, base_name_out, kappa_rel, target_strength, damping_strength, scaling, zero_springs)
 
-    seg_test = True
+    seg_test = False
     if seg_test:
 
         # this is in mm 
