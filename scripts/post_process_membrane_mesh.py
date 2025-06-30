@@ -72,7 +72,7 @@ def expand_mesh(mesh,
 
 def find_boundary_meshes(mesh, 
                          edges,
-                         tol_edges_rel = 1.0e-3,
+                         tol_edges_rel = 5.0e-3,
                          min_points_valid_bdry = 50,
                          debug_output = True, 
                          enforce_flat = True):
@@ -447,21 +447,21 @@ def process_ring_to_vertex(mesh, base_name_out, scaling=1.0):
 if __name__== "__main__":
     
 
-    fname_in = "2_aorta_lv_extender.stl"
-    fname_out = "3_aorta_lv_extender_layers.stl"
+    fname_in = "aorta_truncal_postop_extender.stl"
+    fname_out = "aorta_truncal_postop_extender_layers.stl"
 
     n_layers_full = 3
     n_layers_extenders = 2
 
     # extrude length in mm 
-    ds = 0.5        
+    ds = (0.5/2)/2.5        
 
     mesh = pyvista.read(fname_in)
 
 
-    extender_direction_idx = [0,2] # extra mesh layers at inlet and outlet 
+    extender_direction_idx = [0,1] # extra mesh layers at inlet and outlet 
     extender_top = True
-    extender_width = [30.0, 10.0]
+    extender_width = [10.5, 10.5]
     extract_edge_layer = 2
 
     mesh_combined, edges = expand_mesh(mesh,
@@ -487,14 +487,14 @@ if __name__== "__main__":
     normal_direction = 0
 
     # mesh in mm
-    masking_width = 15.0
+    masking_width = 10.5/2
 
     # if true, adjusts x component to be exactly equal to this value 
     enforce_flat_bdry = True
-    flat_bdry_tolerance = 1.0e-3
+    flat_bdry_tolerance = 5.0e-3
 
     # 1 mm out at the ends 
-    extension_value = 5.0
+    extension_value = 5.0/2.5
 
     cos_interpolation = True
 
@@ -523,8 +523,8 @@ if __name__== "__main__":
     # pyvista.plot(mesh_boundary_adjusted)
 
     # aorta side 
-    normal_direction = 2
-    masking_width = 15.0
+    normal_direction = 1
+    masking_width = 10.5/2
     mesh_adjusted = morph_extender(mesh_adjusted, 
                                    mesh_boundary_aorta, 
                                    normal_direction, 
@@ -544,9 +544,9 @@ if __name__== "__main__":
                                             cos_interpolation)    
 
 
-    mesh_adjusted.save("vessel_post_morph.stl")
-    mesh_boundary_adjusted.save("lvot_bdry_morph.vtu")
-    mesh_aorta_boundary_adjusted.save("aorta_bdry_morph.vtu")
+    mesh_adjusted.save("vessel_post_morph_postop.stl")
+    mesh_boundary_adjusted.save("lvot_bdry_morph_postop.vtu")
+    mesh_aorta_boundary_adjusted.save("aorta_bdry_morph_postop.vtu")
 
 
     # this is in mm 
