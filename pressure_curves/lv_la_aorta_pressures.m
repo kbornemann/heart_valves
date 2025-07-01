@@ -2,10 +2,14 @@
 % 'dynamics of left ventricular filling' Edward Yellin 
 % In Cardiac Mechanics and Function in the Normal and Diseased Heart 
 
+cycle_length = 0.382;
+p_systolic = 76;
+p_diastolic = 38;
 
+% scale ventricular and atrial data by same factor as aorta
+factor_systolic = p_systolic/120;
+factor_diastolic = p_diastolic/80;
 
-
-cycle_length = 0.8; 
 
 % quadrature spacing 
 debug = false; 
@@ -15,10 +19,9 @@ else
     dt = 5e-6; 
 end 
 
-plots = false; 
+plots = true; 
 
 base_name = 'fourier_coeffs';
-
 
 points_one_cycle_ventricle = [0.0,   0; 
 0.02, 0; 
@@ -27,7 +30,7 @@ points_one_cycle_ventricle = [0.0,   0;
 0.53, 14; 
 0.58, 120; 
 0.75, 130; 
-cycle_length, 8]; 
+0.8, 8]; 
 
 points_one_cycle_atrium = [0.0, 24.555; 
 0.06, 4; 
@@ -36,7 +39,7 @@ points_one_cycle_atrium = [0.0, 24.555;
 0.53, 5; 
 0.58, 7; 
 0.7,  10; 
-cycle_length, 24.555]; 
+0.8, 24.555]; 
 
 points_one_cycle_aorta = [0.0,  120;  
 0.569, 80; 
@@ -49,14 +52,27 @@ points_one_cycle_aorta = [0.0,  120;
 0.745, 119; 
 0.755, 100; 
 0.76, 122;
-cycle_length, 120]; 
+0.8, 120]; 
+
+points_one_cycle_ventricle(:,1) = rescale(points_one_cycle_ventricle(:,1), 0, cycle_length);
+points_one_cycle_ventricle(:,2) = rescale(points_one_cycle_ventricle(:,2), ...
+                                          factor_diastolic * min(points_one_cycle_ventricle(:,2)), ...
+                                          factor_systolic * max(points_one_cycle_ventricle(:,2)));
+
+points_one_cycle_atrium(:,1) = rescale(points_one_cycle_atrium(:,1), 0, cycle_length);
+points_one_cycle_atrium(:,2) = rescale(points_one_cycle_atrium(:,2), ...
+                                          factor_diastolic * min(points_one_cycle_atrium(:,2)), ...
+                                          factor_systolic * max(points_one_cycle_atrium(:,2)));
+
+points_one_cycle_aorta(:,1) = rescale(points_one_cycle_aorta(:,1), 0, cycle_length);
+points_one_cycle_aorta(:,2) = rescale(points_one_cycle_aorta(:,2), p_diastolic, p_systolic);
 
 suffix = ''; 
 
 
 file_name = strcat(base_name, suffix, '.txt'); 
 
-bump_radius = .05; 
+bump_radius = .008; 
 n_fourier_coeffs = 600; 
 % plots = false; 
 
@@ -117,7 +133,7 @@ vals_atrium_series = Series_atrium(t);
 % set(fig,'PaperPositionMode','auto')
 % printfig(fig, strcat('atrial_pressure_yellin', suffix))
 
-bump_radius = .015; 
+bump_radius = .008; 
 
 [a_0_aorta a_n_aorta b_n_aorta Series_aorta] = series_and_smooth(points_one_cycle_aorta, dt, bump_radius, n_fourier_coeffs, plots); 
 
@@ -153,7 +169,7 @@ xlabel('t')
 ylabel('dp/dt (mmHg/s)')
 set(fig, 'Position', [100, 100, 1000, 500])
 set(fig,'PaperPositionMode','auto')
-printfig(fig, strcat('dp_dt', suffix))
+saveas(fig, strcat('dp_dt', suffix))
 
 fig = figure; 
 plot(t, vals_ventricle_series, 'k'); 
@@ -166,7 +182,7 @@ ylabel('p (mmHg)')
 legend('LV', 'LA', 'Aorta','Location', 'SouthEast')
 set(fig, 'Position', [100, 100, 1000, 500])
 set(fig,'PaperPositionMode','auto')
-printfig(fig, strcat('both_pressure_yellin', suffix))
+saveas(fig, strcat('both_pressure_yellin', suffix))
 
 
 fig = figure; 
@@ -178,7 +194,7 @@ ylabel('p (mmHg)')
 set(fig, 'Position', [100, 100, 1000, 500])
 set(fig,'PaperPositionMode','auto')
 title('LV minus aorta')
-printfig(fig, 'pressure_difference_lv_aorta')
+saveas(fig, 'pressure_difference_lv_aorta')
 
 
 t = 0:dt:(3*cycle_length); 
@@ -197,7 +213,7 @@ axis([0 2.4 -10 140])
 set(fig, 'Position', [100, 100, 1000, 500])
 set(fig,'PaperPositionMode','auto')
 legend('Left Ventricle', 'Left Atrium', 'Location', 'NorthWest')
-printfig(fig, 'both_pressure_yellin_three_cycles')
+saveas(fig, 'both_pressure_yellin_three_cycles')
 
 
 

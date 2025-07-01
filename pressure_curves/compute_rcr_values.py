@@ -43,9 +43,19 @@ if __name__== "__main__":
         print ("R_distal = ", R_distal)
         print ("R_total = ", R_proximal + R_distal, "\n\n")
 
+        HR = 157 # bpm
+        MAP = 50 # mmHg
 
-        beat_time = 0.8
-        diastolic_time = .6 * beat_time
+        P_systolic = 76 
+        P_diastolic = 38
+
+        LVEDV = 4 # ml
+        LVESV = 2 # ml
+
+        beat_time = 60/HR # s
+
+        diastolic_time = (MAP - P_systolic)/(P_diastolic - P_systolic) * beat_time
+
         systolic_time = beat_time - diastolic_time
 
         diastolic_time_fraction = diastolic_time / beat_time
@@ -54,14 +64,10 @@ if __name__== "__main__":
         print ("diastolic_time_fraction = ", diastolic_time_fraction)
         print ("systolic_time_fraction = ", systolic_time_fraction)
 
-        P_systolic = 120.0
-        P_max = 100.0
-        P_min = 80.0
+        P_diastolic_max = (P_systolic - P_diastolic)/2 + P_diastolic
+        P_diastolic_min = P_diastolic
 
-        P_diastolic_mean = P_min # 0.5 * (P_systolic + P_min)
-        print ("P_diastolic_mean = ", P_diastolic_mean)
-
-        P_mean = systolic_time_fraction*P_systolic + diastolic_time_fraction*(P_diastolic_mean)
+        P_mean = systolic_time_fraction*P_systolic + diastolic_time_fraction*(P_diastolic_min)
 
         print ("P_mean = ", P_mean)
 
@@ -74,11 +80,12 @@ if __name__== "__main__":
             P_mean *= 0.5 
             P_min *= 0.5
             P_max = P_min + 0.5*20 
-
-        # P_mean = 1.0433437500000039e+02
         
-        # 5.6 L/min
-        Q_mean = 5600.0 / 60 # ml/s 
+        # CO
+        SV = LVEDV - LVESV
+        CO = HR * SV
+        
+        Q_mean = CO / 60 # ml/s 
 
         ratio_prox_to_distal_resistors = 77.0 / 1185.0 
 
@@ -88,7 +95,7 @@ if __name__== "__main__":
 
         C_prefactor = 1.0
 
-        R_p_mmHg, C_mmHg, R_d_mmHg, R_total_mmHg = compute_rcr_parameters(P_min, P_max, P_mean, Q_mean, ratio_prox_to_distal_resistors, decay_time, C_prefactor)
+        R_p_mmHg, C_mmHg, R_d_mmHg, R_total_mmHg = compute_rcr_parameters(P_diastolic, P_systolic, P_mean, Q_mean, ratio_prox_to_distal_resistors, decay_time, C_prefactor)
 
         name = 'aorta'
 
@@ -96,11 +103,11 @@ if __name__== "__main__":
         print (name, ",\t", R_p_mmHg, ",\t", C_mmHg, ",\t", R_d_mmHg, ",\t", R_total_mmHg)
         print ("\n\n\n")
 
-        P_min *= MMHG_TO_CGS
-        P_max *= MMHG_TO_CGS
+        P_diastolic *= MMHG_TO_CGS
+        P_systolic *= MMHG_TO_CGS
         P_mean *= MMHG_TO_CGS
 
-        R_p, C, R_d, R_total = compute_rcr_parameters(P_min, P_max, P_mean, Q_mean, ratio_prox_to_distal_resistors, decay_time, C_prefactor)
+        R_p, C, R_d, R_total = compute_rcr_parameters(P_diastolic, P_systolic, P_mean, Q_mean, ratio_prox_to_distal_resistors, decay_time, C_prefactor)
 
         print ("Values CGS")
         print (name, ",\t", R_p, ",\t", C, ",\t", R_d, ",\t", R_total)
