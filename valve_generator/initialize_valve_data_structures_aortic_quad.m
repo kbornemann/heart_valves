@@ -1,4 +1,4 @@
-function [valve] = initialize_valve_data_structures_aortic_generic(N)
+function [valve] = initialize_valve_data_structures_aortic_quad(N)
 % 
 % Initializes data structures for full solve.  
 % 
@@ -155,7 +155,7 @@ valve.annulus_flattened_normalized = [
 
 valve.normal_thicken = true; 
 % nominal aortic valve thickness
-valve.normal_thickness = 0.013 * (384/N); %0.044 * (384/N); 
+valve.normal_thickness = 0.1 * (384/N); %0.044 * (384/N); 
 
 valve.extrusion_out = true;
 
@@ -194,7 +194,9 @@ valve.tol_global = 1e-3;
 
 % commissural tree version 
 % but without explicit commissural leaflets 
-valve.p_physical = 60 * MMHG_TO_CGS; 
+% Pressure scales ALL stiffnesses - choose slightly lower than diastolic
+% pressure
+valve.p_physical = 30 * MMHG_TO_CGS; 
 
 % Pressure on each leaflet is constant, negative since normal is outward facing 
 p_0 = -valve.p_physical; 
@@ -304,12 +306,13 @@ if valve.in_heart
 
     % value from least squares on pulm 
     % p = 3.095653361985474; 
-    p = 100; 
+    p = 20; %100; 
 
     % function with unspecified power 
     % valve.z_max_cylinder = @(theta) h_top_scaffold_min * ones(size(theta))  +  h_top_scaffold_amplitude * abs(cos(theta)).^(p); 
 
-    cos_power = @(theta) h_top_scaffold_min * ones(size(theta)) + (0.05 + h_top_scaffold_max) * abs(cos((4/2) * theta)).^(p); 
+    cos_power = @(theta) h_top_scaffold_min * ones(size(theta)) + (h_top_scaffold_max) * abs(cos((4/2) * theta)).^(p); 
+    %cos_power = @(theta) h_top_scaffold_min * ones(size(theta)) + (0.05 + h_top_scaffold_max) * abs(cos((4/2) * theta)).^(p); 
 
     annulus_min_fn = @(theta) h_top_scaffold_max * interp1(valve.annulus_flattened_normalized(:,1), valve.annulus_flattened_normalized(:,2), mod(theta,2*pi/4)/(2*pi/4), 'pchip'); 
 
