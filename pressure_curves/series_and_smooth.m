@@ -90,6 +90,8 @@ if plots
     title('After convolution, one cycle')
 end 
 
+
+
 [a_0 a_n b_n Series Series_derivative] = fourier_series_uniform(times, smoothed_one_cycle, cycle_length, n_fourier_coeffs, dt); 
 
 

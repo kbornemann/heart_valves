@@ -1,4 +1,4 @@
-% Script to build valve
+    %Script to build valve
 
 % Copyright (c) 2019, Alexander D. Kaiser
 % All rights reserved.
@@ -40,7 +40,7 @@ for N_each = N_each_range
     N_each
 
     pulm = false; 
-    % % true_bicuspid = false;
+    true_bicuspid = false;
     fish = false;
     quad = true;
 
@@ -69,6 +69,9 @@ for N_each = N_each_range
     else
         valve = initialize_valve_data_structures_aortic_generic(N); 
     end 
+
+ 
+
     
     iteration_movie = false; 
     if iteration_movie
@@ -90,26 +93,26 @@ for N_each = N_each_range
     end 
 
     build_reference = true; 
-    
+
     [valve valve_with_reference pass_all] = solve_valve(valve, interactive, from_history, build_reference); 
     
-    fig = figure; 
-    fig = valve_plot(valve, fig); 
-
-    title('Pressurized configuration fibers'); 
-    saveas(fig, strcat(valve.base_name, '_pressurized'), 'fig'); 
-
-    if ~isempty(valve_with_reference)
-        fig = figure; 
-        fig = valve_plot(valve_with_reference, fig); 
-        title('Relaxed configuration radial fibers, reference config based constitutive law'); 
-        saveas(fig, strcat(valve.base_name, '_relaxed'), 'fig');
-    end 
-    
-    tension_plots = false; 
-    if tension_plots 
-        make_aortic_plots(valve.leaflets(1));         
-    end 
+    % fig = figure; 
+    % fig = valve_plot(valve, fig); 
+    % 
+    % title('Pressurized configuration fibers'); 
+    % saveas(fig, strcat(valve.base_name, '_pressurized'), 'fig'); 
+    % 
+    % if ~isempty(valve_with_reference)
+    %     fig = figure; 
+    %     fig = valve_plot(valve_with_reference, fig); 
+    %     title('Relaxed configuration radial fibers, reference config based constitutive law'); 
+    %     saveas(fig, strcat(valve.base_name, '_relaxed'), 'fig');
+    % end 
+    % 
+    % tension_plots = false; 
+    % if tension_plots 
+    %     make_aortic_plots(valve.leaflets(1));         
+    % end 
 
     if pass_all 
         fprintf('Final solve passed.\n'); 

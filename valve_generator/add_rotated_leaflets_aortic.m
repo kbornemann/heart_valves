@@ -24,7 +24,7 @@ for n = 2:N_leaflets
         valve.leaflets(n).X(:,:,k) = rotation_matrix_z((n-1)*th) * valve.leaflets(n).X(:,:,k);
     end 
     
-end 
+end
 
 
 

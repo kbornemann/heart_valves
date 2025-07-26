@@ -73,7 +73,7 @@ def expand_mesh(mesh,
 def find_boundary_meshes(mesh, 
                          edges,
                          tol_edges_rel = 5.0e-3,
-                         min_points_valid_bdry = 50,
+                         min_points_valid_bdry = 30,
                          debug_output = True, 
                          enforce_flat = True):
     '''
@@ -154,7 +154,7 @@ def morph_extender(mesh,
                    extension_value,
                    masking_width, 
                    enforce_flat_bdry = True, 
-                   flat_bdry_tolerance = 1.0e-3,
+                   flat_bdry_tolerance = 5.0e-3,
                    cos_interpolation = False):
 
 
@@ -447,7 +447,7 @@ def process_ring_to_vertex(mesh, base_name_out, scaling=1.0):
 if __name__== "__main__":
     
 
-    fname_in = "aorta_truncal_postop_extender.stl"
+    fname_in = "aorta_truncal_postop_extender_0pt01.stl"
     fname_out = "aorta_truncal_postop_extender_layers.stl"
 
     n_layers_full = 3
@@ -547,13 +547,14 @@ if __name__== "__main__":
     mesh_adjusted.save("vessel_post_morph_postop.stl")
     mesh_boundary_adjusted.save("lvot_bdry_morph_postop.vtu")
     mesh_aorta_boundary_adjusted.save("aorta_bdry_morph_postop.vtu")
+    #mesh_adjusted.save("aorta_truncal_postop_extender_morphed.vtu")
 
 
     # this is in mm 
     scaling = 0.1
 
     # target strength aortic_384
-    target_strength = 2.0 * 58229.54577218728809
+    target_strength = 2.0 * 12939.89906048606099 #58229.54577218728809
 
     # absolute spring const for cross layer springs of length 
     ds_extrude = 0.025
@@ -563,7 +564,7 @@ if __name__== "__main__":
     # if a single spring is split its kappa_abs goes down by two 
     # but there are more of them, if not in a regular way 
     # could turn down by 4 if needed for stability
-    kappa_abs = 0.01 * 543733.53989471553359 / 2  
+    kappa_abs = 0.01 * 370704.93710214993916 / 4 #0.01 * 543733.53989471553359 / 2  
     
     kappa_rel = kappa_abs * ds_extrude
     zero_springs = True

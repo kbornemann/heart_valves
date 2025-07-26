@@ -533,6 +533,11 @@ if build_reference
             valve_with_reference = add_rotated_leaflets_aortic(valve_with_reference);
             valve = add_rotated_leaflets_aortic(valve);
         end 
+
+        if isfield(valve, 'translate_identical_leaflets') && valve.translate_identical_leaflets 
+            valve_with_reference = add_translated_leaflets_aortic(valve_with_reference);
+            valve = add_translated_leaflets_aortic(valve);
+        end 
         
         if pass
             fprintf('Global solve passed, err = %e\n\n', err); 

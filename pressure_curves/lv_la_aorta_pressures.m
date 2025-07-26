@@ -23,8 +23,8 @@ plots = true;
 
 base_name = 'fourier_coeffs';
 
-points_one_cycle_ventricle = [0.0,   0; 
-0.02, 0; 
+points_one_cycle_ventricle = [0.0,   0;
+0.02, 0;
 0.06, 2; 
 0.40, 6; 
 0.53, 14; 
@@ -69,10 +69,9 @@ points_one_cycle_aorta(:,2) = rescale(points_one_cycle_aorta(:,2), p_diastolic, 
 
 suffix = ''; 
 
-
 file_name = strcat(base_name, suffix, '.txt'); 
 
-bump_radius = .008; 
+bump_radius = .025; 
 n_fourier_coeffs = 600; 
 % plots = false; 
 
@@ -80,6 +79,7 @@ n_fourier_coeffs = 600;
 
 t = 0:dt:cycle_length; 
 vals_ventricle_series = Series_ventricle(t); 
+
 % fig = figure; 
 % plot(t, vals_ventricle_series, 'k'); 
 % title('Ventricular pressure')
@@ -133,7 +133,7 @@ vals_atrium_series = Series_atrium(t);
 % set(fig,'PaperPositionMode','auto')
 % printfig(fig, strcat('atrial_pressure_yellin', suffix))
 
-bump_radius = .008; 
+bump_radius = .01; 
 
 [a_0_aorta a_n_aorta b_n_aorta Series_aorta] = series_and_smooth(points_one_cycle_aorta, dt, bump_radius, n_fourier_coeffs, plots); 
 
@@ -209,7 +209,7 @@ vals_atrium_series = Series_atrium(t);
 plot(t, vals_atrium_series, '--k');
 vals_aorta_series = Series_aorta(t); 
 plot(t, vals_aorta_series, ':k'); 
-axis([0 2.4 -10 140])
+%axis([0 2.4 -10 140])
 set(fig, 'Position', [100, 100, 1000, 500])
 set(fig,'PaperPositionMode','auto')
 legend('Left Ventricle', 'Left Atrium', 'Location', 'NorthWest')

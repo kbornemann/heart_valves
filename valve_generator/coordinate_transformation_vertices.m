@@ -34,7 +34,8 @@ for i=1:3
     centroid(i) = mean(vertices_ring_bdry(i,:)); 
 end 
 
-normal = cross(vertices_ring_bdry(:,1) - centroid, vertices_ring_bdry(:, floor(n_pts_ring/4)) - centroid); 
+
+normal = cross(vertices_ring_bdry(:,1) - centroid, vertices_ring_bdry(:, floor(n_pts_ring/4)) - centroid);
 % take the z direction up normal 
 if normal(3) < 0
     normal = -normal; 
@@ -120,5 +121,7 @@ else
         vertices(:,j) = vertices(:,j) + centroid; 
     end     
 end 
+
+
 
 
