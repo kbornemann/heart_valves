@@ -42,7 +42,8 @@ for N_each = N_each_range
     pulm = false; 
     true_bicuspid = false;
     fish = false;
-    quad = true;
+    quad_postop = false;
+    quad_preop = true;
 
     if quad
         N = 3*N_each; 
@@ -64,8 +65,10 @@ for N_each = N_each_range
         valve = initialize_valve_data_structures_aortic_true_bicuspid(N); 
     elseif fish
         valve = initialize_valve_data_structures_aortic_bicuspid_fish(N);
-    elseif quad
-        valve = initialize_valve_data_structures_aortic_quad(N);
+    elseif quad_postop
+        valve = initialize_valve_data_structures_aortic_quad_postop(N);
+    elseif quad_preop
+        valve = initialize_valve_data_structures_aortic_quad_preop(N);
     else
         valve = initialize_valve_data_structures_aortic_generic(N); 
     end 

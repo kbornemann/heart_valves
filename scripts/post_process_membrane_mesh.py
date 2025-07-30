@@ -447,11 +447,11 @@ def process_ring_to_vertex(mesh, base_name_out, scaling=1.0):
 if __name__== "__main__":
     
 
-    fname_in = "aorta_truncal_postop_extender_0pt01.stl"
+    fname_in = "aorta_truncal_postop_shortextender_0pt01.stl"
     fname_out = "aorta_truncal_postop_extender_layers.stl"
 
     n_layers_full = 3
-    n_layers_extenders = 2
+    n_layers_extenders = 0
 
     # extrude length in mm 
     ds = (0.5/2)/2.5        
@@ -461,7 +461,7 @@ if __name__== "__main__":
 
     extender_direction_idx = [0,1] # extra mesh layers at inlet and outlet 
     extender_top = True
-    extender_width = [10.5, 10.5]
+    extender_width = [5.0, 5.0]
     extract_edge_layer = 2
 
     mesh_combined, edges = expand_mesh(mesh,
@@ -487,14 +487,14 @@ if __name__== "__main__":
     normal_direction = 0
 
     # mesh in mm
-    masking_width = 10.5/2
+    masking_width = 5.0/2
 
     # if true, adjusts x component to be exactly equal to this value 
     enforce_flat_bdry = True
     flat_bdry_tolerance = 5.0e-3
 
     # 1 mm out at the ends 
-    extension_value = 5.0/2.5
+    extension_value = 0.5
 
     cos_interpolation = True
 
@@ -524,7 +524,7 @@ if __name__== "__main__":
 
     # aorta side 
     normal_direction = 1
-    masking_width = 10.5/2
+    masking_width = 5.0/2
     mesh_adjusted = morph_extender(mesh_adjusted, 
                                    mesh_boundary_aorta, 
                                    normal_direction, 
