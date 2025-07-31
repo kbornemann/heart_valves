@@ -163,11 +163,11 @@ valve.extrusion_out = true;
 % add flags to spring files 
 % to view and output with a stride 
 
-valve.output.leaflets       = [1;1;1]; 
-valve.output.stride_leaflet = max(1,N/128); 
-valve.output.mesh           = [1;0;0]; 
-valve.output.cartesian_mesh = [0;0;0]; 
-valve.output.stride_mesh    = N/32; 
+%valve.output.leaflets       = [1;1;1]; 
+%valve.output.stride_leaflet = max(1,N/128); 
+%valve.output.mesh           = [1;0;0]; 
+%valve.output.cartesian_mesh = [0;0;0]; 
+%valve.output.stride_mesh    = N/32; 
 
 
 valve.dirichlet_free_edge = false; 
@@ -275,7 +275,7 @@ valve.eta_papillary_unscaled = 0.0; valve.target_papillary_unscaled/500;
 % if nonzero, linear springs of rest length with spacing between the layers 
 % are placed with this value 
 % final formula is multiplied by valve.tension_base  
-valve.kappa_cross_layer_multipler = 10 * (512/N)^2 * 1e4 / 256^2;
+valve.kappa_cross_layer_multipler = (384/N)^2 * 1e3 / 256^2; %10 * (512/N)^2 * 1e4 / 256^2;
 
 % valve.k_bend_radial = [0 0 1e5 1e5] * 192/N;
 valve.k_bend_radial = 1e4 * 256/N;

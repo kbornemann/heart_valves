@@ -527,7 +527,7 @@ if __name__== "__main__":
     scaling = 0.1
 
     # target strength aortic_192
-    target_strength = 2.0 * 58229.54577218728809
+    target_strength = 2.0 * 51759.59624194424396
 
     # absolute spring const for cross layer springs of length 
     ds_extrude = 0.025
@@ -537,7 +537,7 @@ if __name__== "__main__":
     # if a single spring is split its kappa_abs goes down by two 
     # but there are more of them, if not in a regular way 
     # could turn down by 4 if needed for stability
-    kappa_abs = 0.01 * 543733.53989471553359 / 2  
+    kappa_abs = 0.01 * 423676.96406787470914 / 2  
     
     kappa_rel = kappa_abs * ds_extrude
     zero_springs = True

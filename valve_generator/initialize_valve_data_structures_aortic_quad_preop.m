@@ -92,8 +92,8 @@ if valve.in_heart
     % valve.initial_rotation_aortic = rotation_matrix_z(pi/4); 
     
     % for normal_3
-    th = 1.0*pi; 
-    valve.initial_translation_aortic = -0.06 * [cos(th); sin(th); 0]; 
+    th = 1.2*pi; 
+    valve.initial_translation_aortic = -0.01 * [cos(th); sin(th); 0]; 
     valve.initial_rotation_aortic = rotation_matrix_z(pi/3 + pi/12 + 7*pi/30 + pi/48 + (cusp_fused * 2*pi/3));
     valve.transformation_vertex_file = 'aortic_annulus_truncal_preop.vertex';
     
@@ -163,11 +163,11 @@ valve.extrusion_out = true;
 % add flags to spring files 
 % to view and output with a stride 
 
-valve.output.leaflets       = [1;1;1]; 
-valve.output.stride_leaflet = max(1,N/128); 
-valve.output.mesh           = [1;0;0]; 
-valve.output.cartesian_mesh = [0;0;0]; 
-valve.output.stride_mesh    = N/32; 
+%valve.output.leaflets       = [1;1;1]; 
+%valve.output.stride_leaflet = max(1,N/128); 
+%valve.output.mesh           = [1;0;0]; 
+%valve.output.cartesian_mesh = [0;0;0]; 
+%valve.output.stride_mesh    = N/32; 
 
 
 valve.dirichlet_free_edge = false; 
@@ -210,8 +210,8 @@ valve.p_final = 0 * MMHG_TO_CGS;
 
 valve.L = 2.25; 
 
-r_stj = 0.8/2; % 25 mm valve 
-r_temp = 0.8/2; % vbr radius
+r_stj = 0.7/2; % 25 mm valve 
+r_temp = 0.7/2; % vbr radius
 hc = 0.5*r_stj; %0.5 * r_stj; 
 h1 = 1.4 * r_stj - hc; 
 r_commissure = r_stj; 
@@ -225,7 +225,6 @@ valve.place_cylinder = true;
 valve.z_max_cylinder = (pi/3) * valve.r; 
 valve.z_min_cylinder = 0.0; 
 valve.n_layers_cylinder = 3; 
-
 
 % Base constants, individual pieces are tuned relative to these values
 
@@ -275,7 +274,9 @@ valve.eta_papillary_unscaled = 0.0; valve.target_papillary_unscaled/500;
 % if nonzero, linear springs of rest length with spacing between the layers 
 % are placed with this value 
 % final formula is multiplied by valve.tension_base  
-valve.kappa_cross_layer_multipler = 10 * (512/N)^2 * 1e4 / 256^2;
+
+% layer stiffness
+valve.kappa_cross_layer_multipler = (384/N)^2 * 1e3 / 256^2; %10 * (384/N)^2 * 1e4 / 256^2;
 
 % valve.k_bend_radial = [0 0 1e5 1e5] * 192/N;
 valve.k_bend_radial = 1e4 * 256/N;

@@ -447,7 +447,7 @@ def process_ring_to_vertex(mesh, base_name_out, scaling=1.0):
 if __name__== "__main__":
     
 
-    fname_in = "aorta_truncal_postop_shortextender_0pt01.stl"
+    fname_in = "aorta_truncal_postop_shortextender_0pt015.stl"
     fname_out = "aorta_truncal_postop_extender_layers.stl"
 
     n_layers_full = 3
