@@ -92,8 +92,8 @@ if valve.in_heart
     % valve.initial_rotation_aortic = rotation_matrix_z(pi/4); 
     
     % for normal_3
-    th = 1.2*pi; 
-    valve.initial_translation_aortic = -0.01 * [cos(th); sin(th); 0]; 
+    th = 1.25*pi; 
+    valve.initial_translation_aortic =  0.005 * [cos(th); sin(th); 0]; 
     valve.initial_rotation_aortic = rotation_matrix_z(pi/3 + pi/12 + 7*pi/30 + pi/48 + (cusp_fused * 2*pi/3));
     valve.transformation_vertex_file = 'aortic_annulus_truncal_preop.vertex';
     
@@ -114,7 +114,7 @@ valve.X_config_is_reference = true;
 % places this many exact copies of the leaflet downward in z 
 % spring constants are all reduced by num_copies 
 % spacing is always half a mesh width 
-valve.num_copies = 3; 
+valve.num_copies = 4; 
 
 % valve.copy_spring_weights = [1/2 1/4 1/4];
 
@@ -210,8 +210,8 @@ valve.p_final = 0 * MMHG_TO_CGS;
 
 valve.L = 2.25; 
 
-r_stj = 0.7/2; % 25 mm valve 
-r_temp = 0.7/2; % vbr radius
+r_stj = 0.65/2; % 25 mm valve 
+r_temp = 0.65/2; % vbr radius
 hc = 0.5*r_stj; %0.5 * r_stj; 
 h1 = 1.4 * r_stj - hc; 
 r_commissure = r_stj; 
