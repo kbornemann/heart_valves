@@ -172,7 +172,7 @@ valve.extrusion_out = true;
 
 valve.dirichlet_free_edge = false; 
 
-valve.dirichlet_free_edge_with_ref_only = true; 
+valve.dirichlet_free_edge_with_ref_only = false; 
 
 
 
@@ -210,8 +210,8 @@ valve.p_final = 0 * MMHG_TO_CGS;
 
 valve.L = 2.25; 
 
-r_stj = 0.8/2; % 25 mm valve 
-r_temp = 0.8/2; % vbr radius
+r_stj = 0.81/2; % 25 mm valve 
+r_temp = 0.81/2; % vbr radius
 hc = 0.5*r_stj; %0.5 * r_stj; 
 h1 = 1.4 * r_stj - hc; 
 r_commissure = r_stj; 
@@ -275,18 +275,19 @@ valve.eta_papillary_unscaled = 0.0; valve.target_papillary_unscaled/500;
 % if nonzero, linear springs of rest length with spacing between the layers 
 % are placed with this value 
 % final formula is multiplied by valve.tension_base  
+% layer stiffness
 valve.kappa_cross_layer_multipler = (384/N)^2 * 1e4 / 256^2; %10 * (512/N)^2 * 1e4 / 256^2;
 
 % valve.k_bend_radial = [0 0 1e5 1e5] * 192/N;
-valve.k_bend_radial = 1e4 * 256/N;
+valve.k_bend_radial = 1e4 * 384/N;
 % valve.k_bend_radial_annulus = 1e2 * 192/N;
-valve.k_bend_radial_free_edge = 0; 1e4 * 256/N;
+valve.k_bend_radial_free_edge = 0; %1e4 * 256/N;
 valve.k_bend_radial_free_edge_percentage = 0; 
-valve.k_bend_circ = 1e4 * 256/N; 
+valve.k_bend_circ = 1e4 * 384/N; 
 valve.k_bend_circ_free_edge = 0; 
 valve.k_bend_circ_free_edge_percentage = 0;
 
-valve.k_bend_cross_layer = 1e4 * 256/N;
+valve.k_bend_cross_layer = 1e4 * 384/N;
 
 if valve.in_heart
     

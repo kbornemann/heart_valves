@@ -447,11 +447,11 @@ def process_ring_to_vertex(mesh, base_name_out, scaling=1.0):
 if __name__== "__main__":
     
 
-    fname_in = "aorta_truncal_postop_shortextender_0pt015.stl"
+    fname_in = "aorta_truncal_postop_inextender_0pt01.stl"
     fname_out = "aorta_truncal_postop_extender_layers.stl"
 
     n_layers_full = 3
-    n_layers_extenders = 0
+    n_layers_extenders = 2
 
     # extrude length in mm 
     ds = (0.5/2)/2.5        
@@ -461,7 +461,7 @@ if __name__== "__main__":
 
     extender_direction_idx = [0,1] # extra mesh layers at inlet and outlet 
     extender_top = True
-    extender_width = [5.0, 5.0]
+    extender_width = [10.5, 2.0]
     extract_edge_layer = 2
 
     mesh_combined, edges = expand_mesh(mesh,
@@ -487,14 +487,14 @@ if __name__== "__main__":
     normal_direction = 0
 
     # mesh in mm
-    masking_width = 5.0/2
+    masking_width = 10.5/2
 
     # if true, adjusts x component to be exactly equal to this value 
     enforce_flat_bdry = True
     flat_bdry_tolerance = 5.0e-3
 
     # 1 mm out at the ends 
-    extension_value = 0.5
+    extension_value = 1.0
 
     cos_interpolation = True
 
@@ -524,8 +524,9 @@ if __name__== "__main__":
 
     # aorta side 
     normal_direction = 1
-    masking_width = 5.0/2
-    mesh_adjusted = morph_extender(mesh_adjusted, 
+    masking_width = 2.0/2
+    extension_value = 0.1
+    mesh_adjusted = morph_extender(mesh, 
                                    mesh_boundary_aorta, 
                                    normal_direction, 
                                    extension_value,
@@ -564,7 +565,7 @@ if __name__== "__main__":
     # if a single spring is split its kappa_abs goes down by two 
     # but there are more of them, if not in a regular way 
     # could turn down by 4 if needed for stability
-    kappa_abs = 0.01 * 222422.96226128996932 / 2 #0.01 * 543733.53989471553359 / 2  
+    kappa_abs = 0.01 * 219676.99976423699991 / 2 #0.01 * 543733.53989471553359 / 2  
     
     kappa_rel = kappa_abs * ds_extrude
     zero_springs = True

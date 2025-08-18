@@ -11,6 +11,8 @@ def compute_rcr_parameters(P_min, P_max, P_mean, Q_mean, ratio_prox_to_distal_re
     # total resistance is determined by mean pressure and mean flow 
     R_total = P_mean / Q_mean 
 
+    print("R_total= ", R_total)
+
     # ratio of resistors is constant 
     # resistors sum to total resistance 
     R_distal = R_total / (1.0 + ratio_prox_to_distal_resistors)
