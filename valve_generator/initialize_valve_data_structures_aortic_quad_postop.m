@@ -172,7 +172,7 @@ valve.extrusion_out = true;
 
 valve.dirichlet_free_edge = false; 
 
-valve.dirichlet_free_edge_with_ref_only = false; 
+valve.dirichlet_free_edge_with_ref_only = true; 
 
 
 
@@ -276,7 +276,7 @@ valve.eta_papillary_unscaled = 0.0; valve.target_papillary_unscaled/500;
 % are placed with this value 
 % final formula is multiplied by valve.tension_base  
 % layer stiffness
-valve.kappa_cross_layer_multipler = (384/N)^2 * 1e4 / 256^2; %10 * (512/N)^2 * 1e4 / 256^2;
+valve.kappa_cross_layer_multipler = (384/N)^2 * 1e3 / 256^2; %10 * (512/N)^2 * 1e4 / 256^2;
 
 % valve.k_bend_radial = [0 0 1e5 1e5] * 192/N;
 valve.k_bend_radial = 1e4 * 384/N;

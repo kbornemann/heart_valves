@@ -453,7 +453,7 @@ def process_ring_to_vertex(mesh, base_name_out, scaling=1.0):
 if __name__== "__main__":
     
 
-    fname_in = "aorta_truncal_preop_shortextender.stl"
+    fname_in = "aorta_truncal_preop_inextender_0pt03.stl"
     fname_out = "aorta_truncal_preop_extenter_layers.stl"
 
     n_layers_full = 3
@@ -467,7 +467,7 @@ if __name__== "__main__":
 
     extender_direction_idx = [0,1] # extra mesh layers at inlet and outlet 
     extender_top = True
-    extender_width = [2.0, 2.0]
+    extender_width = [10.5, 2.0]
     extract_edge_layer = 2
 
     mesh_combined, edges = expand_mesh(mesh,
@@ -501,7 +501,7 @@ if __name__== "__main__":
     normal_direction = 0
 
     # mesh in mm
-    masking_width = 2.0
+    masking_width = 10.5
 
     # if true, adjusts x component to be exactly equal to this value 
     enforce_flat_bdry = True
@@ -527,7 +527,7 @@ if __name__== "__main__":
     scaling = 0.1
 
     # target strength aortic_192
-    target_strength = 2.0 * 51759.59624194424396
+    target_strength = 38819.69718145818479
 
     # absolute spring const for cross layer springs of length 
     ds_extrude = 0.025
@@ -537,7 +537,7 @@ if __name__== "__main__":
     # if a single spring is split its kappa_abs goes down by two 
     # but there are more of them, if not in a regular way 
     # could turn down by 4 if needed for stability
-    kappa_abs = 0.01 * 423676.96406787470914 / 2  
+    kappa_abs = 0.01 * 342200.62482405267656 / 2  
     
     kappa_rel = kappa_abs * ds_extrude
     zero_springs = True

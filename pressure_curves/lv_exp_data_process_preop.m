@@ -5,6 +5,7 @@ MMHG_TO_CGS = 1333.22368;
 cycle_duration = 0.411; 
 p_systolic = 60;
 p_diastolic = 24;
+QPQS = 5; % 4:1
 
 % scale ventricular and atrial data by same factor as aorta
 factor_systolic = p_systolic/120;
@@ -23,8 +24,10 @@ Q_goal_ml_per_s = Q_goal_L_per_min * 1e3 / 60;
 Q_goal_ml_per_cycle = 2 * 2.4; %Q_goal_ml_per_s * cycle_duration; 
 
 ejection_fraction_goal = 0.575;
-end_diastolic_volume = 2 * 4.2; %Q_goal_ml_per_cycle / ejection_fraction_goal;
-ventricular_volume_initial = end_diastolic_volume - Q_goal_ml_per_cycle;
+lv_end_diastolic_volume = 4.2; %Q_goal_ml_per_cycle / ejection_fraction_goal;
+lv_volume_initial = lv_end_diastolic_volume - Q_goal_ml_per_cycle/2;
+rv_end_diastolic_volume = 4.2;
+rv_volume_initial = rv_end_diastolic_volume - Q_goal_ml_per_cycle/2;
 
 % Literature curves: Flowrate mitral
 table_q_mitral = readtable('pressure_curve_data/Physiologic_Mechanisms_Aortic_Insufficiency_Yellin/PhysiologicMechanismsinAorticInsufficiency_fig1_q_mitral.csv'); 
@@ -67,10 +70,10 @@ if input_literature
     pressures_lv_raw = table.pressure_lv; 
     pressures_rv_raw = table.pressure_lv;
     pressures_aorta_raw = table.pressure_aorta;
-    pressures_rpa_raw = table.pressures_aorta;
-    pressures_lpa_raw = table.pressures_aorta;
+    pressures_rpa_raw = table.pressure_aorta;
+    pressures_lpa_raw = table.pressure_aorta;
     pressures_la_raw = table.pressure_la;
-    pressures_ra_raw = table.pressure_ra;
+    pressures_ra_raw = table.pressure_la;
     
     % Rescaled time
     times_init = rescale(times_raw, 0, cycle_duration);
@@ -217,24 +220,30 @@ elseif input_simulation
 end
 
 % Normalize flow rate integrals to be equal and to desired target
-q_truncal_cumulative = dt * trapz(vals_series_q_aorta) 
-q_inflow_cumulative = dt * trapz(vals_series_q_mitral) + dt * trapz(vals_series_q_tricuspid)
+q_truncal_cumulative = dt * trapz(vals_series_q_truncal) 
+q_mitral_cumulative = dt * trapz(vals_series_q_mitral) 
+q_tricuspid_cumulative = dt * trapz(vals_series_q_tricuspid)
 
-scaling_q_inflow = Q_goal_ml_per_cycle / q_inflow_cumulative;
-scaling_q_aorta = Q_goal_ml_per_cycle / q_aorta_cumulative;
+scaling_q_mitral = (Q_goal_ml_per_cycle/2) / q_mitral_cumulative;
+scaling_q_tricuspid = (Q_goal_ml_per_cycle/2) / q_tricuspid_cumulative;
+scaling_q_truncal = Q_goal_ml_per_cycle / q_truncal_cumulative;
 
-Series_q_mitral_scaled = @(t) scaling_q_inflow * Series_q_mitral(t);
+Series_q_mitral_scaled = @(t) scaling_q_mitral * Series_q_mitral(t);
 vals_series_q_mitral_scaled = Series_q_mitral_scaled(t);
 
-Series_q_tricuspid_scaled = @(t) scaling_q_inflow * Series_q_tricuspid(t);
+Series_q_tricuspid_scaled = @(t) scaling_q_tricuspid * Series_q_tricuspid(t);
 vals_series_q_tricuspid_scaled = Series_q_tricuspid_scaled(t);
 
-Series_q_aorta_scaled = @(t) scaling_q_aorta * Series_q_aorta(t);
-vals_series_q_aorta_scaled = Series_q_aorta_scaled(t);
+Series_q_truncal_scaled = @(t) scaling_q_truncal * Series_q_truncal(t);
+vals_series_q_truncal_scaled = Series_q_truncal_scaled(t);
+
+vals_series_q_aorta_scaled = (1/QPQS) * vals_series_q_truncal_scaled;
+vals_series_q_rpa_scaled = (2/QPQS) * vals_series_q_truncal_scaled;
+vals_series_q_lpa_scaled = (2/QPQS) * vals_series_q_truncal_scaled;
 
 q_mitral_cumulative_scaled = dt * trapz(vals_series_q_mitral_scaled)
 q_tricuspid_cumulative_scaled = dt * trapz(vals_series_q_tricuspid_scaled)
-q_aorta_cumulative_scaled = dt * trapz(vals_series_q_aorta_scaled)
+q_truncal_cumulative_scaled = dt * trapz(vals_series_q_truncal_scaled)
 
 % OUTPUT FILE: FOURIER_COEFFS_Q_IN - fourier_coeffs_Q_mi.txt
 base_name = 'fourier_coeffs';
@@ -242,28 +251,64 @@ suffix = '_Q_mi'
 file_name = strcat(base_name, suffix, '.txt'); 
 output_series_coeffs_to_txt(scaling_q_mitral * a_0_q_mitral, scaling_q_mitral * a_n_q_mitral, scaling_q_mitral * b_n_q_mitral, n_fourier_coeffs, cycle_duration, file_name); 
 
+% OUTPUT FILE: FOURIER_COEFFS_Q_IN - fourier_coeffs_Q_mi.txt
+base_name = 'fourier_coeffs';
+suffix = '_Q_tri'
+file_name = strcat(base_name, suffix, '.txt'); 
+output_series_coeffs_to_txt(scaling_q_tricuspid * a_0_q_tricuspid, scaling_q_tricuspid * a_n_q_tricuspid, scaling_q_tricuspid * b_n_q_tricuspid, n_fourier_coeffs, cycle_duration, file_name); 
+
 % Convert pressure units to CGS
 Series_pressure_lv_cgs = @(t) MMHG_TO_CGS * Series_pressure_lv(t);
 Series_pressure_lv_derivative_cgs = @(t) MMHG_TO_CGS * Series_pressure_lv_derivative(t);
 vals_series_pressure_lv_cgs = Series_pressure_lv_cgs(t);
 vals_series_pressure_lv_derivative_cgs = Series_pressure_lv_derivative_cgs(t);
 
+Series_pressure_rv_cgs = @(t) MMHG_TO_CGS * Series_pressure_rv(t);
+Series_pressure_rv_derivative_cgs = @(t) MMHG_TO_CGS * Series_pressure_rv_derivative(t);
+vals_series_pressure_rv_cgs = Series_pressure_rv_cgs(t);
+vals_series_pressure_rv_derivative_cgs = Series_pressure_rv_derivative_cgs(t);
+
 Series_pressure_aorta_cgs = @(t) MMHG_TO_CGS * Series_pressure_aorta(t);
 Series_pressure_aorta_derivative_cgs = @(t) MMHG_TO_CGS * Series_pressure_aorta_derivative(t);
 vals_series_pressure_aorta_cgs = Series_pressure_aorta_cgs(t);
 vals_series_pressure_aorta_derivative_cgs = Series_pressure_aorta_derivative_cgs(t);
 
-% Ventricular volume
-vals_ventricular_volume = zeros(size(vals_series_q_aorta)); 
-vals_ventricular_volume_deriv = zeros(size(vals_series_q_aorta)); 
-vals_ventricular_volume(1) = ventricular_volume_initial;
+Series_pressure_rpa_cgs = @(t) MMHG_TO_CGS * Series_pressure_rpa(t);
+Series_pressure_rpa_derivative_cgs = @(t) MMHG_TO_CGS * Series_pressure_rpa_derivative(t);
+vals_series_pressure_rpa_cgs = Series_pressure_rpa_cgs(t);
+vals_series_pressure_rpa_derivative_cgs = Series_pressure_rpa_derivative_cgs(t);
 
-for j=2:length(vals_ventricular_volume)
-    vals_ventricular_volume(j) = vals_ventricular_volume(j-1) + dt * (vals_series_q_mitral_scaled(j) - vals_series_q_aorta_scaled(j)); 
+Series_pressure_lpa_cgs = @(t) MMHG_TO_CGS * Series_pressure_lpa(t);
+Series_pressure_lpa_derivative_cgs = @(t) MMHG_TO_CGS * Series_pressure_lpa_derivative(t);
+vals_series_pressure_lpa_cgs = Series_pressure_lpa_cgs(t);
+vals_series_pressure_lpa_derivative_cgs = Series_pressure_lpa_derivative_cgs(t);
+
+% LV volume
+vals_lv_volume = zeros(size(vals_series_q_truncal)); 
+vals_lv_volume_deriv = zeros(size(vals_series_q_truncal)); 
+vals_lv_volume(1) = lv_volume_initial;
+
+% RV volume
+vals_rv_volume = zeros(size(vals_series_q_truncal)); 
+vals_rv_volume_deriv = zeros(size(vals_series_q_truncal)); 
+vals_rv_volume(1) = rv_volume_initial;
+
+% LV
+for j=2:length(vals_lv_volume)
+    vals_lv_volume(j) = vals_lv_volume(j-1) + dt * (vals_series_q_mitral_scaled(j) - vals_series_q_truncal_scaled(j)); 
 end 
 
-for j=1:length(vals_ventricular_volume)
-    vals_ventricular_volume_deriv(j) = vals_series_q_mitral_scaled(j) - vals_series_q_aorta_scaled(j); 
+for j=1:length(vals_rv_volume)
+    vals_lv_volume_deriv(j) = vals_series_q_mitral_scaled(j) - vals_series_q_truncal_scaled(j); 
+end 
+
+% RV
+for j=2:length(vals_rv_volume)
+    vals_rv_volume(j) = vals_rv_volume(j-1) + dt * (vals_series_q_tricuspid_scaled(j) - vals_series_q_truncal_scaled(j)); 
+end 
+
+for j=1:length(vals_rv_volume)
+    vals_rv_volume_deriv(j) = vals_series_q_tricuspid_scaled(j) - vals_series_q_truncal_scaled(j); 
 end 
 
 two_hill = true; 
@@ -316,6 +361,12 @@ suffix = '_lv_activation_two_hill'
 file_name = strcat(base_name, suffix, '.txt'); 
 output_series_coeffs_to_txt(a_0_activation_two_hill, a_n_activation_two_hill, b_n_activation_two_hill, n_fourier_coeffs, cycle_duration, file_name); 
 
+% OUTPUT FILE: FOURIER_COEFFS_ACT - fourier_coeffs_rv_activation_two_hill.txt
+base_name = 'fourier_coeffs';
+suffix = '_rv_activation_two_hill'
+file_name = strcat(base_name, suffix, '.txt'); 
+output_series_coeffs_to_txt(a_0_activation_two_hill, a_n_activation_two_hill, b_n_activation_two_hill, n_fourier_coeffs, cycle_duration, file_name); 
+
 % OUTPUT FILE: NOT USED - fourier_coeffs_lv_activation.txt
 p_lv_activation_threshold = 20; 
 activation_data_unscaled = (vals_series_p_lv' > p_lv_activation_threshold) .* vals_series_p_lv';
@@ -331,26 +382,47 @@ suffix = '_lv_activation'
 file_name = strcat(base_name, suffix, '.txt'); 
 output_series_coeffs_to_txt(a_0_activation, a_n_activation, b_n_activation, n_fourier_coeffs, cycle_duration, file_name); 
 
+base_name = 'fourier_coeffs';
+suffix = '_rv_activation'
+file_name = strcat(base_name, suffix, '.txt'); 
+output_series_coeffs_to_txt(a_0_activation, a_n_activation, b_n_activation, n_fourier_coeffs, cycle_duration, file_name); 
+
+
 series_plots = true; 
 if series_plots
     figure; 
-    subplot(2,2,1)
     plot(t, vals_series_p_lv)
-    hold on 
+    hold on
+    plot(t, vals_series_p_rv)
+    hold on
     plot(t, vals_series_p_aorta)
-    title('Lv pressure, aorta pressure')
+    hold on
+    plot(t, vals_series_p_rpa)
+    hold on
+    plot(t, vals_series_p_lpa)
+    legend('p_lv', 'p_rv', 'p_aorta', 'p_rpa', 'p_lpa')
+    title('Lv pressure, RV pressure, aorta pressure, rpa pressure, lpa pressure')
 
-    subplot(2,2,2)
+    figure;
     plot(t, vals_series_q_mitral_scaled)
     hold on
+    plot(t, vals_series_q_tricuspid_scaled)
+    hold on
     plot(t, vals_series_q_aorta_scaled)
-    title('q_mitral, q_aorta')
+    hold on
+    plot(t, vals_series_q_rpa_scaled)
+    hold on
+    plot(t, vals_series_q_lpa_scaled)
+    legend('q_mitral', 'q_tricuspid', 'q_aorta', 'q_rpa', 'q_lpa')
+    title('q_mitral, q_tricuspid, q_aorta, q_rpa, q_lpa')
 
-    subplot(2,2,3)
-    plot(t, vals_ventricular_volume)
-    title('ventricular volume')
+    figure;
+    plot(t, vals_lv_volume)
+    hold on
+    plot(t, vals_rv_volume)
+    title('lv volume, rv volume')
 
-    subplot(2,2,4);
+    figure;
     plot(t, vals_series_activation)
     title('vals_series_activation')
 end 
@@ -360,11 +432,11 @@ if output_to_sv0d
     format long 
     f = fopen("array_values.txt", "w");
     fprintf(f, '        "y": {\n');
-    print_var_string(f,t,'flow:ventricle:valve1', vals_series_q_aorta_scaled)
+    print_var_string(f,t,'flow:ventricle:valve1', vals_series_q_truncal_scaled)
     print_var_string(f,t,'pressure:ventricle:valve1', vals_series_pressure_lv_cgs)
     print_var_string(f,t,'flow:vessel:OUTLET', vals_series_q_aorta_scaled)
     print_var_string(f,t,'pressure:vessel:OUTLET', vals_series_pressure_aorta_cgs)
-    print_var_string(f,t,'Q', vals_series_q_mitral_scaled);
+    print_var_string(f,t,'Q', vals_series_q_truncal_scaled);
     print_var_string(f,t,'t', t');
 end 
 
