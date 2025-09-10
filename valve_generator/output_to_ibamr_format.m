@@ -890,51 +890,53 @@ function params = place_spring_and_split(params, idx, nbr_idx, k_rel, rest_len, 
         % first index is always first index suppied 
         idx_tmp = idx; 
         
-        for i=1:N_springs 
+        %for i=1:N_springs 
             
-            % place the upper new vertex if it is not placed already 
-            if i<N_springs 
-                params.vertices(:,params.global_idx + 1) = X_vertices_new(:,i+1); 
-                
-                % new vertex's index is current (zero indexed) global index 
-                nbr_idx_tmp = params.global_idx; 
+        %    fprintf('In the N_springs loop for remeshing')
 
-                params.global_idx = params.global_idx + 1;
+            % place the upper new vertex if it is not placed already 
+        %    if i<N_springs 
+        %        params.vertices(:,params.global_idx + 1) = X_vertices_new(:,i+1); 
+        %        
+        %        % new vertex's index is current (zero indexed) global index 
+        %        nbr_idx_tmp = params.global_idx; 
+
+        %        params.global_idx = params.global_idx + 1;
                 
-            else 
-                % last spring upper limit is the previous neighbor 
-                nbr_idx_tmp = nbr_idx; 
-            end 
+        %    else 
+        %        % last spring upper limit is the previous neighbor 
+        %        nbr_idx_tmp = nbr_idx; 
+        %    end 
             
             % global indices placed in order by convention 
-            min_idx = min(idx_tmp, nbr_idx_tmp); 
-            max_idx = max(idx_tmp, nbr_idx_tmp); 
+        %    min_idx = min(idx_tmp, nbr_idx_tmp); 
+        %    max_idx = max(idx_tmp, nbr_idx_tmp); 
         
             % Current length 
-            L = norm(X_vertices_new(:,i+1) - X_vertices_new(:,i)); 
+        %    L = norm(X_vertices_new(:,i+1) - X_vertices_new(:,i)); 
             
             % Rest length determined by strain 
-            R = L / (strain + 1); 
+        %    R = L / (strain + 1); 
             
-            if collagen_spring
-                % Scaling constant here does not change with rest lengths 
-                k_col = k_rel; 
+        %    if collagen_spring
+        %        % Scaling constant here does not change with rest lengths 
+        %        k_col = k_rel; 
 
                 % Finally, write the spring string 
-                params = spring_string(params, min_idx, max_idx, k_col, R, function_idx, output);
+        %        params = spring_string(params, min_idx, max_idx, k_col, R, function_idx, output);
             
-            else 
-                % Absolute spring constant must be used in spring file 
-                k_abs = k_rel / R; 
+        %    else 
+        %        % Absolute spring constant must be used in spring file 
+        %        k_abs = k_rel / R; 
 
-                % Finally, write the spring string 
-                params = spring_string(params, min_idx, max_idx, k_abs, R, function_idx, output);
-            end 
+        %        % Finally, write the spring string 
+        %        params = spring_string(params, min_idx, max_idx, k_abs, R, function_idx, output);
+        %    end 
             
             % lower index is always previous upper index 
-            idx_tmp = nbr_idx_tmp; 
-            
-        end 
+        %    idx_tmp = nbr_idx_tmp; 
+                    
+        %end 
     
     end 
 

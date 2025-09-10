@@ -91,13 +91,15 @@ if __name__ == '__main__':
     basename = 'eulerian_vars'
     extension = 'vtr'
 
-    if '_192_' in os.getcwd(): 
-        nprocs_sim = 24
-    elif '_384_' in os.getcwd(): 
-        nprocs_sim = 48
-    else: 
-        print("Using default nprocs_sim of 48")
-        nprocs_sim = 48
+    #if '_192_' in os.getcwd(): 
+    #    nprocs_sim = 24
+    #elif '_384_' in os.getcwd(): 
+    #    nprocs_sim = 48
+    #else: 
+    #    print("Using default nprocs_sim of 48")
+    #    nprocs_sim = 48
+
+    nprocs_sim = 96 #int(sys.argv[1]) 
 
     print("writing eulerian_vars with nprocs_sim = ", nprocs_sim)
 

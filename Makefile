@@ -1,8 +1,8 @@
 ######################################################################
 ## Here specify the location of the IBAMR source and the location
 ## where IBAMR has been built.
-IBAMR_SRC_DIR   = $(HOME)/software/ibamr/IBAMR
-IBAMR_BUILD_DIR = $(HOME)/software/ibamr/ibamr-debug
+IBAMR_SRC_DIR   = $(GROUP_HOME)/ibamr_fiber_based/ibamr/IBAMR
+IBAMR_BUILD_DIR = $(GROUP_HOME)/ibamr_fiber_based/ibamr/ibamr-objs-opt
 
 ######################################################################
 ## Include variables specific to the particular IBAMR build.

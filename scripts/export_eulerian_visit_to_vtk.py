@@ -129,6 +129,9 @@ if proc_num == 0:
 
     initialized = False
 
+    print("nsteps = ", nsteps)
+    print("nprocs_sim = ", nprocs_sim)
+
     for n in range(nsteps):
         for proc in range(nprocs_sim):
 

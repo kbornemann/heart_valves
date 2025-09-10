@@ -25,7 +25,7 @@ for leaflet_num = 1:n_leaflets
 
         % file_with_path
 
-        vertices = csvread(file_with_path)'; 
+        vertices = csvread(file_with_path)';  %csvread(file_with_path)
 
         if run_inv_transform
             vertices = coordinate_transformation_vertices(vertices, ...

@@ -42,7 +42,9 @@ if __name__ == '__main__':
 
     frame_number = 444 
 
-    lag_name_base_to_check = ['aortic']
+    lag_name_base_to_check = ['aortic', 'aorta']
+
+    print("In convert_vtu_vertices_to_csv")
 
     for lag_file in os.listdir('..'):
         for lag_base in lag_name_base_to_check: 

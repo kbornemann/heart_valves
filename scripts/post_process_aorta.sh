@@ -1,10 +1,10 @@
 #!/bin/bash
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=24
-#SBATCH --time=12:00:00
+#SBATCH --time=168:00:00
 #SBATCH --mem=185GB
 #SBATCH --job-name=slices_paper
-#SBATCH --mail-user=adkaiser@gmail.com
+#SBATCH --mail-user=kmbo@stanford.edu
 #SBATCH --mail-type=ALL
 #SBATCH --partition=amarsden
 
@@ -32,9 +32,17 @@ cd viz_IB3d_tree_cycle_256
 
 TOTAL_TASKS=$(($SLURM_NTASKS_PER_NODE * $SLURM_NNODES))
 
-cp ~/heart_valves/2_aorta_remeshed_pt5mm_capped.vtp . 
-cp ~/heart_valves/4_aorta_remeshed_pt25mm_3cm_extender_layers_constriction.vtu . 
-cp ~/heart_valves/6_aorta_remeshed_pt5mm_2cm_extender_layers_constriction.vtu . 
+#cp ~/heart_valves/2_aorta_remeshed_pt5mm_capped.vtp . 
+#cp ~/heart_valves/4_aorta_remeshed_pt25mm_3cm_extender_layers_constriction.vtu . 
+#cp ~/heart_valves/6_aorta_remeshed_pt5mm_2cm_extender_layers_constriction.vtu . 
+
+cp ~/heart_valves/aorta_truncal_postop_extender_morphed_wcaps.stl .
+cp ~/heart_valves/aorta_truncal_postop_extender_morphed.stl .
+cp ~/heart_valves/aorta_truncal_postop_extender_morphed.vtp .
+cp ~/heart_valves/aorta_truncal_postop_extender_morphed_wcaps.vtp .
+cp ~/heart_valves/aorta_truncal_postop_shortextender_morphed.vtu .
+cp ~/heart_valves/scripts/aorta_truncal_postop_shortextender_morphed_wcaps.vtp .
+cp ~/heart_valves/scripts/aorta_truncal_postop_inextender_morphed_wcaps.vtp .
 
 # extracts relevant portion of mesh 
 python3 ~/heart_valves/scripts/remove_unnecessary_eulerian_space.py $TOTAL_TASKS
@@ -55,7 +63,7 @@ wait
 # adds face data 
 python3 ~/heart_valves/scripts/add_faces.py
 
-python3 ~/heart_valves/scripts/fix_pvd_files.py
+python3 ~/heart_valves/scripts/fix_pvd_files.py $TOTAL_TASKS
 
 python3 ~/heart_valves/scripts/convert_vtu_vertices_to_csv.py
 

@@ -44,10 +44,10 @@ if __name__ == '__main__':
             shutil.copy('../' + base_name + '.vtu', '.') 
             mesh_with_faces_name = base_name + '.vtu'
         else: 
-            mesh_with_faces_name = "4_aorta_remeshed_pt25mm_3cm_extender_layers_constriction.vtu"
+            mesh_with_faces_name = "aorta_truncal_postop_extender_morphed_wcaps.vtp"
 
         if "_192_" in os.getcwd():
-            mesh_with_faces_name = '6_aorta_remeshed_pt5mm_2cm_extender_layers_constriction.vtu'
+            mesh_with_faces_name = 'aorta_truncal_postop_extender_morphed.vtp'
             base_name = 'aorta_192'
 
 
@@ -66,14 +66,14 @@ if __name__ == '__main__':
         jobs = []
 
         for f in os.listdir('.'):
-            if f.startswith(base_name) and f.endswith('.vtu'):
-                if (not "_orig_copy" in f) and (mesh_with_faces_name not in f):
-                    print("procssing file ", f)
+            if f.startswith(base_name) and f.endswith('orig_copy.vtu'):
+                #if (not "_orig_copy" in f) and (mesh_with_faces_name not in f):
+                print("processing file ", f)
                     
-                    p = multiprocessing.Process(target=add_faces, args=(mesh_with_faces, f))
-                    jobs.append(p)
-                    p.start()
-                    # add_faces(mesh_with_faces, f)
+                p = multiprocessing.Process(target=add_faces, args=(mesh_with_faces, f))
+                jobs.append(p)
+                p.start()
+              # add_faces(mesh_with_faces, f)
 
         for p in jobs:
             p.join()
@@ -82,7 +82,7 @@ if __name__ == '__main__':
         for f in os.listdir('.'):
             if f.startswith(base_name) and f.endswith('.vtu'):
                 if not "_orig_copy" in f:
-                    print("procssing file ", f)
+                    print("processing file ", f)
                     add_faces(mesh_with_faces, f)
 
     # pool = multiprocessing.Pool() #use all available cores, otherwise specify the number you want as an argument

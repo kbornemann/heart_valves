@@ -46,13 +46,13 @@ for i = 1:length(file_list)
 
         frame_num = str2num(name(end-3:end));
         
-        if add_mechanics && ((frame_num == 662) || (frame_num == 837))
-            export_mechanics = true 
-            export_coaptation = true
-        else 
-            export_mechanics = false
-            export_coaptation = false
-        end 
+        %if add_mechanics && ((frame_num == 662) || (frame_num == 837))
+        %    export_mechanics = true 
+        %    export_coaptation = true
+        %else 
+        export_mechanics = false;
+        export_coaptation = false;
+        %end 
         
         export_aortic_vertices_cells(file_name, valve_with_reference, params, data_dir, run_inv_transform, export_cells, export_mechanics, export_coaptation); 
         

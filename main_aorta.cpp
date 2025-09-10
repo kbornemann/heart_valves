@@ -443,7 +443,7 @@ int main(int argc, char* argv[])
                 rcr_on_time = input_db->getDouble("RCR_ON_TIME"); // starts this 
             }
             else {
-                rcr_on_time = 0.2; 
+                rcr_on_time = 0.2 * (0.382/0.8); 
             }
 
             // start in physical time with relation to Fourier series 
