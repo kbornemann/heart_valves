@@ -25,6 +25,7 @@
 #include "CirculationModel_with_lv.h"
 #include "CirculationModel_RV_PA.h"
 #include "CirculationModel_aorta.h"
+#include "CirculationModel_preop.h"
 
 /////////////////////////////// CLASS DEFINITION /////////////////////////////
 
@@ -44,6 +45,7 @@ class FeedbackForcer : public CartGridFunction
                  CirculationModel_with_lv* circ_model_with_lv=NULL, 
                  CirculationModel_RV_PA* circ_model_rv_pa=NULL, 
                  CirculationModel_aorta* circ_model_aorta=NULL,
+                 CirculationModel_preop* circ_model_preop=NULL,
                  bool damping_outside = false, 
                  string lag_file_name = "",
                  string internal_ring_file_name = "");
@@ -88,6 +90,7 @@ class FeedbackForcer : public CartGridFunction
   CirculationModel_with_lv* d_circ_model_with_lv; 
   CirculationModel_RV_PA*   d_circ_model_rv_pa; 
   CirculationModel_aorta*   d_circ_model_aorta; 
+  CirculationModel_preop*   d_circ_model_preop;
 
   bool d_damping_outside; 
   bool d_damping_initialized; 

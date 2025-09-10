@@ -20,6 +20,7 @@
 class CirculationModel_with_lv; 
 class CirculationModel_RV_PA; 
 class CirculationModel_aorta; 
+class CirculationModel_preop;
 
 #include "CirculationModel.h"
 
@@ -56,10 +57,10 @@ class fourier_series_data{
 #endif 
 
 
-#ifndef included_ventricle_0D_model
-#define included_ventricle_0D_model
+#ifndef included_lvot_0D_model
+#define included_lvot_0D_model
 
-class ventricle_0D_model : public Serializable
+class lvot_0D_model : public Serializable
 {    
     public: 
         /*!
@@ -73,8 +74,8 @@ class ventricle_0D_model : public Serializable
         bool d_registered_for_restart;
 
         // prescribed variables 
-        const fourier_series_data *d_fourier_q_in_ventricle;
-        const fourier_series_data *d_act_ventricle;
+        const fourier_series_data *d_fourier_q_in_lvot;
+        const fourier_series_data *d_act_lvot;
 
         double d_V_rest_diastole; 
         double d_V_rest_systole; 
@@ -85,12 +86,12 @@ class ventricle_0D_model : public Serializable
 
         // state variables 
         double d_Q_out; 
-        double d_Q_out_prev; 
-        double d_V_ventricle; 
-        double d_V_rest_ventricle; 
-        double d_P_ventricle_in;
+        double d_Q_out_prev;
+        double d_V_lvot; 
+        double d_V_rest_lvot;
+        double d_P_lvot_in;
         double d_P_lvot_upstream;
-        double d_P_ventricle;
+        double d_P_lvot;
         double d_Elas; 
 
         // redundant debug vars 
@@ -104,12 +105,12 @@ class ventricle_0D_model : public Serializable
         unsigned int d_current_idx_series; 
 
         // constructors 
-        ventricle_0D_model(Pointer<Database> input_db, 
+        lvot_0D_model(Pointer<Database> input_db, 
                            double cycle_duration, 
                            double initialization_time);
         
         // Destructor 
-        ~ventricle_0D_model(); 
+        ~lvot_0D_model(); 
 
         void advanceTimeDependentData(double dt, double time, double Q_out); 
         
@@ -122,6 +123,129 @@ class ventricle_0D_model : public Serializable
 }; 
 
 #endif 
+
+#ifndef included_rvot_0D_model
+#define included_rvot_0D_model
+
+class rvot_0D_model : public Serializable
+{
+    public:
+        /*!
+         * \brief The object name.
+         */
+        string d_object_name;
+
+        /*!
+         * \brief Whether the object is registered with the restart manager.
+         */
+        bool d_registered_for_restart;
+
+        const fourier_series_data *d_fourier_q_in_rvot;
+        const fourier_series_data *d_act_rvot;
+
+        double d_V_rest_diastole;
+        double d_V_rest_systole;
+        double d_E_min;
+        double d_E_max;
+        double d_inductance;
+        double d_R_rvot;
+
+        double d_Q_out;
+        double d_Q_out_prev;
+        double d_V_rvot;
+        double d_V_rest_rvot;
+        double d_P_rvot_in;
+        double d_P_rvot_upstream;
+        double d_P_rvot;
+        double d_Elas;
+
+        double d_Q_in;
+        double d_act_temp;
+
+        double d_initialization_time;
+        double d_time;
+        double  d_cycle_duration;
+        unsigned int d_current_idx_series;
+
+        rvot_0D_model(Pointer<Database> input_db,
+                           double cycle_duration,
+                           double initialization_time);
+
+        ~rvot_0D_model();
+
+        void advanceTimeDependentData(double dt, double time, double Q_out);
+
+        void putToDatabase(Pointer<Database> db);
+
+    private:
+
+        void getFromRestart();
+
+};
+
+#endif
+
+
+#ifndef included_ventricle_0D_model
+#define included_ventricle_0D_model
+
+class ventricle_0D_model : public Serializable
+{
+    public:
+        /*!
+         * \brief The object name.
+         */
+        string d_object_name;
+        /*!
+         * \brief Whether the object is registered with the restart manager.
+         */
+        bool d_registered_for_restart;
+
+        const fourier_series_data *d_fourier_q_in_ventricle;
+        const fourier_series_data *d_act_ventricle;
+
+        double d_V_rest_diastole;
+        double d_V_rest_systole;
+        double d_E_min;
+        double d_E_max;
+        double d_inductance;
+        double d_R_LVOT;
+
+        double d_Q_out;
+        double d_Q_out_prev;
+        double d_V_ventricle;
+        double d_V_rest_ventricle;
+        double d_P_ventricle_in;
+        double d_P_lvot_upstream;
+        double d_P_ventricle;
+        double d_Elas;
+
+        double d_Q_in;
+        double d_act_temp;
+
+        double d_initialization_time;
+        double d_time;
+        double  d_cycle_duration;
+        unsigned int d_current_idx_series;
+
+        ventricle_0D_model(Pointer<Database> input_db,
+                           double cycle_duration,
+                           double initialization_time);
+
+        ~ventricle_0D_model();
+
+        void advanceTimeDependentData(double dt, double time, double Q_out);
+
+        void putToDatabase(Pointer<Database> db);
+
+    private:
+
+        void getFromRestart();
+
+};
+
+#endif
+
 
 
 
@@ -461,12 +585,82 @@ private:
 #endif //#ifndef included_VelocityBcCoefs_aorta
 
 
+#ifndef included_VelocityBcCoefs_preop
+#define included_VelocityBcCoefs_preop
 
+/*!
+ *  * \brief Class VelocityBcCoefs_preop is an implementation of the strategy class
+ *   * RobinBcCoefStrategy that is used to specify velocity boundary conditions that
+ *    * are determined by a circulation model.
+ *     */
+class VelocityBcCoefs_preop : public RobinBcCoefStrategy<NDIM>
+{
+public:
+    /*!
+     * \brief Constructor
+     */
+    VelocityBcCoefs_preop(const int comp_idx,
+                          CirculationModel_preop* circ_model_preop);
+    /*!
+     * \brief Destructor.
+     */
+    virtual ~VelocityBcCoefs_preop();
+    /*!
+     * \name Implementation of RobinBcCoefStrategy interface.
+     */
+    //\{
 
+    /*!
+     * \brief Function to fill arrays of Robin boundary condition coefficients
+     * at a patch boundary.
+     */
+    void setBcCoefs(Pointer<ArrayData<NDIM, double> >& acoef_data,
+                    Pointer<ArrayData<NDIM, double> >& bcoef_data,
+                    Pointer<ArrayData<NDIM, double> >& gcoef_data,
+                    const Pointer<hier::Variable<NDIM> >& variable,
+                    const Patch<NDIM>& patch,
+                    const BoundaryBox<NDIM>& bdry_box,
+                    double fill_time = 0.0) const;
 
+    /*
+     * \brief Return how many cells past the edge or corner of the patch the
+     * object can fill.
+     */
+     IntVector<NDIM> numberOfExtensionsFillable() const;
 
+    const int d_comp_idx;
+    CirculationModel_preop* d_circ_model_preop;
 
+    //\}
 
+private:
+    /*!
+     * \brief Copy constructor.
+     *
+     * \note This constructor is not implemented and should not be used.
+     *
+     * \param from The value to copy to this object.
+     */
+    // VelocityBcCoefs_preop(const VelocityBcCoefs_preop& from);
+
+    /*!
+     * \brief Assignment operator.
+     *
+     * \note This operator is not implemented and should not be used.
+     *
+     * \param that The value to assign to this object.
+     *
+     * \return A reference to this object.
+     */
+    VelocityBcCoefs_preop& operator=(const VelocityBcCoefs_preop& that);
+    
+};
+
+/////////////////////////////// INLINE ///////////////////////////////////////
+//#include <VelocityBcCoefs__preop.I>
+//////////////////////////////////////////////////////////////////////////////
+
+#endif //#ifndef included_VelocityBcCoefs_preop
 
 
 

@@ -478,7 +478,7 @@ int main(int argc, char* argv[])
             navier_stokes_integrator->registerPhysicalBoundaryConditions(u_bc_coefs);
 
             // flow straightener at boundary 
-            Pointer<FeedbackForcer> feedback_forcer = new FeedbackForcer(navier_stokes_integrator, patch_hierarchy, NULL, NULL, circ_model_aorta, damping_outside, vessel_file_name, aorta_vertices_file_name);
+            Pointer<FeedbackForcer> feedback_forcer = new FeedbackForcer(navier_stokes_integrator, patch_hierarchy, NULL, NULL, circ_model_aorta, NULL, damping_outside, vessel_file_name, aorta_vertices_file_name);
             time_integrator->registerBodyForceFunction(feedback_forcer);
 
 

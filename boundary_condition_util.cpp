@@ -9,6 +9,7 @@
 #include <CirculationModel_with_lv.h>
 #include <CirculationModel_RV_PA.h>
 #include <CirculationModel_aorta.h>
+#include <CirculationModel_preop.h>
 
 /////////////////////////////// INCLUDES /////////////////////////////////////
 
@@ -647,6 +648,228 @@ VelocityBcCoefs_aorta::numberOfExtensionsFillable() const
 } // numberOfExtensionsFillable
 
 
+/////////////////////////////// NAMESPACE ////////////////////////////////////
+//
+/////////////////////////////// STATIC ////////////////////////////////////////
+//
+///////////////////////////////// PUBLIC /////////////////////////////////////
+
+
+VelocityBcCoefs_preop::VelocityBcCoefs_preop(const int comp_idx,
+                                             CirculationModel_preop* circ_model_preop)
+    : d_comp_idx        (comp_idx),
+      d_circ_model_preop(circ_model_preop)
+{
+
+    return;
+}
+
+VelocityBcCoefs_preop::~VelocityBcCoefs_preop()
+{
+    return;
+}
+
+void VelocityBcCoefs_preop::setBcCoefs(Pointer<ArrayData<NDIM, double> >& acoef_data,
+                                       Pointer<ArrayData<NDIM, double> >& bcoef_data,
+                                       Pointer<ArrayData<NDIM, double> >& gcoef_data,
+                                       const Pointer<Variable<NDIM> >& /*variable*/,
+                                       const Patch<NDIM>& patch,
+                                       const BoundaryBox<NDIM>& bdry_box,
+                                       double fill_time) const {
+
+    const int location_index = bdry_box.getLocationIndex();
+    const int axis = location_index / 2;
+    const int side = location_index % 2;
+
+    #if !defined(NDEBUG)
+        TBOX_ASSERT(!acoef_data.isNull());
+    #endif
+        const Box<NDIM>& bc_coef_box = acoef_data->getBox();
+    #if !defined(NDEBUG)
+        TBOX_ASSERT(bcoef_data.isNull() || bc_coef_box == bcoef_data->getBox());
+        TBOX_ASSERT(gcoef_data.isNull() || bc_coef_box == gcoef_data->getBox());
+    #endif
+    const Box<NDIM>& patch_box = patch.getBox();
+    const SAMRAI::hier::Index<NDIM>& patch_lower = patch_box.lower();
+    Pointer<CartesianPatchGeometry<NDIM> > pgeom = patch.getPatchGeometry();
+    const double* const dx = pgeom->getDx();
+    const double* const x_lower = pgeom->getXLower();
+    for (Box<NDIM>::Iterator bc(bc_coef_box); bc; bc++)
+
+    {
+        const SAMRAI::hier::Index<NDIM>& i = bc();
+
+        double dummy;
+        double& a = (!acoef_data.isNull() ? (*acoef_data)(i, 0) : dummy);
+        double& b = (!bcoef_data.isNull() ? (*bcoef_data)(i, 0) : dummy);
+        double& g = (!gcoef_data.isNull() ? (*gcoef_data)(i, 0) : dummy);
+
+        if (axis == d_comp_idx){
+            unsigned int idx = d_circ_model_preop->d_current_idx_series;
+
+            double X[NDIM];
+            for (int d = 0; d < NDIM; ++d)
+            {
+                X[d] = x_lower[d] + dx[d] * (double(i(d) - patch_lower(d)) + (d == axis ? 0.0 : 0.5));
+            }
+
+            double X_in_plane_1 = 0.0;
+            double X_in_plane_2 = 0.0;
+            if (axis == 0)
+            {
+                X_in_plane_1 = X[1];
+                X_in_plane_2 = X[2];
+            }
+            else if (axis == 1)
+            {
+                X_in_plane_1 = X[0];
+                X_in_plane_2 = X[2];
+            }
+            else if (axis == 2)
+            {
+                X_in_plane_1 = X[0];
+                X_in_plane_2 = X[1];
+            }
+            else
+            {
+                TBOX_ERROR("Axis has value that is not 0 1 2\n");
+            }
+
+            const int in_lvot  = d_circ_model_preop->point_in_lvot(X_in_plane_1, X_in_plane_2, axis, side);
+            const int in_rvot  = d_circ_model_preop->point_in_rvot(X_in_plane_1, X_in_plane_2, axis, side);
+            const int in_aorta      = d_circ_model_preop->point_in_aorta    (X_in_plane_1, X_in_plane_2, axis, side);
+            const int in_rpa      = d_circ_model_preop->point_in_rpa    (X_in_plane_1, X_in_plane_2, axis, side);
+            const int in_lpa      = d_circ_model_preop->point_in_lpa    (X_in_plane_1, X_in_plane_2, axis, side);
+
+            if (in_lvot && in_rvot){
+                TBOX_ERROR("Position is within two inlets and outlets, should be impossible\n");
+            }
+            if (in_lvot && in_aorta){
+                TBOX_ERROR("Position is within two inlets and outlets, should be impossible\n");
+            }
+            if (in_lvot && in_rpa){
+                TBOX_ERROR("Position is within two inlets and outlets, should be impossible\n");
+            }
+            if (in_lvot && in_lpa){
+                TBOX_ERROR("Position is within two inlets and outlets, should be impossible\n");
+            }
+            if (in_rvot && in_aorta){
+                TBOX_ERROR("Position is within two inlets and outlets, should be impossible\n");
+            }
+            if (in_rvot && in_rpa){
+                TBOX_ERROR("Position is within two inlets and outlets, should be impossible\n");
+            }
+            if (in_rvot && in_lpa){
+                TBOX_ERROR("Position is within two inlets and outlets, should be impossible\n");
+            }
+            if (in_aorta && in_rpa){
+                TBOX_ERROR("Position is within two inlets and outlets, should be impossible\n");
+            }
+            if (in_aorta && in_lpa){
+                TBOX_ERROR("Position is within two inlets and outlets, should be impossible\n");
+            }
+            if (in_rpa && in_lpa){
+                TBOX_ERROR("Position is within two inlets and outlets, should be impossible\n");
+            }
+
+            if (in_lvot){
+                a = 0.0;
+                b = 1.0;
+                g = -d_circ_model_preop->d_lvot_P;
+                pout << "Applying pressure of " << d_circ_model_preop->d_fourier_lvot->values[idx]
+                     << "mmHg to LV at position (" << X[0] << ", " << X[1] << ", " << X[2] << ")\n"; 
+            }
+            else if (in_rvot){
+                a = 0.0;
+                b = 1.0;
+                g = -d_circ_model_preop->d_rvot_P;
+                pout << "Applying pressure of " << d_circ_model_preop->d_fourier_rvot->values[idx]
+                     << "mmHg to RV at position (" << X[0] << ", " << X[1] << ", " << X[2] << ")\n";      
+            }
+            else if (in_aorta){
+                a = 0.0;
+                b = 1.0;
+                if (d_circ_model_preop->d_rcr_bcs_on){
+                    g = -d_circ_model_preop->d_aorta_P;
+                }
+                else{
+                    TBOX_ERROR("not implemented\n");
+                }
+            }
+            else if (in_rpa){
+                a = 0.0;
+                b = 1.0;
+                if (d_circ_model_preop->d_rcr_bcs_on){
+                    g = -d_circ_model_preop->d_rpa_P;
+                }
+                else{
+                    TBOX_ERROR("not implemented\n");
+                }
+            }
+
+            else if (in_lpa){
+                a = 0.0;
+                b = 1.0;
+                if (d_circ_model_preop->d_rcr_bcs_on){
+                    g = -d_circ_model_preop->d_lpa_P;
+                }
+                else{
+                    TBOX_ERROR("not implemented\n");
+                }
+            }
+            else if ((side == d_circ_model_preop->d_lvot_side) && (axis == d_circ_model_preop->d_lvot_axis)){
+                a = 1.0;
+                b = 0.0;
+                g = 0.0;
+            }
+            else if ((side == d_circ_model_preop->d_rvot_side) && (axis == d_circ_model_preop->d_rvot_axis)){
+                a = 1.0;
+                b = 0.0;
+                g = 0.0;
+            }
+            else if ((side == d_circ_model_preop->d_aorta_side) && (axis == d_circ_model_preop->d_aorta_axis)){
+                a = 1.0;
+                b = 0.0;
+                g = 0.0;
+            }
+            else if ((side == d_circ_model_preop->d_rpa_side) && (axis == d_circ_model_preop->d_rpa_axis)){
+                a = 1.0;
+                b = 0.0;
+                g = 0.0;
+            }
+            else if ((side == d_circ_model_preop->d_lpa_side) && (axis == d_circ_model_preop->d_lpa_axis)){
+                a = 1.0;
+                b = 0.0;
+                g = 0.0;
+            }
+            else{
+                a = 0.0;
+                b = 1.0;
+                g = 0.0;
+            }
+        }
+
+        else {
+            // no tangential slip everywhere on domain 
+            a = 1.0;
+            b = 0.0;
+            g = 0.0;
+        }
+                                                     
+
+    }
+
+    return;
+} //setBcCoefs
+
+IntVector<NDIM>
+VelocityBcCoefs_preop::numberOfExtensionsFillable() const
+{
+    return 128;
+} // numberOfExtensionsFillable
+
+
+
 
 
 fourier_series_data::fourier_series_data(string file_name, double dt_input){
@@ -735,12 +958,205 @@ void fourier_series_data::print_values() const{
 } 
 
 
+ventricle_0D_model::ventricle_0D_model(Pointer<Database> input_db,
+                                       double cycle_duration,
+                                       double initialization_time)
+    :
+    d_object_name("ventricle_0D_model_name"),  
+    d_registered_for_restart(true),     
+    d_cycle_duration(cycle_duration),
+    d_initialization_time(initialization_time)
 
-ventricle_0D_model::ventricle_0D_model(Pointer<Database> input_db, 
+    {
+
+    double dt = input_db->getDouble("DT");
+
+    std::string fourier_coeffs_name_Q_in = input_db->getStringWithDefault("FOURIER_COEFFS_Q_MI" , "fourier_coeffs_Q_mi.txt");
+    std::string fourier_coeffs_name_act  = input_db->getStringWithDefault("FOURIER_COEFFS_ACT_LV" , "fourier_coeffs_lv_activation.txt");
+
+    d_fourier_q_in_ventricle = new fourier_series_data(fourier_coeffs_name_Q_in.c_str(), dt);
+    d_act_ventricle = new fourier_series_data(fourier_coeffs_name_act, dt);
+
+    d_V_rest_diastole = input_db->getDoubleWithDefault("V_REST_DIASTOLE", 26.1);
+    d_V_rest_systole  = input_db->getDoubleWithDefault("V_REST_SYSTOLE", 18.0);
+    d_E_min           = input_db->getDoubleWithDefault("E_MIN", 1.818181818181818e+02);
+    d_E_max           = input_db->getDoubleWithDefault("E_MAX", 1.057082452431290e+04);
+    d_R_LVOT          = input_db->getDoubleWithDefault("R_LVOT", 0.0);
+    d_inductance      = input_db->getDoubleWithDefault("INDUCTANCE", 0.0);
+
+    double V_initial = input_db->getDoubleWithDefault("V_INITIAL", d_V_rest_diastole);
+
+    const bool print_debug = true;
+    if (print_debug){
+        pout << "ventricle_0D_model initializing.\n";
+        pout << "V_initial = " << V_initial << "\n";
+        pout << "d_cycle_duration = " << d_cycle_duration << "\n";
+        pout << "d_initialization_time = " << d_initialization_time << "\n";
+        pout << "d_V_rest_diastole = " << d_V_rest_diastole  << "\n";
+        pout << "d_V_rest_systole = " << d_V_rest_systole << "\n";
+        pout << "d_E_min = " << d_E_min << "\n";
+        pout << "d_E_max = " << d_E_max << "\n";
+        pout << "d_R_LVOT = " << d_R_LVOT << "\n";
+        pout << "d_inductance = " << d_inductance << "\n";
+    }
+
+    if (d_registered_for_restart)
+    {
+        RestartManager::getManager()->registerRestartItem(d_object_name, this);
+    }
+
+    const bool from_restart = RestartManager::getManager()->isFromRestart();
+    if (from_restart)
+    {
+        getFromRestart();
+    }
+    else {
+        d_Q_out = 0.0;
+        d_Q_out_prev = 0.0;
+        d_time = 0.0;
+        d_current_idx_series = 0;
+
+        double d_act_temp = 0.0;
+        d_V_ventricle = V_initial;
+        d_V_rest_ventricle = (1.0 - d_act_temp) * (d_V_rest_diastole - d_V_rest_systole) + d_V_rest_systole;
+        d_Elas = (d_E_max - d_E_min) * d_act_temp + d_E_min;
+        d_P_ventricle_in = d_Elas * (d_V_ventricle - d_V_rest_ventricle);
+        d_P_lvot_upstream = d_P_ventricle_in;
+        d_P_ventricle = d_P_lvot_upstream;
+    }
+
+}
+ventricle_0D_model::~ventricle_0D_model(){
+
+    if(d_fourier_q_in_ventricle) {
+        delete d_fourier_q_in_ventricle;
+    }
+    if(d_act_ventricle){
+        delete d_act_ventricle;
+    }
+
+}
+void ventricle_0D_model::advanceTimeDependentData(double dt, double time, double Q_out){
+    d_Q_out_prev = d_Q_out;
+
+    d_Q_out = Q_out;
+
+    d_time = time;
+
+
+    double t_reduced = d_time - d_cycle_duration * floor(d_time/d_cycle_duration);
+
+    double t_scaled = t_reduced * (d_fourier_q_in_ventricle->L  / d_cycle_duration);
+
+
+    double t_scaled_offset = t_scaled; 
+
+
+    unsigned int k = (unsigned int) floor(t_scaled_offset / (d_fourier_q_in_ventricle->dt));
+
+
+    d_current_idx_series = k % (d_fourier_q_in_ventricle->N_times);
+
+    d_Q_in = d_fourier_q_in_ventricle->values[d_current_idx_series];
+
+ 
+    d_V_ventricle += dt * (d_Q_in - d_Q_out);
+
+    d_act_temp = 0.0;
+
+    if (d_time > d_initialization_time){
+        d_act_temp = d_act_ventricle->values[d_current_idx_series];
+    }
+
+ 
+    d_V_rest_ventricle = (1.0 - d_act_temp) * (d_V_rest_diastole - d_V_rest_systole) + d_V_rest_systole;
+
+
+    d_Elas = (d_E_max - d_E_min) * d_act_temp + d_E_min;
+
+
+    d_P_ventricle_in = d_Elas * (d_V_ventricle - d_V_rest_ventricle);
+
+
+    if (d_time > d_initialization_time){
+        d_P_lvot_upstream = d_P_ventricle_in - d_inductance * (d_Q_out - d_Q_out_prev)/dt;
+    }
+    else{
+        double inductance_tmp = (d_time / d_initialization_time) * d_inductance;
+        d_P_lvot_upstream = d_P_ventricle_in - inductance_tmp * (d_Q_out - d_Q_out_prev)/dt;
+    }
+
+    d_P_ventricle = d_P_lvot_upstream - d_R_LVOT * d_Q_out;
+
+}
+
+void ventricle_0D_model::putToDatabase(Pointer<Database> db)
+{
+
+    db->putDouble("d_Q_out", d_Q_out);
+    db->putDouble("d_Q_out_prev", d_Q_out_prev);
+    db->putDouble("d_V_ventricle", d_V_ventricle);
+    db->putDouble("d_V_rest_ventricle", d_V_rest_ventricle);
+    db->putDouble("d_P_ventricle_in", d_P_ventricle_in);
+    db->putDouble("d_P_lvot_upstream", d_P_lvot_upstream);
+    db->putDouble("d_P_ventricle", d_P_ventricle);
+
+    db->putDouble("d_Elas", d_Elas);
+
+    db->putDouble("d_Q_in", d_Q_in);
+    db->putDouble("d_act_temp", d_act_temp);
+
+    db->putDouble("d_initialization_time", d_initialization_time);
+    db->putDouble("d_time", d_time);
+    db->putDouble("d_cycle_duration", d_cycle_duration);
+    db->putInteger("d_current_idx_series", d_current_idx_series);
+
+    return;
+}
+
+void ventricle_0D_model::getFromRestart()
+{
+    Pointer<Database> restart_db = RestartManager::getManager()->getRootDatabase();
+    Pointer<Database> db;
+    if (restart_db->isDatabase(d_object_name))
+    {
+        db = restart_db->getDatabase(d_object_name);
+    }
+    else
+    {
+        TBOX_ERROR("Restart database corresponding to " << d_object_name << " not found in restart file.");
+    }
+
+    d_Q_out               = db->getDouble("d_Q_out");
+    d_Q_out_prev          = db->getDouble("d_Q_out_prev");
+    d_V_ventricle         = db->getDouble("d_V_ventricle");
+    d_V_rest_ventricle    = db->getDouble("d_V_rest_ventricle");
+    d_P_ventricle_in      = db->getDouble("d_P_ventricle_in");
+    d_P_lvot_upstream     = db->getDouble("d_P_lvot_upstream");
+    d_P_ventricle         = db->getDouble("d_P_ventricle");
+    d_Elas                = db->getDouble("d_Elas");
+
+    d_Q_in                = db->getDouble("d_Q_in");
+    d_act_temp            = db->getDouble("d_act_temp");
+
+    d_initialization_time = db->getDouble("d_initialization_time");
+    d_time                = db->getDouble("d_time");
+    d_cycle_duration      = db->getDouble("d_cycle_duration");
+    d_current_idx_series  = db->getInteger("d_current_idx_series");
+
+    return;
+} 
+
+
+
+
+
+
+lvot_0D_model::lvot_0D_model(Pointer<Database> input_db, 
                                        double cycle_duration, 
                                        double initialization_time)
     :
-    d_object_name("ventricle_0D_model_name"),  // constant name here  
+    d_object_name("lvot_0D_model_name"),  // constant name here  
     d_registered_for_restart(true),      // always true
     d_cycle_duration(cycle_duration),
     d_initialization_time(initialization_time)
@@ -749,11 +1165,11 @@ ventricle_0D_model::ventricle_0D_model(Pointer<Database> input_db,
 
     double dt = input_db->getDouble("DT");
 
-    std::string fourier_coeffs_name_Q_in = input_db->getStringWithDefault("FOURIER_COEFFS_Q_IN" , "fourier_coeffs_Q_mi.txt"); 
-    std::string fourier_coeffs_name_act  = input_db->getStringWithDefault("FOURIER_COEFFS_ACT" , "fourier_coeffs_lv_activation.txt"); 
+    std::string fourier_coeffs_name_Q_mi = input_db->getStringWithDefault("FOURIER_COEFFS_Q_MI" , "fourier_coeffs_Q_mi.txt"); 
+    std::string fourier_coeffs_name_act_lv  = input_db->getStringWithDefault("FOURIER_COEFFS_ACT_LV" , "fourier_coeffs_lv_activation.txt"); 
 
-    d_fourier_q_in_ventricle = new fourier_series_data(fourier_coeffs_name_Q_in.c_str(), dt);
-    d_act_ventricle = new fourier_series_data(fourier_coeffs_name_act, dt); 
+    d_fourier_q_in_lvot = new fourier_series_data(fourier_coeffs_name_Q_mi.c_str(), dt);
+    d_act_lvot = new fourier_series_data(fourier_coeffs_name_act_lv, dt); 
 
     d_V_rest_diastole = input_db->getDoubleWithDefault("V_REST_DIASTOLE", 26.1);
     d_V_rest_systole  = input_db->getDoubleWithDefault("V_REST_SYSTOLE", 18.0);
@@ -766,7 +1182,7 @@ ventricle_0D_model::ventricle_0D_model(Pointer<Database> input_db,
 
     const bool print_debug = true; 
     if (print_debug){
-        pout << "ventricle_0D_model initializing.\n"; 
+        pout << "lvot_0D_model initializing.\n"; 
         pout << "V_initial = " << V_initial << "\n";
         pout << "d_cycle_duration = " << d_cycle_duration << "\n"; 
         pout << "d_initialization_time = " << d_initialization_time << "\n"; 
@@ -804,35 +1220,35 @@ ventricle_0D_model::ventricle_0D_model(Pointer<Database> input_db,
         double d_act_temp = 0.0; 
 
         // use equations with zero activation  
-        d_V_ventricle = V_initial; 
+        d_V_lvot = V_initial; 
 
         // rest volume  
-        d_V_rest_ventricle = (1.0 - d_act_temp) * (d_V_rest_diastole - d_V_rest_systole) + d_V_rest_systole; 
+        d_V_rest_lvot = (1.0 - d_act_temp) * (d_V_rest_diastole - d_V_rest_systole) + d_V_rest_systole; 
 
         // elastance 
         d_Elas = (d_E_max - d_E_min) * d_act_temp + d_E_min; 
 
         // pressure 
-        d_P_ventricle_in = d_Elas * (d_V_ventricle - d_V_rest_ventricle); 
-        d_P_lvot_upstream = d_P_ventricle_in;  
-        d_P_ventricle = d_P_lvot_upstream;  
+        d_P_lvot_in = d_Elas * (d_V_lvot - d_V_rest_lvot); 
+        d_P_lvot_upstream = d_P_lvot_in;  
+        d_P_lvot = d_P_lvot_upstream;  
     }
 
 }
 
-ventricle_0D_model::~ventricle_0D_model(){
+lvot_0D_model::~lvot_0D_model(){
 
-    if(d_fourier_q_in_ventricle) {
-        delete d_fourier_q_in_ventricle; 
+    if(d_fourier_q_in_lvot) {
+        delete d_fourier_q_in_lvot; 
     }
-    if(d_act_ventricle){
-        delete d_act_ventricle; 
+    if(d_act_lvot){
+        delete d_act_lvot; 
     }
 
 }
 
 
-void ventricle_0D_model::advanceTimeDependentData(double dt, double time, double Q_out){
+void lvot_0D_model::advanceTimeDependentData(double dt, double time, double Q_out){
 
     /* 
     % eqn 3 for ventricular volume 
@@ -858,7 +1274,7 @@ void ventricle_0D_model::advanceTimeDependentData(double dt, double time, double
     double t_reduced = d_time - d_cycle_duration * floor(d_time/d_cycle_duration); 
 
     // fourier series has its own period, scale to that 
-    double t_scaled = t_reduced * (d_fourier_q_in_ventricle->L  / d_cycle_duration); 
+    double t_scaled = t_reduced * (d_fourier_q_in_lvot->L  / d_cycle_duration); 
 
     // start offset some arbitrary time in the cardiac cycle, but this is relative to the series length 
     // no scaling allowed for now 
@@ -866,54 +1282,54 @@ void ventricle_0D_model::advanceTimeDependentData(double dt, double time, double
 
     // Fourier data here
     // index without periodicity 
-    unsigned int k = (unsigned int) floor(t_scaled_offset / (d_fourier_q_in_ventricle->dt));
+    unsigned int k = (unsigned int) floor(t_scaled_offset / (d_fourier_q_in_lvot->dt));
     
     // // take periodic reduction
-    d_current_idx_series = k % (d_fourier_q_in_ventricle->N_times);
+    d_current_idx_series = k % (d_fourier_q_in_lvot->N_times);
 
-    d_Q_in = d_fourier_q_in_ventricle->values[d_current_idx_series]; 
+    d_Q_in = d_fourier_q_in_lvot->values[d_current_idx_series]; 
 
     // volume update 
-    d_V_ventricle += dt * (d_Q_in - d_Q_out); 
+    d_V_lvot += dt * (d_Q_in - d_Q_out); 
 
     d_act_temp = 0.0; 
     if (d_time > d_initialization_time){
-        d_act_temp = d_act_ventricle->values[d_current_idx_series];
+        d_act_temp = d_act_lvot->values[d_current_idx_series];
     }
 
     // rest volume  
-    d_V_rest_ventricle = (1.0 - d_act_temp) * (d_V_rest_diastole - d_V_rest_systole) + d_V_rest_systole;
+    d_V_rest_lvot = (1.0 - d_act_temp) * (d_V_rest_diastole - d_V_rest_systole) + d_V_rest_systole;
 
     // elastance 
     d_Elas = (d_E_max - d_E_min) * d_act_temp + d_E_min;
 
     // pressure 
-    d_P_ventricle_in = d_Elas * (d_V_ventricle - d_V_rest_ventricle);
+    d_P_lvot_in = d_Elas * (d_V_lvot - d_V_rest_lvot);
 
     // inductor 
     if (d_time > d_initialization_time){
-        d_P_lvot_upstream = d_P_ventricle_in - d_inductance * (d_Q_out - d_Q_out_prev)/dt;
+        d_P_lvot_upstream = d_P_lvot_in - d_inductance * (d_Q_out - d_Q_out_prev)/dt;
     }
     else{
         double inductance_tmp = (d_time / d_initialization_time) * d_inductance; 
-        d_P_lvot_upstream = d_P_ventricle_in - inductance_tmp * (d_Q_out - d_Q_out_prev)/dt;
+        d_P_lvot_upstream = d_P_lvot_in - inductance_tmp * (d_Q_out - d_Q_out_prev)/dt;
     }
 
-    d_P_ventricle = d_P_lvot_upstream - d_R_LVOT * d_Q_out; 
+    d_P_lvot = d_P_lvot_upstream - d_R_LVOT * d_Q_out; 
 
 }
 
 
-void ventricle_0D_model::putToDatabase(Pointer<Database> db)
+void lvot_0D_model::putToDatabase(Pointer<Database> db)
 {
 
     db->putDouble("d_Q_out", d_Q_out);
     db->putDouble("d_Q_out_prev", d_Q_out_prev);
-    db->putDouble("d_V_ventricle", d_V_ventricle);
-    db->putDouble("d_V_rest_ventricle", d_V_rest_ventricle);
-    db->putDouble("d_P_ventricle_in", d_P_ventricle_in);
+    db->putDouble("d_V_lvot", d_V_lvot);
+    db->putDouble("d_V_rest_lvot", d_V_rest_lvot);
+    db->putDouble("d_P_lvot_in", d_P_lvot_in);
     db->putDouble("d_P_lvot_upstream", d_P_lvot_upstream);
-    db->putDouble("d_P_ventricle", d_P_ventricle);
+    db->putDouble("d_P_lvot", d_P_lvot);
 
     db->putDouble("d_Elas", d_Elas);
 
@@ -929,7 +1345,7 @@ void ventricle_0D_model::putToDatabase(Pointer<Database> db)
 } // putToDatabase
 
 
-void ventricle_0D_model::getFromRestart()
+void lvot_0D_model::getFromRestart()
 {
     Pointer<Database> restart_db = RestartManager::getManager()->getRootDatabase();
     Pointer<Database> db;
@@ -944,11 +1360,11 @@ void ventricle_0D_model::getFromRestart()
 
     d_Q_out               = db->getDouble("d_Q_out"); 
     d_Q_out_prev          = db->getDouble("d_Q_out_prev"); 
-    d_V_ventricle         = db->getDouble("d_V_ventricle"); 
-    d_V_rest_ventricle    = db->getDouble("d_V_rest_ventricle"); 
-    d_P_ventricle_in      = db->getDouble("d_P_ventricle_in"); 
+    d_V_lvot         = db->getDouble("d_V_lvot"); 
+    d_V_rest_lvot    = db->getDouble("d_V_rest_lvot"); 
+    d_P_lvot_in      = db->getDouble("d_P_lvot_in"); 
     d_P_lvot_upstream     = db->getDouble("d_P_lvot_upstream");
-    d_P_ventricle         = db->getDouble("d_P_ventricle"); 
+    d_P_lvot         = db->getDouble("d_P_lvot"); 
     d_Elas                = db->getDouble("d_Elas"); 
 
     d_Q_in                = db->getDouble("d_Q_in");
@@ -962,7 +1378,191 @@ void ventricle_0D_model::getFromRestart()
     return;
 } // getFromRestart
 
+rvot_0D_model::rvot_0D_model(Pointer<Database> input_db,
+                                       double cycle_duration,
+                                       double initialization_time)
+    :
+    d_object_name("rvot_0D_model_name"),  
+    d_registered_for_restart(true),      
+    d_cycle_duration(cycle_duration),
+    d_initialization_time(initialization_time)
+
+    {
+
+    double dt = input_db->getDouble("DT");
+
+    std::string fourier_coeffs_name_Q_tri = input_db->getStringWithDefault("FOURIER_COEFFS_Q_TRI" , "fourier_coeffs_Q_tri.txt");
+    std::string fourier_coeffs_name_act_rv  = input_db->getStringWithDefault("FOURIER_COEFFS_ACT_RV" , "fourier_coeffs_rv_activation.txt");
+
+    d_fourier_q_in_rvot = new fourier_series_data(fourier_coeffs_name_Q_tri.c_str(), dt);
+    d_act_rvot = new fourier_series_data(fourier_coeffs_name_act_rv, dt);
+
+    d_V_rest_diastole = input_db->getDoubleWithDefault("V_REST_DIASTOLE", 26.1);
+    d_V_rest_systole  = input_db->getDoubleWithDefault("V_REST_SYSTOLE", 18.0);
+    d_E_min           = input_db->getDoubleWithDefault("E_MIN", 1.818181818181818e+02);
+    d_E_max           = input_db->getDoubleWithDefault("E_MAX", 1.057082452431290e+04);
+    d_R_rvot          = input_db->getDoubleWithDefault("R_RVOT", 0.0);
+    d_inductance      = input_db->getDoubleWithDefault("INDUCTANCE", 0.0);
+
+    double V_initial = input_db->getDoubleWithDefault("V_INITIAL", d_V_rest_diastole);
+
+    const bool print_debug = true;
+    if (print_debug){
+        pout << "rvot_0D_model initializing.\n";
+        pout << "V_initial = " << V_initial << "\n";
+        pout << "d_cycle_duration = " << d_cycle_duration << "\n";
+        pout << "d_initialization_time = " << d_initialization_time << "\n";
+        pout << "d_V_rest_diastole = " << d_V_rest_diastole  << "\n";
+        pout << "d_V_rest_systole = " << d_V_rest_systole << "\n";
+        pout << "d_E_min = " << d_E_min << "\n";
+        pout << "d_E_max = " << d_E_max << "\n";
+        pout << "d_R_rvot = " << d_R_rvot << "\n";
+        pout << "d_inductance = " << d_inductance << "\n";
+    }
+    if (d_registered_for_restart)
+    {
+        RestartManager::getManager()->registerRestartItem(d_object_name, this);
+    }
+
+    const bool from_restart = RestartManager::getManager()->isFromRestart();
+    if (from_restart)
+    {
+        getFromRestart();
+    }
+    else {
+        d_Q_out = 0.0;
+        d_Q_out_prev = 0.0;
+        d_time = 0.0;
+        d_current_idx_series = 0;
+
+        double d_act_temp = 0.0;
+
+        d_V_rvot = V_initial;
+
+        d_V_rest_rvot = (1.0 - d_act_temp) * (d_V_rest_diastole - d_V_rest_systole) + d_V_rest_systole;
+
+        d_Elas = (d_E_max - d_E_min) * d_act_temp + d_E_min;
+
+        d_P_rvot_in = d_Elas * (d_V_rvot - d_V_rest_rvot);
+        d_P_rvot_upstream = d_P_rvot_in;
+        d_P_rvot = d_P_rvot_upstream;
+    }
+
+}
+rvot_0D_model::~rvot_0D_model(){
+
+    if(d_fourier_q_in_rvot) {
+        delete d_fourier_q_in_rvot;
+    }
+    if(d_act_rvot){
+        delete d_act_rvot;
+    }
+
+}
+void rvot_0D_model::advanceTimeDependentData(double dt, double time, double Q_out){
+
+    d_Q_out_prev = d_Q_out;
+
+    d_Q_out = Q_out;
+
+    d_time = time;
+
+    double t_reduced = d_time - d_cycle_duration * floor(d_time/d_cycle_duration);
 
 
+    double t_scaled = t_reduced * (d_fourier_q_in_rvot->L  / d_cycle_duration);
+
+
+    double t_scaled_offset = t_scaled; 
+
+    unsigned int k = (unsigned int) floor(t_scaled_offset / (d_fourier_q_in_rvot->dt));
+
+    d_current_idx_series = k % (d_fourier_q_in_rvot->N_times);
+
+    d_Q_in = d_fourier_q_in_rvot->values[d_current_idx_series];
+
+    d_V_rvot += dt * (d_Q_in - d_Q_out);
+
+    d_act_temp = 0.0;
+    if (d_time > d_initialization_time){
+        d_act_temp = d_act_rvot->values[d_current_idx_series];
+    }
+
+ 
+    d_V_rest_rvot = (1.0 - d_act_temp) * (d_V_rest_diastole - d_V_rest_systole) + d_V_rest_systole;
+
+
+    d_Elas = (d_E_max - d_E_min) * d_act_temp + d_E_min;
+
+ 
+    d_P_rvot_in = d_Elas * (d_V_rvot - d_V_rest_rvot);
+
+
+    if (d_time > d_initialization_time){
+        d_P_rvot_upstream = d_P_rvot_in - d_inductance * (d_Q_out - d_Q_out_prev)/dt;
+    }
+    else{
+        double inductance_tmp = (d_time / d_initialization_time) * d_inductance;
+        d_P_rvot_upstream = d_P_rvot_in - inductance_tmp * (d_Q_out - d_Q_out_prev)/dt;
+    }
+
+    d_P_rvot = d_P_rvot_upstream - d_R_rvot * d_Q_out;
+
+}
+void rvot_0D_model::putToDatabase(Pointer<Database> db)
+{
+
+    db->putDouble("d_Q_out", d_Q_out);
+    db->putDouble("d_Q_out_prev", d_Q_out_prev);
+    db->putDouble("d_V_rvot", d_V_rvot);
+    db->putDouble("d_V_rest_rvot", d_V_rest_rvot);
+    db->putDouble("d_P_rvot_in", d_P_rvot_in);
+    db->putDouble("d_P_rvot_upstream", d_P_rvot_upstream);
+    db->putDouble("d_P_rvot", d_P_rvot);
+
+    db->putDouble("d_Elas", d_Elas);
+
+    db->putDouble("d_Q_in", d_Q_in);
+    db->putDouble("d_act_temp", d_act_temp);
+
+    db->putDouble("d_initialization_time", d_initialization_time);
+    db->putDouble("d_time", d_time);
+    db->putDouble("d_cycle_duration", d_cycle_duration);
+    db->putInteger("d_current_idx_series", d_current_idx_series);
+
+    return;
+} 
+void rvot_0D_model::getFromRestart()
+{
+    Pointer<Database> restart_db = RestartManager::getManager()->getRootDatabase();
+    Pointer<Database> db;
+    if (restart_db->isDatabase(d_object_name))
+    {
+        db = restart_db->getDatabase(d_object_name);
+    }
+    else
+    {
+        TBOX_ERROR("Restart database corresponding to " << d_object_name << " not found in restart file.");
+    }
+
+    d_Q_out               = db->getDouble("d_Q_out");
+    d_Q_out_prev          = db->getDouble("d_Q_out_prev");
+    d_V_rvot         = db->getDouble("d_V_rvot");
+    d_V_rest_rvot    = db->getDouble("d_V_rest_rvot");
+    d_P_rvot_in      = db->getDouble("d_P_rvot_in");
+    d_P_rvot_upstream     = db->getDouble("d_P_rvot_upstream");
+    d_P_rvot         = db->getDouble("d_P_rvot");
+    d_Elas                = db->getDouble("d_Elas");
+
+    d_Q_in                = db->getDouble("d_Q_in");
+    d_act_temp            = db->getDouble("d_act_temp");
+
+    d_initialization_time = db->getDouble("d_initialization_time");
+    d_time                = db->getDouble("d_time");
+    d_cycle_duration      = db->getDouble("d_cycle_duration");
+    d_current_idx_series  = db->getInteger("d_current_idx_series");
+
+    return;
+} 
 
 

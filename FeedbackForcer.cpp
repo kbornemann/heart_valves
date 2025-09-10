@@ -31,7 +31,7 @@
 // #define FLOW_AVERAGER
 
 #define FULL_FLOW_CLAMP 
-#define FULL_FLOW_CLAMP_TIME 0.2
+#define FULL_FLOW_CLAMP_TIME 0.05
 
 /////////////////////////////// NAMESPACE ////////////////////////////////////
 
@@ -53,6 +53,7 @@ FeedbackForcer::FeedbackForcer(const INSHierarchyIntegrator* fluid_solver,
                                CirculationModel_with_lv* circ_model_with_lv, // = NULL 
                                CirculationModel_RV_PA* circ_model_rv_pa, // = NULL 
                                CirculationModel_aorta* circ_model_aorta, // = NULL 
+                               CirculationModel_preop* circ_model_preop, // = NULL
                                bool damping_outside, // = false 
                                string lag_file_name, // = ""
                                string internal_ring_file_name) // = "" 
@@ -61,6 +62,7 @@ FeedbackForcer::FeedbackForcer(const INSHierarchyIntegrator* fluid_solver,
     d_circ_model_with_lv(circ_model_with_lv), 
     d_circ_model_rv_pa(circ_model_rv_pa),
     d_circ_model_aorta(circ_model_aorta),
+    d_circ_model_preop(circ_model_preop),
     d_damping_outside(damping_outside), 
     d_damping_initialized(false)
 {
@@ -469,10 +471,10 @@ FeedbackForcer::setDataOnPatch(const int data_idx,
                                     mask *= smooth_kernel((X[axis] - x_bdry) / (height_physical/2.0));
                                     (*F_data)(i_s) += mask * (-kappa * (U - U_goal));
                                 }
-
-                            }
+                              
+                           } 
                         } // for (int component = 0; component<NDIM; component++)
-                    } // if (pgeom->getTouchesRegularBoundary(axis, side)){
+                    } // if (pgeom->getTouchesRegularBoundary(axis, side))
                 } // for(int side=0; side<2; side++)
             } // for(int axis=0; axis<NDIM; axis++)
         } // if (d_circ_model_rv_pa)
@@ -619,12 +621,168 @@ FeedbackForcer::setDataOnPatch(const int data_idx,
                                     (*F_data)(i_s) += mask * (-kappa * (U - U_goal));
                                 }
 
-                            }
+                           } 
                         } // for (int component = 0; component<NDIM; component++)
-                    } // if (pgeom->getTouchesRegularBoundary(axis, side)){
+                    } // if (pgeom->getTouchesRegularBoundary(axis, side))
                 } // for(int side=0; side<2; side++)
             } // for(int axis=0; axis<NDIM; axis++)
         } // if (d_circ_model_aorta)
+
+        if (d_circ_model_preop){
+
+            double height_physical = 0.2;
+
+
+            for(int axis=0; axis<NDIM; axis++){
+                for(int side=0; side<2; side++){
+
+                    const double L = max(dx_coarsest[axis], 2.0 * dx_finest[axis]);
+                    const int offset = static_cast<int>(L / dx[axis]);
+                    const bool is_lower = side == 0;
+
+                    if (pgeom->getTouchesRegularBoundary(axis, side)){
+                        Box<NDIM> bdry_box = domain_box;
+                        if (side == 0){
+                            bdry_box.upper(axis) = domain_box.lower(axis) + offset;
+                        }
+                        else{
+                            bdry_box.lower(axis) = domain_box.upper(axis) - offset;
+                        }
+                        bdry_box = bdry_box * patch_box;
+
+
+                        for (int component = 0; component<NDIM; component++){
+                            for (Box<NDIM>::Iterator b(SideGeometry<NDIM>::toSideBox(bdry_box, component)); b; b++){
+
+                                const SAMRAI::hier::Index<NDIM>& i = b();
+                                const SideIndex<NDIM> i_s(i, component, SideIndex<NDIM>::Lower);
+                                const double U_current = U_current_data ? (*U_current_data)(i_s) : 0.0;
+                                const double U_new = U_new_data ? (*U_new_data)(i_s) : 0.0;
+                                const double U = (cycle_num > 0) ? 0.5 * (U_new + U_current) : U_current;
+
+                                double X[NDIM];
+
+                                for (int d = 0; d < NDIM; ++d){
+                                    X[d] = x_lower[d] + dx[d] * (double(i(d) - patch_box.lower(d)) + (d == component ? 0.0 : 0.5));
+                                }
+                                double X_in_plane_1 = 0.0;
+                                double X_in_plane_2 = 0.0;
+                                if (axis == 0)
+                                {
+                                    X_in_plane_1 = X[1];
+                                    X_in_plane_2 = X[2];
+                                }
+                                else if (axis == 1)
+                                {
+                                    X_in_plane_1 = X[0];
+                                    X_in_plane_2 = X[2];
+                                }
+
+                                else if (axis == 2)
+                                {
+                                    X_in_plane_1 = X[0];
+                                    X_in_plane_2 = X[1];
+                                }
+                                else{
+                                    TBOX_ERROR("Invalid axis\n");
+                                }
+
+                                const int in_lvot  = d_circ_model_preop->point_in_lvot(X_in_plane_1, X_in_plane_2, axis, side);
+                                const int in_rvot  = d_circ_model_preop->point_in_rvot(X_in_plane_1, X_in_plane_2, axis, side);
+                                const int in_aorta  = d_circ_model_preop->point_in_aorta(X_in_plane_1, X_in_plane_2, axis, side);
+                                const int in_rpa  = d_circ_model_preop->point_in_rpa(X_in_plane_1, X_in_plane_2, axis, side);
+                                const int in_lpa  = d_circ_model_preop->point_in_lpa    (X_in_plane_1, X_in_plane_2, axis, side);
+
+
+                                double mask = 0.0;
+                                double U_goal = 0.0;
+
+
+                                if (in_lvot){
+
+                                    const double n = is_lower ? -1.0 : +1.0;
+                                    const double U_dot_n = U * n;
+
+                                    if (axis == component){
+
+                                        if ((d_circ_model_preop->d_Q_lvot * U_dot_n) < 0.0){
+                                            mask = 1.0;
+                                        }
+                                    }
+                                }
+                                if (in_rvot){
+
+                                    const double n = is_lower ? -1.0 : +1.0;
+                                    const double U_dot_n = U * n;
+
+                                    if (axis == component){
+
+                                        if ((d_circ_model_preop->d_Q_rvot * U_dot_n) < 0.0){
+                                            mask = 1.0;
+                                        }
+                                    }
+                                }
+                                if (in_aorta){
+
+                                    const double n = is_lower ? -1.0 : +1.0;
+                                    const double U_dot_n = U * n;
+
+                                    if (axis == component){
+
+                                        if ((d_circ_model_preop->d_Q_aorta * U_dot_n) < 0.0){
+                                            mask = 1.0;
+                                        }
+
+                                    }
+
+                                }
+                                if (in_rpa){
+
+                                    const double n = is_lower ? -1.0 : +1.0;
+                                    const double U_dot_n = U * n;
+
+                                    if (axis == component){
+
+                                        if ((d_circ_model_preop->d_Q_rpa * U_dot_n) < 0.0){
+                                            mask = 1.0;
+                                        }
+
+                                    }
+
+                                }
+                                if (in_lpa){
+
+                                    const double n = is_lower ? -1.0 : +1.0;
+                                    const double U_dot_n = U * n;
+
+                                    if (axis == component){
+
+                                        if ((d_circ_model_preop->d_Q_lpa * U_dot_n) < 0.0){
+                                            mask = 1.0;
+                                        }
+
+                                    }
+
+                                }
+
+                                if (mask > 0.0){
+                                    const double x_bdry = (is_lower ? x_lower[axis] : x_upper[axis]);
+                                    mask *= smooth_kernel((X[axis] - x_bdry) / (height_physical/2.0));
+                                    (*F_data)(i_s) += mask * (-kappa * (U - U_goal));
+                                }
+
+                            } // for (Box<NDIM>::Iterator b(SideGeometry<NDIM>::toSideBox(bdry_box, component)); b; b++)
+                        } // for (int component = 0; component<NDIM; component++)
+                    } //if (pgeom->getTouchesRegularBoundary(axis, side))
+                } // for(int side=0; side<2; side++)
+            } // for(int axis=0; axis<NDIM; axis++)
+        } // d_circ_model_preop
+
+
+
+
+
+
 
     #endif 
     
@@ -727,7 +885,6 @@ FeedbackForcer::setDataOnPatch(const int data_idx,
 
 
     }
-
 
     return;
 } // setDataOnPatch
@@ -948,7 +1105,7 @@ void FeedbackForcer::initialize_masks(Pointer<CartesianGridGeometry<NDIM> > grid
 
     }
 
-    bool debug_plot_file = false; 
+    bool debug_plot_file = true; 
     if (debug_plot_file){
         std::ofstream mask_data;
         mask_data.open("mask_data.csv", ios_base::out | ios_base::trunc);
@@ -980,7 +1137,7 @@ void FeedbackForcer::initialize_masks(Pointer<CartesianGridGeometry<NDIM> > grid
         double internal_vol = ((double) total_internal) * d_dx*d_dx*d_dx;
         double total_vol = ((double) total_internal + eulerian_pts_marked) * d_dx*d_dx*d_dx;
         double total_eulerian_vol = d_dx*d_dx*d_dx * d_N[0] * d_N[1] * d_N[2];
-        pout << "found intenal volume " << internal_vol << ", internal and lag volume " << total_vol << ", total eulerian vol = " << total_eulerian_vol << "\n";
+        pout << "found internal volume " << internal_vol << ", internal and lag volume " << total_vol << ", total eulerian vol = " << total_eulerian_vol << "\n";
     }
 
     d_damping_initialized = true; 

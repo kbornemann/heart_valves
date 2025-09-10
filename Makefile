@@ -1,8 +1,8 @@
 ######################################################################
 ## Here specify the location of the IBAMR source and the location
 ## where IBAMR has been built.
-IBAMR_SRC_DIR   = $(HOME)/software/ibamr/IBAMR
-IBAMR_BUILD_DIR = $(HOME)/software/ibamr/ibamr-debug
+IBAMR_SRC_DIR   = $(GROUP_HOME)/ibamr_fiber_based/ibamr/IBAMR
+IBAMR_BUILD_DIR = $(GROUP_HOME)/ibamr_fiber_based/ibamr/ibamr-objs-opt
 
 ######################################################################
 ## Include variables specific to the particular IBAMR build.
@@ -11,7 +11,7 @@ include $(IBAMR_BUILD_DIR)/config/make.inc
 ######################################################################
 ## Build the application.
 
-all: main3d main_rv_pa main_aorta
+all: main3d main_rv_pa main_aorta main_preop
 
 PDIM = 3
 
@@ -19,6 +19,7 @@ PDIM = 3
 OBJS = CirculationModel_with_lv.o \
        CirculationModel_RV_PA.o \
        CirculationModel_aorta.o \
+       CirculationModel_preop.o \
        CirculationModel.o \
        boundary_condition_util.o \
        FourierBodyForce.o \
@@ -40,9 +41,15 @@ MAIN_AORTA = main_aorta.o
 main_aorta: $(IBAMR_LIB_3D) $(IBTK_LIB_3D) $(OBJS) $(MAIN_AORTA)
 	$(CXX) -o main_aorta $(CXXFLAGS) $(LDFLAGS) $(OBJS) $(MAIN_AORTA) $(IBAMR_LIB_3D) $(IBTK_LIB_3D) $(LDFLAGS) $(LIBS) -DNDIM=$(PDIM) 
 
+MAIN_PREOP = main_preop.o
+
+main_preop: $(IBAMR_LIB_3D) $(IBTK_LIB_3D) $(OBJS) $(MAIN_PREOP)
+	$(CXX) -o main_preop $(CXXFLAGS) $(LDFLAGS) $(OBJS) $(MAIN_PREOP) $(IBAMR_LIB_3D) $(IBTK_LIB_3D) $(LDFLAGS) $(LIBS) -DNDIM=$(PDIM)
+
 clean:
 	$(RM) main3d        
 	$(RM) main_rv_pa 
-	$(RM) main_aorta 
+	$(RM) main_aorta
+	$(RM) main_preop 
 	$(RM) *.o 
 
