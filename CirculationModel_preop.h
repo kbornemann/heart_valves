@@ -125,6 +125,7 @@ public:
     double        d_area_lpa; 
     bool          d_area_initialized;
 
+    bool d_P_initial_aorta_equal_to_ventricle;
     double d_p_extender_mean; 
     double d_p_extender_point;  
     double d_p_equal_fraction; 
@@ -156,7 +157,8 @@ public:
 			    	               double P_initial_lpa,
                                                bool rcr_bcs_on,
                                                bool lvot_0D_on,
-                                               bool rvot_0D_on, 
+                                               bool rvot_0D_on,
+                                               bool d_P_initial_aorta_equal_to_ventricle, 
                                                double rcr_on_time);
     /*!
      * \brief Destructor.

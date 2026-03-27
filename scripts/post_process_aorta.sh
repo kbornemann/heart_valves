@@ -1,7 +1,7 @@
 #!/bin/bash
 #SBATCH --nodes=2
 #SBATCH --ntasks-per-node=24
-#SBATCH --time=12:00:00
+#SBATCH --time=168:00:00
 #SBATCH --mem=185GB
 #SBATCH --job-name=slices_paper
 #SBATCH --mail-user=kmbo@stanford.edu
@@ -23,7 +23,7 @@ if [ -e bc_data.mat ]
 then
     echo "bc_data.mat found"
 else
-    matlab -nodesktop -nodisplay -r 'addpath ~/heart_valves/valve_generator; bc_data; exit;' & 
+    matlab -nodesktop -nodisplay -r 'addpath ~/heart_valves_preop/valve_generator; bc_data; exit;' & 
 fi
 
 
@@ -36,38 +36,38 @@ TOTAL_TASKS=$(($SLURM_NTASKS_PER_NODE * $SLURM_NNODES))
 #cp ~/heart_valves/4_aorta_remeshed_pt25mm_3cm_extender_layers_constriction.vtu . 
 #cp ~/heart_valves/6_aorta_remeshed_pt5mm_2cm_extender_layers_constriction.vtu . 
 
-cp ~/heart_valves/aorta_truncal_postop_extender_morphed_wcaps.stl .
-cp ~/heart_valves/aorta_truncal_postop_extender_morphed.stl .
-cp ~/heart_valves/aorta_truncal_preop_inextender_morphed_wcaps.vtp .
+cp ~/heart_valves_preop/aorta_truncal_postop_extender_morphed_wcaps.stl .
+cp ~/heart_valves_preop/aorta_truncal_postop_extender_morphed.stl .
+cp ~/heart_valves_preop/aorta_truncal_preop_inextender_morphed_wcaps.vtp .
 
 # extracts relevant portion of mesh 
-python3 ~/heart_valves/scripts/remove_unnecessary_eulerian_space.py $TOTAL_TASKS
+#python3 ~/heart_valves_preop/scripts/remove_unnecessary_eulerian_space.py $TOTAL_TASKS
 
 
 wait
 
 # run integral metrics 
 # sbatch ~/heart_valves/scripts/run_integral_metrics.sh
-/home/groups/amarsden/ParaView-5.9.0-osmesa-MPI-Linux-Python3.8-64bit/bin/pvbatch ~/heart_valves/scripts/integrals_contour_12_2.py annulus_normal_projected & 
-/home/groups/amarsden/ParaView-5.9.0-osmesa-MPI-Linux-Python3.8-64bit/bin/pvbatch ~/heart_valves/scripts/integrals_contour_12_2.py contour_3 & 
-/home/groups/amarsden/ParaView-5.9.0-osmesa-MPI-Linux-Python3.8-64bit/bin/pvbatch ~/heart_valves/scripts/integrals_contour_12_2.py contour_6 & 
-/home/groups/amarsden/ParaView-5.9.0-osmesa-MPI-Linux-Python3.8-64bit/bin/pvbatch ~/heart_valves/scripts/integrals_contour_12_2.py contour_9 & 
-/home/groups/amarsden/ParaView-5.9.0-osmesa-MPI-Linux-Python3.8-64bit/bin/pvbatch ~/heart_valves/scripts/integrals_contour_12_2.py contour_12 & 
-/home/groups/amarsden/ParaView-5.9.0-osmesa-MPI-Linux-Python3.8-64bit/bin/pvbatch ~/heart_valves/scripts/integrals_contour_12_2.py contour_21 & 
+/home/groups/amarsden/ParaView-5.9.0-osmesa-MPI-Linux-Python3.8-64bit/bin/pvbatch ~/heart_valves_preop/scripts/integrals_contour_12_2.py annulus_normal_projected & 
+/home/groups/amarsden/ParaView-5.9.0-osmesa-MPI-Linux-Python3.8-64bit/bin/pvbatch ~/heart_valves_preop/scripts/integrals_contour_12_2.py contour_3 & 
+/home/groups/amarsden/ParaView-5.9.0-osmesa-MPI-Linux-Python3.8-64bit/bin/pvbatch ~/heart_valves_preop/scripts/integrals_contour_12_2.py contour_6 & 
+/home/groups/amarsden/ParaView-5.9.0-osmesa-MPI-Linux-Python3.8-64bit/bin/pvbatch ~/heart_valves_preop/scripts/integrals_contour_12_2.py contour_9 & 
+/home/groups/amarsden/ParaView-5.9.0-osmesa-MPI-Linux-Python3.8-64bit/bin/pvbatch ~/heart_valves_preop/scripts/integrals_contour_12_2.py contour_12 & 
+/home/groups/amarsden/ParaView-5.9.0-osmesa-MPI-Linux-Python3.8-64bit/bin/pvbatch ~/heart_valves_preop/scripts/integrals_contour_12_2.py contour_21 & 
 
 
 # adds face data 
-python3 ~/heart_valves/scripts/add_faces.py
+python3 ~/heart_valves_preop/scripts/add_faces.py
 
-python3 ~/heart_valves/scripts/fix_pvd_files.py $TOTAL_TASKS
+python3 ~/heart_valves_preop/scripts/fix_pvd_files.py $TOTAL_TASKS
 
-python3 ~/heart_valves/scripts/convert_vtu_vertices_to_csv.py
+python3 ~/heart_valves_preop/scripts/convert_vtu_vertices_to_csv.py
 
 cp ../bc_data.mat . 
 cp ../aortic_no_partition*final_data.mat . 
-matlab -nodesktop -nodisplay -r 'addpath ~/heart_valves/valve_generator; generate_cells_file; "matlab generate cells complete"; exit;'
+matlab -nodesktop -nodisplay -r 'addpath ~/heart_valves_preop/valve_generator; generate_cells_file; "matlab generate cells complete"; exit;'
 
-python3 ~/heart_valves/scripts/convert_csv_with_cells.py
+python3 ~/heart_valves_preop/scripts/convert_csv_with_cells.py
 
 # ensure integral metrics have finished 
 wait 
@@ -80,14 +80,14 @@ wait
 # assumes located in main sim directory 
 cd .. 
 
-SESSION_NAME_PARAVIEW="~/heart_valves/scripts/bicuspid_slices_paraview.py"
-python ~/heart_valves/scripts/run_parallel_movie_paraview.py $SESSION_NAME_PARAVIEW $TOTAL_TASKS
+SESSION_NAME_PARAVIEW="~/heart_valves_preop/scripts/bicuspid_slices_paraview.py"
+python ~/heart_valves_preop/scripts/run_parallel_movie_paraview.py $SESSION_NAME_PARAVIEW $TOTAL_TASKS
 
 # SESSION_NAME_PARAVIEW_PAPER="~/heart_valves/scripts/bicuspid_slices_paraview_paper.py"
 # python ~/heart_valves/scripts/run_parallel_movie_paraview.py $SESSION_NAME_PARAVIEW_PAPER $TOTAL_TASKS
 
-SESSION_NAME_PARAVIEW_TOP="~/heart_valves/scripts/top_view_valve_0_paper.py"
-python ~/heart_valves/scripts/run_parallel_movie_paraview.py $SESSION_NAME_PARAVIEW_TOP $TOTAL_TASKS
+SESSION_NAME_PARAVIEW_TOP="~/heart_valves_preop/scripts/top_view_valve_0_paper.py"
+python ~/heart_valves_preop/scripts/run_parallel_movie_paraview.py $SESSION_NAME_PARAVIEW_TOP $TOTAL_TASKS
 
-SESSION_NAME_PARAVIEW_VERTICAL="~/heart_valves/scripts/bicuspid_slices_paraview_vertical.py"
-python ~/heart_valves/scripts/run_parallel_movie_paraview.py $SESSION_NAME_PARAVIEW_VERTICAL $TOTAL_TASKS
+SESSION_NAME_PARAVIEW_VERTICAL="~/heart_valves_preop/scripts/bicuspid_slices_paraview_vertical.py"
+python ~/heart_valves_preop/scripts/run_parallel_movie_paraview.py $SESSION_NAME_PARAVIEW_VERTICAL $TOTAL_TASKS

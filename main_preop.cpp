@@ -501,7 +501,7 @@ int main(int argc, char* argv[])
                 rcr_on_time = input_db->getDouble("RCR_ON_TIME"); // starts this 
             }
             else {
-                rcr_on_time = 0.05; 
+                rcr_on_time = 0.2; 
             }
 
             // start in physical time with relation to Fourier series 
@@ -512,8 +512,9 @@ int main(int argc, char* argv[])
             bool lvot_0D_on = input_db->getBoolWithDefault("LVOT_0D_ON", false);
             bool rvot_0D_on = input_db->getBoolWithDefault("RVOT_0D_ON", false);
 
-            // start with a linear ramp up in pressure  
-            // double rcr_on_time = 0.2; 
+            // start with a linear ramp up in pressure 
+            bool P_initial_aorta_equal_to_ventricle = true; 
+            //double rcr_on_time = 0.2; 
 
             CirculationModel_preop *circ_model_preop = new CirculationModel_preop(input_db,
                                                                              fourier_series_lvot,
@@ -532,6 +533,7 @@ int main(int argc, char* argv[])
                                                                              rcr_bcs_on, 
                                                                              lvot_0D_on,
                                                                              rvot_0D_on,
+                                                                             P_initial_aorta_equal_to_ventricle,
                                                                              rcr_on_time); 
 
             // Create Eulerian boundary condition specification objects.

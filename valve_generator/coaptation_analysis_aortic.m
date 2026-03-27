@@ -42,6 +42,10 @@ else
         
         if leaflet_idx == 1
             leaflet_comparison_idx = 2;
+        %else if leaflet_idx == 2 
+        %    leaflet_comparison_idx = 3;
+        %else if leaflet_idx == 3
+        %    leaflet_comparison_idx = 4;
         else 
             leaflet_comparison_idx = 1;
         end 

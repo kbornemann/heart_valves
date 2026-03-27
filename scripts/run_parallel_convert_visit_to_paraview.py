@@ -89,7 +89,7 @@ if __name__ == '__main__':
     for arg in sys.argv:
         print(arg, " ")
 
-    script_dir = "~/heart_valves/scripts/"
+    script_dir = "~/heart_valves_preop/scripts/"
     # script_dir = "~/heart_valves/scripts/"
 
     lag_name_base_to_check = ['aortic', 'vessel', 'aorta_384.', 'aorta_192.', 'aorta_256.', 'aorta_512.', 'aorta_1024.']
@@ -113,11 +113,11 @@ if __name__ == '__main__':
 
                 if len(sys.argv) < 2:
                     raise InputError("Must specify n_procs_sim")
-                n_procs_sim = int(sys.argv[1])
+                n_procs_sim = 48 #int(sys.argv[1])
 
                 if len(sys.argv) < 3:
                     raise InputError("Must specify n_procs")
-                n_procs = int(sys.argv[2])
+                n_procs = 48 #int(sys.argv[2])
 
                 call_str_base = 'visit -cli -nowin -s ' + script_dir + 'export_eulerian_visit_to_vtk.py '
                 call_str_base += " eulerian_vars vtr " + str(n_procs_sim) + " "

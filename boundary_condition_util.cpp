@@ -776,15 +776,15 @@ void VelocityBcCoefs_preop::setBcCoefs(Pointer<ArrayData<NDIM, double> >& acoef_
                 a = 0.0;
                 b = 1.0;
                 g = -d_circ_model_preop->d_lvot_P;
-                pout << "Applying pressure of " << d_circ_model_preop->d_fourier_lvot->values[idx]
-                     << "mmHg to LV at position (" << X[0] << ", " << X[1] << ", " << X[2] << ")\n"; 
+                //pout << "Applying pressure of " << d_circ_model_preop->d_fourier_lvot->values[idx]
+                //     << "mmHg to LV at position (" << X[0] << ", " << X[1] << ", " << X[2] << ")\n"; 
             }
             else if (in_rvot){
                 a = 0.0;
                 b = 1.0;
                 g = -d_circ_model_preop->d_rvot_P;
-                pout << "Applying pressure of " << d_circ_model_preop->d_fourier_rvot->values[idx]
-                     << "mmHg to RV at position (" << X[0] << ", " << X[1] << ", " << X[2] << ")\n";      
+                //pout << "Applying pressure of " << d_circ_model_preop->d_fourier_rvot->values[idx]
+                //     << "mmHg to RV at position (" << X[0] << ", " << X[1] << ", " << X[2] << ")\n";      
             }
             else if (in_aorta){
                 a = 0.0;

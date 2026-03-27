@@ -8,7 +8,7 @@ import multiprocessing
 import pdb
 import numpy as np 
 import re
-
+import shutil
 
 def write_pvd(basename, dt, nsteps, extension, nprocs_sim=1):
 
@@ -142,42 +142,49 @@ def remove_eulerian_space(basename,
                           nsteps, 
                           label='_restricted_cells', 
                           extension='vtu', 
-                          point_data=False, 
+                          convert_to_point_data=True, 
                           NX=None, 
                           NY=None, 
                           NZ=None, 
                           proc_num=0, 
                           nprocs=1):
 
-    for i in range(nsteps):
-        if (i % nprocs) == proc_num:
+    nsteps = [520,862,863,864]
 
-            dir_name = basename + str(i).zfill(4)
+    for i, x in enumerate(nsteps):
+        if (x % nprocs) == proc_num:
 
-            fname_out = basename + label + str(i).zfill(4) + '.' + extension
+            print("Nstep = ", x)
 
-            # read distributed vtr 
+            dir_name = basename + str(x).zfill(4)
+
+            fname_out = basename + label + str(x).zfill(4) + '.' + extension
+
+            print(fname_out)
+
             mesh = read_distributed_vtr(dir_name)
 
-            if point_data:
+            if convert_to_point_data:
 
-                if (NX is None) or (NY is None) or (NZ is None):
-                    raise ValueError("Must provide values for NX,NY,NZ when calling points")
+                if ('U' in mesh.cell_data) and ('P' in mesh.cell_data):
 
-                mesh_point_data = convert_mesh_to_center_points(mesh, NX, NY, NZ)
-                selected = mesh_point_data.select_enclosed_points(boundary_mesh, tolerance=1.0e-10, inside_out=False, check_surface=True)
+                    if (NX is None) or (NY is None) or (NZ is None):
+                        raise ValueError("Must provide values for NX,NY,NZ when converting cell to point data")
 
-            else:
-                selected = mesh.select_enclosed_points(boundary_mesh, tolerance=1.0e-10, inside_out=False, check_surface=True)
+                    
+                    mesh = convert_mesh_to_center_points(mesh, NX, NY, NZ)
 
-            # remove the exterior 
-            # all_scalars=True keeps cells that intersect boundary 
-            # all_scalars=False keeps cells that have at least one interior point 
-            mesh_inside = selected.threshold(0.5, scalars="SelectedPoints", all_scalars=False) 
-            #mesh_inside = selected.threshold(0.5, scalars="SelectedPoints", all_scalars=True) 
+                # check that there is point data if there was no cell data to convert 
+                elif not (('U' in mesh.point_data) and ('P' in mesh.point_data)):
+                    raise ValueError('Could not find U and P in cell or point data, point data requested')
+
+            selected = mesh.select_enclosed_points(boundary_mesh, tolerance=1.0e-10, inside_out=False, check_surface=True)
+
+            mesh_inside = selected.threshold(0.5, scalars="SelectedPoints", all_scalars=False)
 
             mesh_inside.save(fname_out)
 
+            print("Saving file", fname_out)
 
 def remove_eulerian_space_single_frame(basename, 
                           boundary_mesh, 
@@ -270,7 +277,8 @@ if __name__ == '__main__':
     if basic:
     
         if len(sys.argv) >= 2:
-            nprocs = int(sys.argv[1]) # number of threads to launch  
+            nprocs = int(sys.argv[1]) # number of threads to launch
+            print("Nprocs = ", nprocs)  
         else: 
             print("using default nprocs = 1")
             nprocs = 1 
@@ -283,7 +291,7 @@ if __name__ == '__main__':
 
         # first make sure there is a times file 
         if not os.path.isfile('times.txt'):
-            subprocess.call('visit -cli -nowin -s ~/heart_valves/scripts/write_times_file_visit.py', shell=True)
+            subprocess.call('visit -cli -nowin -s ~/heart_valves_preop/scripts/write_times_file_visit.py', shell=True)
 
         times = []
         times_file = open('times.txt', 'r')
@@ -296,7 +304,7 @@ if __name__ == '__main__':
             dt = times[1] - times[0]
 
         # crop times for debug 
-        # times = times[:5]
+        #times = times[12:22]
 
         point_data = True 
         
@@ -319,6 +327,10 @@ if __name__ == '__main__':
         basename = "eulerian_vars"
         nsteps = len(times)
 
+        convert_to_point_data = True
+
+        point_data = True
+
         if point_data:
             label = '_restricted_points'
         else: 
@@ -328,8 +340,8 @@ if __name__ == '__main__':
 
         # grab this file if it's not here... 
         if not os.path.isfile(boundary_mesh_name):
-            if os.path.isfile('~/heart_valves/' + boundary_mesh_name):
-                shutil.copy('~/heart_valves/' + boundary_mesh_name, '.') 
+            if os.path.isfile('~/heart_valves_preop/' + boundary_mesh_name):
+                shutil.copy('~/heart_valves_preop/' + boundary_mesh_name, '.') 
             else: 
                 raise FileNotFoundError("cannot find boundary_mesh_name file = ", boundary_mesh_name)
 
@@ -344,13 +356,13 @@ if __name__ == '__main__':
         if run_all:
 
             jobs = []
-            for proc_num in range(nprocs):
+            for proc_num in range(nprocs):           
                 p = multiprocessing.Process(target=remove_eulerian_space, args=(basename, 
                                                                                 boundary_mesh, 
                                                                                 nsteps, 
                                                                                 label, 
                                                                                 extension,
-                                                                                point_data, 
+                                                                                convert_to_point_data, 
                                                                                 NX,
                                                                                 NY, 
                                                                                 NZ, 
@@ -365,7 +377,6 @@ if __name__ == '__main__':
             basename_out = basename + label
 
             write_pvd(basename_out, dt, nsteps, extension, nprocs_sim=1)
-
 
 
     debug_simple = False 
@@ -435,8 +446,8 @@ if __name__ == '__main__':
 
         # grab this file if it's not here... 
         if not os.path.isfile(boundary_mesh_name):
-            if os.path.isfile('~/heart_valves/' + boundary_mesh_name):
-                shutil.copy('~/heart_valves/' + boundary_mesh_name, '.') 
+            if os.path.isfile('~/heart_valves_preop/' + boundary_mesh_name):
+                shutil.copy('~/heart_valves_preop/' + boundary_mesh_name, '.') 
             else: 
                 raise FileNotFoundError("cannot find boundary_mesh_name file = ", boundary_mesh_name)
 

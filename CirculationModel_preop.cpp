@@ -61,7 +61,8 @@ CirculationModel_preop::CirculationModel_preop(Pointer<Database> input_db,
 					       double P_initial_lpa,
                                                bool rcr_bcs_on,
                                                bool lvot_0D_on,
-                                               bool rvot_0D_on, 
+                                               bool rvot_0D_on,
+                                               bool P_initial_aorta_equal_to_ventricle, 
                                                double rcr_on_time)
     : 
       d_object_name("circ_model_preop"),  // constant name here  
@@ -90,6 +91,7 @@ CirculationModel_preop::CirculationModel_preop(Pointer<Database> input_db,
       d_rcr_bcs_on(rcr_bcs_on), 
       d_lvot_0D_on(lvot_0D_on),
       d_rvot_0D_on(rvot_0D_on),
+      d_P_initial_aorta_equal_to_ventricle(P_initial_aorta_equal_to_ventricle),
       d_rcr_on_time(rcr_on_time)
 {
     if (d_registered_for_restart)
@@ -150,7 +152,7 @@ CirculationModel_preop::CirculationModel_preop(Pointer<Database> input_db,
     }
 
     double coord_normal, coord_normal_prev;
-    double tol = 1.0e-2;
+    double tol = 1.0e-6;
 
     // Find vertices from lvot file
     ifstream lvot_file(lvot_vertices_file_name.c_str(), ios::in);
@@ -196,7 +198,7 @@ CirculationModel_preop::CirculationModel_preop(Pointer<Database> input_db,
     if (coords_flat[0]){
 
         if (coords_flat[1] || coords_flat[2]){
-            TBOX_ERROR("More than one coordinate is flat");
+            TBOX_ERROR("More than one coordinate is flat (LV|0)");
         }
 
         d_lvot_axis = 0;
@@ -220,7 +222,7 @@ CirculationModel_preop::CirculationModel_preop(Pointer<Database> input_db,
     }
     else if (coords_flat[1]){
         if (coords_flat[0] || coords_flat[2]){
-            TBOX_ERROR("More than one coordinate is flat");
+            TBOX_ERROR("More than one coordinate is flat (LV|1)");
         }
 
         d_lvot_axis = 1;
@@ -244,7 +246,7 @@ CirculationModel_preop::CirculationModel_preop(Pointer<Database> input_db,
     }
     else if (coords_flat[2]){
         if (coords_flat[0] || coords_flat[1]){
-            TBOX_ERROR("More than one coordinate is flat");
+            TBOX_ERROR("More than one coordinate is flat (LV|2)");
         }
 
         d_lvot_axis = 2;
@@ -315,7 +317,7 @@ CirculationModel_preop::CirculationModel_preop(Pointer<Database> input_db,
     if (coords_flat[0]){
 
         if (coords_flat[1] || coords_flat[2]){
-            TBOX_ERROR("More than one coordinate is flat");
+            TBOX_ERROR("More than one coordinate is flat (RV|0)");
         }
 
         d_rvot_axis = 0;
@@ -339,7 +341,7 @@ CirculationModel_preop::CirculationModel_preop(Pointer<Database> input_db,
     }
     else if (coords_flat[1]){
         if (coords_flat[0] || coords_flat[2]){
-            TBOX_ERROR("More than one coordinate is flat");
+            TBOX_ERROR("More than one coordinate is flat (RV|1)");
         }
 
         d_rvot_axis = 1;
@@ -363,7 +365,7 @@ CirculationModel_preop::CirculationModel_preop(Pointer<Database> input_db,
     }
     else if (coords_flat[2]){
         if (coords_flat[0] || coords_flat[1]){
-            TBOX_ERROR("More than one coordinate is flat");
+            TBOX_ERROR("More than one coordinate is flat (RV|2)");
         }
 
         d_rvot_axis = 2;
@@ -437,7 +439,7 @@ CirculationModel_preop::CirculationModel_preop(Pointer<Database> input_db,
     if (coords_flat[0]){
 
         if (coords_flat[1] || coords_flat[2]){
-            TBOX_ERROR("More than one coordinate is flat");
+            TBOX_ERROR("More than one coordinate is flat (aorta|0)");
         }
 
         d_aorta_axis = 0;
@@ -461,7 +463,7 @@ CirculationModel_preop::CirculationModel_preop(Pointer<Database> input_db,
     }
     else if (coords_flat[1]){
         if (coords_flat[0] || coords_flat[2]){
-            TBOX_ERROR("More than one coordinate is flat");
+            TBOX_ERROR("More than one coordinate is flat (aorta|1)");
         }
 
         d_aorta_axis = 1;
@@ -485,7 +487,7 @@ CirculationModel_preop::CirculationModel_preop(Pointer<Database> input_db,
     }
     else if (coords_flat[2]){
         if (coords_flat[0] || coords_flat[1]){
-            TBOX_ERROR("More than one coordinate is flat");
+            TBOX_ERROR("More than one coordinate is flat (aorta|2)");
         }
 
         d_aorta_axis = 2;
@@ -555,7 +557,7 @@ CirculationModel_preop::CirculationModel_preop(Pointer<Database> input_db,
     if (coords_flat[0]){
 
         if (coords_flat[1] || coords_flat[2]){
-            TBOX_ERROR("More than one coordinate is flat");
+            TBOX_ERROR("More than one coordinate is flat (rpa|0)");
         }
 
         d_rpa_axis = 0;
@@ -579,7 +581,7 @@ CirculationModel_preop::CirculationModel_preop(Pointer<Database> input_db,
     }
     else if (coords_flat[1]){
         if (coords_flat[0] || coords_flat[2]){
-            TBOX_ERROR("More than one coordinate is flat");
+            TBOX_ERROR("More than one coordinate is flat (rpa|1)");
         }
 
         d_rpa_axis = 1;
@@ -603,7 +605,7 @@ CirculationModel_preop::CirculationModel_preop(Pointer<Database> input_db,
     }
     else if (coords_flat[2]){
         if (coords_flat[0] || coords_flat[1]){
-            TBOX_ERROR("More than one coordinate is flat");
+            TBOX_ERROR("More than one coordinate is flat (rpa|2)");
         }
 
         d_rpa_axis = 2;
@@ -673,7 +675,7 @@ CirculationModel_preop::CirculationModel_preop(Pointer<Database> input_db,
     if (coords_flat[0]){
 
         if (coords_flat[1] || coords_flat[2]){
-            TBOX_ERROR("More than one coordinate is flat");
+            TBOX_ERROR("More than one coordinate is flat (lpa|0)");
         }
 
         d_lpa_axis = 0;
@@ -697,7 +699,7 @@ CirculationModel_preop::CirculationModel_preop(Pointer<Database> input_db,
     }
     else if (coords_flat[1]){
         if (coords_flat[0] || coords_flat[2]){
-            TBOX_ERROR("More than one coordinate is flat");
+            TBOX_ERROR("More than one coordinate is flat (lpa|1)");
         }
 
         d_lpa_axis = 1;
@@ -721,7 +723,7 @@ CirculationModel_preop::CirculationModel_preop(Pointer<Database> input_db,
     }
     else if (coords_flat[2]){
         if (coords_flat[0] || coords_flat[1]){
-            TBOX_ERROR("More than one coordinate is flat");
+            TBOX_ERROR("More than one coordinate is flat (lpa|2)");
         }
 
         d_lpa_axis = 2;
@@ -992,7 +994,23 @@ void CirculationModel_preop::advanceTimeDependentData(const double dt,
         d_area_initialized = true;       
     }
 
-    if (d_rcr_bcs_on){ 
+    if (d_rcr_bcs_on){
+
+        if ((d_P_initial_aorta_equal_to_ventricle) && (d_time < (d_p_equal_fraction*d_rcr_on_time))){
+            d_aorta_P = d_lvot_P;
+            d_rpa_P = d_lvot_P;
+            d_lpa_P = d_lvot_P;
+            d_P_min_linear_interp = d_lvot_P;
+        }
+        else if ((d_P_initial_aorta_equal_to_ventricle) && (d_time < d_rcr_on_time)){
+            double P_distal_temp = ((d_time  -     d_rcr_on_time) / (d_p_equal_fraction * d_rcr_on_time - d_rcr_on_time)) * d_P_min_linear_interp +
+                                   ((d_time  - d_p_equal_fraction * d_rcr_on_time) / (d_rcr_on_time - d_p_equal_fraction * d_rcr_on_time)) * d_aorta_P_Wk; 
+            d_aorta_P = P_distal_temp + d_aorta_R_proximal * d_Q_aorta;
+            d_rpa_P = P_distal_temp + d_rpa_R_proximal * d_Q_rpa;
+            d_lpa_P = P_distal_temp + d_lpa_R_proximal * d_Q_lpa;
+
+        }
+        else{
             d_aorta_P_Wk = ((d_aorta_C / dt) * d_aorta_P_Wk + d_Q_aorta) / (d_aorta_C / dt + 1.0 / d_aorta_R_distal);
             d_aorta_P = d_aorta_P_Wk + d_aorta_R_proximal * d_Q_aorta;
 
@@ -1001,8 +1019,8 @@ void CirculationModel_preop::advanceTimeDependentData(const double dt,
 
             d_lpa_P_Wk = ((d_lpa_C / dt) * d_lpa_P_Wk + d_Q_lpa) / (d_lpa_C / dt + 1.0 / d_lpa_R_distal);
             d_lpa_P = d_lpa_P_Wk + d_lpa_R_proximal * d_Q_lpa;
+        }
     }
-
 
     d_time += dt;
 

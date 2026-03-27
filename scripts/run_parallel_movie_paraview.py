@@ -45,7 +45,7 @@ if __name__ == '__main__':
     for arg in sys.argv:
         print (arg, " ")
 
-    script_dir = "~/heart_valves/scripts/"
+    script_dir = "~/heart_valves_preop/scripts/"
     # script_dir = "~/heart_valves/scripts/"
 
     # get some output names
