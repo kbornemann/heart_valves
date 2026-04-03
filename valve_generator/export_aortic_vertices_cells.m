@@ -24,11 +24,11 @@ n_vertices_total = j_max * k_max * n_layers * n_leaflets;
 vertices = zeros(3,n_vertices_total); 
 
 %if ~exist('export_mechanics', 'var')
-export_mechanics = false; 
+export_mechanics = true; 
 %end 
 
 %if ~exist('export_coaptation', 'var')
-export_coaptation = false; 
+export_coaptation = true; 
 %end 
 
 

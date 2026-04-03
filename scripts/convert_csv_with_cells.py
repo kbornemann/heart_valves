@@ -85,7 +85,7 @@ if __name__ == '__main__':
 
     run_all = True 
     if run_all:
-        lag_name_base_to_check = ['aortic']
+        lag_name_base_to_check = ['aortic', 'aorta']
 
         for lag_base in lag_name_base_to_check: 
 
@@ -108,7 +108,7 @@ if __name__ == '__main__':
 
                     convert_csv(basename, suffix, vertex_ext=vertex_ext, ext_out=extension_out, mechanics_ext=mechanics_ext)                    
 
-    run_cylinder = True
+    run_cylinder = False
     if run_cylinder:
         lag_base = 'cylinder'
 

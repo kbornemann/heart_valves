@@ -50,8 +50,8 @@ for i = 1:length(file_list)
         %    export_mechanics = true 
         %    export_coaptation = true
         %else 
-        export_mechanics = false;
-        export_coaptation = false;
+        export_mechanics = true;
+        export_coaptation = true;
         %end 
         
         export_aortic_vertices_cells(file_name, valve_with_reference, params, data_dir, run_inv_transform, export_cells, export_mechanics, export_coaptation); 

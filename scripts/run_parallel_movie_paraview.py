@@ -92,6 +92,9 @@ if __name__ == '__main__':
     if 'vertical' in session_file_name:
         base_name += '_vertical'
 
+    if 'qcrit' in session_file_name:
+        base_name += '_qcrit'
+
 
     if os.path.isfile('done.txt'):
         
@@ -107,36 +110,103 @@ if __name__ == '__main__':
                 viz_dir_name = os.getcwd()
             
 
-                call_str_base = "pvbatch " + session_file_name + " " + base_name + " "
+                call_str_base = "/home/groups/amarsden/ParaView-5.13.3-osmesa-MPI-Linux-Python3.10-x86_64/bin/pvbatch " + session_file_name + " " + base_name + " "
                 print ("call_str_base = ", call_str_base )
                 run_command_parallel(call_str_base, n_procs, arg_extra)
 
-                if render: 
-                    # ffmpeg from here so variables are all in place
-                    movie_string = 'ffmpeg -y -framerate 60 -i '
-                    movie_string += base_name
-                    movie_string += '%4d.jpeg -vf scale=1920:-2 -r 60 -c:v libx264 -preset veryslow -g 3 -crf 18 '
-                    movie_string += base_name + '.mp4'
+                if render:
 
-                    code = subprocess.call(movie_string, shell=True)
-                    if code is None:
-                        print ('something wrong in movie make, call returned prematurely')
+                    if 'qcrit' in session_file_name:
+                     
+                        # ffmpeg from here so variables are all in place
+                        movie_string = 'ffmpeg -y -framerate 60 -i '
+                        movie_string += 'aortic_n_leaflets_qcrit_uz_side'
+                        movie_string += '%4d.jpeg -vf scale=1920:-2 -r 60 -c:v libx264 -preset veryslow -g 3 -crf 18 '
+                        movie_string += 'aortic_n_leaflets_qcrit_uz_side.mp4'
+
+                        code = subprocess.call(movie_string, shell=True)
+                        if code is None:
+                            print ('something wrong in movie make, call returned prematurely')
+
+                        # ffmpeg from here so variables are all in place
+                        movie_string = 'ffmpeg -y -framerate 60 -i '
+                        movie_string += 'aortic_n_leaflets_qcrit_uz_3D'
+                        movie_string += '%4d.jpeg -vf scale=1920:-2 -r 60 -c:v libx264 -preset veryslow -g 3 -crf 18 '
+                        movie_string += 'aortic_n_leaflets_qcrit_uz_3D.mp4'
+
+                        code = subprocess.call(movie_string, shell=True)
+                        if code is None:
+                            print ('something wrong in movie make, call returned prematurely')
+
+                        # ffmpeg from here so variables are all in place
+                        movie_string = 'ffmpeg -y -framerate 60 -i '
+                        movie_string += 'aortic_n_leaflets_qcrit_uz_top'
+                        movie_string += '%4d.jpeg -vf scale=1920:-2 -r 60 -c:v libx264 -preset veryslow -g 3 -crf 18 '
+                        movie_string += 'aortic_n_leaflets_qcrit_uz_top.mp4'
+
+                        code = subprocess.call(movie_string, shell=True)
+                        if code is None:
+                            print ('something wrong in movie make, call returned prematurely')
 
 
-                    # # reduce by 10x
-                    # # 60 input, 60 output is 10x slow motion
-                    # # 600 input, 60 output is real time 
+                        # # reduce by 10x
+                        # # 60 input, 60 output is 10x slow motion
+                        # # 600 input, 60 output is real time 
 
-                    movie_string = 'ffmpeg -y -framerate 600 -i '
-                    movie_string += base_name
-                    movie_string += '%4d.jpeg -vf scale=1920:-2 -r 60 -c:v libx264 -preset veryslow -g 3 -crf 18 '
-                    movie_string += base_name + '_real_time.mp4'
+                        movie_string = 'ffmpeg -y -framerate 600 -i '
+                        movie_string += 'aortic_n_leaflets_qcrit_uz_side'
+                        movie_string += '%4d.jpeg -vf scale=1920:-2 -r 60 -c:v libx264 -preset veryslow -g 3 -crf 18 '
+                        movie_string += 'aortic_n_leaflets_qcrit_uz_side_real_time.mp4'
 
-                    code = subprocess.call(movie_string, shell=True)
-                    if code is None:
-                        print ('something wrong in movie make, call returned prematurely')
+                        code = subprocess.call(movie_string, shell=True)
+                        if code is None:
+                            print ('something wrong in movie make, call returned prematurely')
+
+
+                        movie_string = 'ffmpeg -y -framerate 600 -i '
+                        movie_string += 'aortic_n_leaflets_qcrit_uz_3D'
+                        movie_string += '%4d.jpeg -vf scale=1920:-2 -r 60 -c:v libx264 -preset veryslow -g 3 -crf 18 '
+                        movie_string += 'aortic_n_leaflets_qcrit_uz_3D_real_time.mp4'
+
+                        code = subprocess.call(movie_string, shell=True)
+                        if code is None:
+                            print ('something wrong in movie make, call returned prematurely')
+
+                        movie_string = 'ffmpeg -y -framerate 600 -i '
+                        movie_string += 'aortic_n_leaflets_qcrit_uz_top'
+                        movie_string += '%4d.jpeg -vf scale=1920:-2 -r 60 -c:v libx264 -preset veryslow -g 3 -crf 18 '
+                        movie_string += 'aortic_n_leaflets_qcrit_uz_top_real_time.mp4'
+
+                        code = subprocess.call(movie_string, shell=True)
+                        if code is None:
+                            print ('something wrong in movie make, call returned prematurely')
+
+
+                    else:
+                        # ffmpeg from here so variables are all in place
+                        movie_string = 'ffmpeg -y -framerate 60 -i '
+                        movie_string += base_name
+                        movie_string += '%4d.jpeg -vf scale=1920:-2 -r 60 -c:v libx264 -preset veryslow -g 3 -crf 18 '
+                        movie_string += base_name + '.mp4'
+
+                        code = subprocess.call(movie_string, shell=True)
+                        if code is None:
+                            print ('something wrong in movie make, call returned prematurely')
+
+
+                        # # reduce by 10x
+                        # # 60 input, 60 output is 10x slow motion
+                        # # 600 input, 60 output is real time 
+
+                        movie_string = 'ffmpeg -y -framerate 600 -i '
+                        movie_string += base_name
+                        movie_string += '%4d.jpeg -vf scale=1920:-2 -r 60 -c:v libx264 -preset veryslow -g 3 -crf 18 '
+                        movie_string += base_name + '_real_time.mp4'
+
+                        code = subprocess.call(movie_string, shell=True)
+                        if code is None:
+                            print ('something wrong in movie make, call returned prematurely')
 
     else:
         print("could not find done.txt")
         print("os.listdir('.') = ", os.listdir('.'))
-
