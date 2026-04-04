@@ -91,11 +91,6 @@ function params = output_to_ibamr_format(valve)
         params.type = 'default_mitral'; 
     end 
     
-    if strcmp(valve.name, 'aortic') 
-        if length(valve.leaflets) ~= 1
-            warning('only one aortic leaflet supported'); 
-        end 
-    end 
     
     params.vertex        = fopen(strcat(base_name, '.vertex'), 'w'); 
     params.spring        = fopen(strcat(base_name, '.spring'), 'w'); 
@@ -223,7 +218,9 @@ function params = output_to_ibamr_format(valve)
     params.eta_multiplier_collagen = valve.eta_multiplier_collagen; 
     
     % parameters for output flags 
-    params.output = valve.output; 
+    if isfield(valve, 'output')
+        params.output = valve.output; 
+    end 
     
     % Spring constant base for targets and 
     % Approximate force is tension_base multiplied by a length element 
@@ -890,53 +887,51 @@ function params = place_spring_and_split(params, idx, nbr_idx, k_rel, rest_len, 
         % first index is always first index suppied 
         idx_tmp = idx; 
         
-        %for i=1:N_springs 
+        for i=1:N_springs 
             
-        %    fprintf('In the N_springs loop for remeshing')
-
             % place the upper new vertex if it is not placed already 
-        %    if i<N_springs 
-        %        params.vertices(:,params.global_idx + 1) = X_vertices_new(:,i+1); 
-        %        
-        %        % new vertex's index is current (zero indexed) global index 
-        %        nbr_idx_tmp = params.global_idx; 
-
-        %        params.global_idx = params.global_idx + 1;
+            if i<N_springs 
+                params.vertices(:,params.global_idx + 1) = X_vertices_new(:,i+1); 
                 
-        %    else 
-        %        % last spring upper limit is the previous neighbor 
-        %        nbr_idx_tmp = nbr_idx; 
-        %    end 
+                % new vertex's index is current (zero indexed) global index 
+                nbr_idx_tmp = params.global_idx; 
+
+                params.global_idx = params.global_idx + 1;
+                
+            else 
+                % last spring upper limit is the previous neighbor 
+                nbr_idx_tmp = nbr_idx; 
+            end 
             
             % global indices placed in order by convention 
-        %    min_idx = min(idx_tmp, nbr_idx_tmp); 
-        %    max_idx = max(idx_tmp, nbr_idx_tmp); 
+            min_idx = min(idx_tmp, nbr_idx_tmp); 
+            max_idx = max(idx_tmp, nbr_idx_tmp); 
         
             % Current length 
-        %    L = norm(X_vertices_new(:,i+1) - X_vertices_new(:,i)); 
+            L = norm(X_vertices_new(:,i+1) - X_vertices_new(:,i)); 
             
             % Rest length determined by strain 
-        %    R = L / (strain + 1); 
+            R = L / (strain + 1); 
             
-        %    if collagen_spring
-        %        % Scaling constant here does not change with rest lengths 
-        %        k_col = k_rel; 
+            if collagen_spring
+                % Scaling constant here does not change with rest lengths 
+                k_col = k_rel; 
 
                 % Finally, write the spring string 
-        %        params = spring_string(params, min_idx, max_idx, k_col, R, function_idx, output);
+                params = spring_string(params, min_idx, max_idx, k_col, R, function_idx, output);
             
-        %    else 
-        %        % Absolute spring constant must be used in spring file 
-        %        k_abs = k_rel / R; 
+            else 
+                % Absolute spring constant must be used in spring file 
+                k_abs = k_rel / R; 
 
-        %        % Finally, write the spring string 
-        %        params = spring_string(params, min_idx, max_idx, k_abs, R, function_idx, output);
-        %    end 
+                % Finally, write the spring string 
+                params = spring_string(params, min_idx, max_idx, k_abs, R, function_idx, output);
+            end 
             
             % lower index is always previous upper index 
-        %    idx_tmp = nbr_idx_tmp; 
-                    
-        %end 
+            idx_tmp = nbr_idx_tmp; 
+            
+        end 
     
     end 
 
@@ -1155,11 +1150,17 @@ function params = add_leaflet_springs(params, leaflet, ds, collagen_spring)
    
     % output flag information 
     copy = params.copy; 
-    if params.output.leaflets(copy)
-        output        = true; 
-        output_stride = params.output.stride_leaflet; 
+
+    if strcmp(params.type, 'aortic')
+        output = true; 
+        output_stride = 1; 
     else 
-        output        = false; 
+        if params.output.leaflets(copy)
+            output        = true; 
+            output_stride = params.output.stride_leaflet; 
+        else 
+            output        = false; 
+        end 
     end 
     
     if ~strcmp(params.type, 'aortic')
@@ -1465,11 +1466,6 @@ end
 
 
 function params = place_cross_layer_beams_aortic(params, leaflet, leaflet_number)
-
-    if params.num_copies ~= 3
-        warning('must use three copies for cross layer beams'); 
-        return
-    end 
     
     if ~exist('leaflet_number', 'var')
         warning("Using default leaflet 1 only in place_cross_layer_springs_aortic")
@@ -1480,16 +1476,18 @@ function params = place_cross_layer_beams_aortic(params, leaflet, leaflet_number
     
     j_max = leaflet.j_max; 
     k_max = leaflet.k_max; 
-    
-    for j=1:j_max
-        for k=1:k_max
-            idx_minus = params.layer_indices(1,leaflet_number).indices_global(j,k); 
-            idx       = params.layer_indices(2,leaflet_number).indices_global(j,k);  
-            idx_plus  = params.layer_indices(3,leaflet_number).indices_global(j,k); 
 
-            params = beam_string(params, idx_minus, idx, idx_plus, k_bend_cross_layer);
-            
-        end
+    for layer_num = 1:(params.num_copies - 2)
+        for j = 1:j_max
+            for k = 1:k_max
+                idx_minus = params.layer_indices(layer_num    , leaflet_number).indices_global(j,k);
+                idx       = params.layer_indices(layer_num + 1, leaflet_number).indices_global(j,k);
+                idx_plus  = params.layer_indices(layer_num + 2, leaflet_number).indices_global(j,k);
+
+                params = beam_string(params, idx_minus, idx, idx_plus, k_bend_cross_layer);
+
+            end
+        end 
     end 
     
 end 
@@ -1827,14 +1825,21 @@ function params = place_net(params, leaflet, ds, r, L, k_rel, k_target, ref_frac
     k_max = leaflet.k_max; 
     
     % output flag information 
-    copy = params.copy; 
-    if params.output.mesh(copy)
-        output        = true; 
-        output_stride = params.output.stride_mesh; 
+    copy = params.copy;
+    
+    if strcmp(params.type, 'aortic')
+        output = true; 
+        output_stride = 1; 
     else 
-        output        = false; 
+        % mitral 
+        if params.output.mesh(copy)
+            output        = true; 
+            output_stride = params.output.stride_mesh; 
+        else 
+            output        = false; 
+        end 
     end 
-   
+    
     function_idx = 0; 
     
     % only include those full rings which fit in the domain 
@@ -2339,13 +2344,19 @@ function params = place_rays(params, leaflet, ds, L, k_rel, k_target, ref_frac, 
     
     % output flag information 
     copy = params.copy; 
-    if params.output.mesh(copy)
-        output        = true; 
-        
-        % use leaflet stride here so fibers that continue as rays are plotted as such
-        output_stride = params.output.stride_leaflet; 
-    else 
-        output        = false; 
+    if strcmp(params.type, 'aortic')
+        output = true; 
+        output_stride = 1; 
+    else
+        % mitral 
+        if params.output.mesh(copy)
+            output        = true; 
+
+            % use leaflet stride here so fibers that continue as rays are plotted as such
+            output_stride = params.output.stride_leaflet; 
+        else 
+            output        = false; 
+        end 
     end 
     
     if strcmp(params.type, 'aortic')
@@ -2588,13 +2599,18 @@ function params = place_cartesian_net(params, leaflet, r_extra, L, ds, k_rel, k_
     
     % output flag information 
     copy = params.copy; 
-    if params.output.cartesian_mesh(copy)
-        output        = true; 
-        output_stride = params.output.stride_mesh; 
-    else 
-        output        = false; 
+    if strcmp(params.type, 'aortic')
+        output = true; 
+        output_stride = 1; 
+    else
+        % mitral 
+        if params.output.cartesian_mesh(copy)
+            output        = true; 
+            output_stride = params.output.stride_mesh; 
+        else 
+            output        = false; 
+        end 
     end 
-    
     
     % just keep a list of valid indices, mark NAN if out of physical bounds 
     indices_global = zeros(N,N);     
