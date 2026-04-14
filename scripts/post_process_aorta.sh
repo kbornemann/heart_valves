@@ -41,7 +41,7 @@ cp ~/heart_valves_preop/aorta_truncal_postop_extender_morphed.stl .
 cp ~/heart_valves_preop/aorta_truncal_preop_inextender_morphed_wcaps.vtp .
 
 # extracts relevant portion of mesh 
-#python3 ~/heart_valves_preop/scripts/remove_unnecessary_eulerian_space.py $TOTAL_TASKS
+python3 ~/heart_valves_preop/scripts/remove_unnecessary_eulerian_space.py $TOTAL_TASKS
 
 
 wait
