@@ -149,21 +149,38 @@ def remove_eulerian_space(basename,
                           proc_num=0, 
                           nprocs=1):
 
-    nsteps = [520,862,863,864]
+    # Convert nsteps to a set for easier comparison
+    nsteps = list(nsteps)
+    existing_steps = set(nsteps)
+    
+    # Scan current working directory for matching files
+    for filename in os.listdir('.'):
+        if filename.startswith('eulerian_vars_restricted_points0') and filename.endswith(f'.{extension}'):
+            # Extract the step number from filename
+            # Format: 'eulerian_vars_restricted_points0{nsteps:04d}.{extension}'
+            step_str = filename.replace('eulerian_vars_restricted_points0', '').replace(f'.{extension}', '')
+            try:
+                step = int(step_str)
+                existing_steps.add(step)
+            except ValueError:
+                # Skip files that don't have a valid integer step
+                pass
+    
+    # Update nsteps with all found steps and sort them
+    nsteps = sorted(list(existing_steps))
+    
 
-    for i, x in enumerate(nsteps):
-        if (x % nprocs) == proc_num:
+    for i in range(nsteps):
+        if (i % nprocs) == proc_num:
 
-            print("Nstep = ", x)
+            dir_name = basename + str(i).zfill(4)
 
-            dir_name = basename + str(x).zfill(4)
+            fname_out = basename + label + str(i).zfill(4) + '.' + extension
 
-            fname_out = basename + label + str(x).zfill(4) + '.' + extension
-
-            print(fname_out)
-
+            # read distributed vtr 
             mesh = read_distributed_vtr(dir_name)
 
+            # if there is cell data convert it 
             if convert_to_point_data:
 
                 if ('U' in mesh.cell_data) and ('P' in mesh.cell_data):
@@ -171,20 +188,23 @@ def remove_eulerian_space(basename,
                     if (NX is None) or (NY is None) or (NZ is None):
                         raise ValueError("Must provide values for NX,NY,NZ when converting cell to point data")
 
-                    
                     mesh = convert_mesh_to_center_points(mesh, NX, NY, NZ)
 
                 # check that there is point data if there was no cell data to convert 
                 elif not (('U' in mesh.point_data) and ('P' in mesh.point_data)):
                     raise ValueError('Could not find U and P in cell or point data, point data requested')
 
+
             selected = mesh.select_enclosed_points(boundary_mesh, tolerance=1.0e-10, inside_out=False, check_surface=True)
 
-            mesh_inside = selected.threshold(0.5, scalars="SelectedPoints", all_scalars=False)
+            # remove the exterior 
+            # all_scalars=True keeps cells that intersect boundary 
+            # all_scalars=False keeps cells that have at least one interior point 
+            mesh_inside = selected.threshold(0.5, scalars="SelectedPoints", all_scalars=False) 
+            #mesh_inside = selected.threshold(0.5, scalars="SelectedPoints", all_scalars=True) 
 
             mesh_inside.save(fname_out)
 
-            print("Saving file", fname_out)
 
 def remove_eulerian_space_single_frame(basename, 
                           boundary_mesh, 
@@ -277,8 +297,7 @@ if __name__ == '__main__':
     if basic:
     
         if len(sys.argv) >= 2:
-            nprocs = int(sys.argv[1]) # number of threads to launch
-            print("Nprocs = ", nprocs)  
+            nprocs = int(sys.argv[1]) # number of threads to launch  
         else: 
             print("using default nprocs = 1")
             nprocs = 1 
@@ -287,11 +306,19 @@ if __name__ == '__main__':
             boundary_mesh_name = sys.argv[2]
         # compute masks for all 
         else:
-            boundary_mesh_name = 'aorta_truncal_preop_inextender_morphed_wcaps.vtp'
+            boundary_mesh_name = '2_aorta_remeshed_pt5mm_capped.vtp'
+
+        if not os.path.isfile(boundary_mesh_name):
+            if os.path.isfile('../' + boundary_mesh_name):
+                shutil.copy('../' + boundary_mesh_name, '.') 
+            elif os.path.isfile(os.path.expanduser('~') + '/heart_valves/' + boundary_mesh_name):
+                shutil.copy(os.path.expanduser('~') + '/heart_valves/' + boundary_mesh_name, '.') 
+            else: 
+                raise FileNotFoundError("cannot find boundary_mesh_name file = ", boundary_mesh_name)
 
         # first make sure there is a times file 
         if not os.path.isfile('times.txt'):
-            subprocess.call('visit -cli -nowin -s ~/heart_valves_preop/scripts/write_times_file_visit.py', shell=True)
+            subprocess.call('visit -cli -nowin -s ~/heart_valves/scripts/write_times_file_visit.py', shell=True)
 
         times = []
         times_file = open('times.txt', 'r')
@@ -304,7 +331,7 @@ if __name__ == '__main__':
             dt = times[1] - times[0]
 
         # crop times for debug 
-        #times = times[12:22]
+        # times = times[:5]
 
         point_data = True 
         
@@ -329,8 +356,7 @@ if __name__ == '__main__':
 
         convert_to_point_data = True
 
-        point_data = True
-
+        point_data = True 
         if point_data:
             label = '_restricted_points'
         else: 
@@ -356,7 +382,7 @@ if __name__ == '__main__':
         if run_all:
 
             jobs = []
-            for proc_num in range(nprocs):           
+            for proc_num in range(nprocs):
                 p = multiprocessing.Process(target=remove_eulerian_space, args=(basename, 
                                                                                 boundary_mesh, 
                                                                                 nsteps, 
@@ -377,6 +403,7 @@ if __name__ == '__main__':
             basename_out = basename + label
 
             write_pvd(basename_out, dt, nsteps, extension, nprocs_sim=1)
+
 
 
     debug_simple = False 
@@ -494,7 +521,4 @@ if __name__ == '__main__':
         mesh_inside = selected.threshold(0.5, scalars="SelectedPoints", all_scalars=True) 
 
         mesh_inside.save(fname)
-
-        
-
 
