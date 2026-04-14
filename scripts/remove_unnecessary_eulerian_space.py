@@ -149,8 +149,12 @@ def remove_eulerian_space(basename,
                           proc_num=0, 
                           nprocs=1):
 
-    # Convert nsteps to a set for easier comparison
-    nsteps = list(nsteps)
+    # Ensure nsteps is a list
+    if isinstance(nsteps, int):
+        nsteps = [nsteps]
+    else:
+        nsteps = list(nsteps)
+    
     existing_steps = set(nsteps)
     
     # Scan current working directory for matching files
@@ -167,8 +171,7 @@ def remove_eulerian_space(basename,
                 pass
     
     # Update nsteps with all found steps and sort them
-    nsteps = sorted(list(existing_steps))
-    
+    nsteps = sorted(list(existing_steps)) 
 
     for i in range(nsteps):
         if (i % nprocs) == proc_num:
