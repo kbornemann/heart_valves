@@ -57,11 +57,21 @@ def write_pvd(basename, dt, nsteps, extension, nprocs_sim=1):
     f_write.close()
 
 
-def read_distributed_vtr(dir_name):
+def read_distributed_vtr(dir_name, combine=True, merge_points=True):
 
     files = natsorted(glob.glob(dir_name + "/*.vtr"))
     blocks = pyvista.MultiBlock([pyvista.RectilinearGrid(f) for f in files])
-    return blocks.combine(merge_points=True, tolerance=0.0001)
+    if combine:
+        return blocks.combine(merge_points=merge_points, tolerance=0.0001)
+    return blocks
+
+
+def combine_mesh_blocks(mesh_list, merge_points=False):
+    if len(mesh_list) == 0:
+        return pyvista.UnstructuredGrid()
+    if len(mesh_list) == 1:
+        return mesh_list[0]
+    return pyvista.MultiBlock(mesh_list).combine(merge_points=merge_points)
 
 
 def sort_points_and_point_data(points, point_data_U=None, point_data_P=None):
@@ -93,9 +103,10 @@ def generate_cells(NX,NY,NZ):
     '''
 
     get_1d_idx = lambda i,j,k : i + j*NX + k*NX*NY
+    n_cells = (NX-1) * (NY-1) * (NZ-1)
+    cells = np.empty((n_cells, 8), dtype=np.int32)
 
-    cells = []
-
+    idx = 0
     # every point gets a cell 
     # no cells on the top row of points 
     for i in range(NX-1):
@@ -104,36 +115,31 @@ def generate_cells(NX,NY,NZ):
 
                 # vtk order points the normal of the "bottom" face up 
                 # and the top face also up 
-                cell_tmp = []
-                cell_tmp.append(get_1d_idx(i  , j  , k  ))
-                cell_tmp.append(get_1d_idx(i+1, j  , k  ))
-                cell_tmp.append(get_1d_idx(i+1, j+1, k  ))
-                cell_tmp.append(get_1d_idx(i  , j+1, k  ))
-                cell_tmp.append(get_1d_idx(i  , j  , k+1))
-                cell_tmp.append(get_1d_idx(i+1, j  , k+1))
-                cell_tmp.append(get_1d_idx(i+1, j+1, k+1))
-                cell_tmp.append(get_1d_idx(i  , j+1, k+1))
-
-                cells.append(cell_tmp)
+                cells[idx, 0] = get_1d_idx(i  , j  , k  )
+                cells[idx, 1] = get_1d_idx(i+1, j  , k  )
+                cells[idx, 2] = get_1d_idx(i+1, j+1, k  )
+                cells[idx, 3] = get_1d_idx(i  , j+1, k  )
+                cells[idx, 4] = get_1d_idx(i  , j  , k+1)
+                cells[idx, 5] = get_1d_idx(i+1, j  , k+1)
+                cells[idx, 6] = get_1d_idx(i+1, j+1, k+1)
+                cells[idx, 7] = get_1d_idx(i  , j+1, k+1)
+                idx += 1
 
     return cells 
 
 
 
-def convert_mesh_to_center_points(mesh, NX, NY, NZ):
+def convert_mesh_to_center_points(mesh, NX=None, NY=None, NZ=None):
     ''' 
-    Takes cell data mesh and converts cell_array 'U' to point_array at center 
+    Takes cell data mesh and converts cell-centered arrays 'U' and 'P' into a point cloud at cell centers.
     '''
 
     mesh_cell_centers = mesh.cell_centers()
-    points_sorted, point_data_sorted_U, point_data_sorted_P = sort_points_and_point_data(mesh_cell_centers.points, mesh_cell_centers.point_data['U'], mesh_cell_centers.point_data['P'])
-    cells_sorted = generate_cells(NX,NY,NZ)
+    for name in ['U', 'P']:
+        if name in mesh.cell_data:
+            mesh_cell_centers.point_data[name] = mesh.cell_data[name]
 
-    mesh_points_meshio_format = meshio.Mesh(points_sorted, 
-                                        cells={"hexahedron": cells_sorted}, 
-                                        point_data={'U': point_data_sorted_U, 'P': point_data_sorted_P})
-
-    return pyvista.wrap(mesh_points_meshio_format)
+    return mesh_cell_centers
 
 
 
@@ -180,31 +186,38 @@ def remove_eulerian_space(basename,
 
             fname_out = basename + label + str(i).zfill(4) + '.' + extension
 
-            # read distributed vtr 
-            mesh = read_distributed_vtr(dir_name)
+            if os.path.isfile(fname_out):
+                print(f"Skipping existing output file: {fname_out}")
+                continue
 
-            # if there is cell data convert it 
+            blocks = read_distributed_vtr(dir_name, combine=False)
+
             if convert_to_point_data:
+                selected_blocks = []
+                for block in blocks:
+                    if ('U' in block.cell_data) and ('P' in block.cell_data):
+                        mesh_point_data = convert_mesh_to_center_points(block)
+                    elif ('U' in block.point_data) and ('P' in block.point_data):
+                        mesh_point_data = block
+                    else:
+                        raise ValueError('Could not find U and P in block cell or point data, point data requested')
 
-                if ('U' in mesh.cell_data) and ('P' in mesh.cell_data):
+                    selected = mesh_point_data.select_enclosed_points(boundary_mesh, tolerance=1.0e-10, inside_out=False, check_surface=True)
+                    mesh_inside_block = selected.threshold(0.5, scalars="SelectedPoints", all_scalars=False)
+                    if mesh_inside_block.n_points > 0:
+                        selected_blocks.append(mesh_inside_block)
 
-                    if (NX is None) or (NY is None) or (NZ is None):
-                        raise ValueError("Must provide values for NX,NY,NZ when converting cell to point data")
+                mesh_inside = combine_mesh_blocks(selected_blocks, merge_points=False)
 
-                    mesh = convert_mesh_to_center_points(mesh, NX, NY, NZ)
+            else:
+                selected_blocks = []
+                for block in blocks:
+                    selected = block.select_enclosed_points(boundary_mesh, tolerance=1.0e-10, inside_out=False, check_surface=True)
+                    mesh_inside_block = selected.threshold(0.5, scalars="SelectedPoints", all_scalars=False)
+                    if mesh_inside_block.n_cells > 0:
+                        selected_blocks.append(mesh_inside_block)
 
-                # check that there is point data if there was no cell data to convert 
-                elif not (('U' in mesh.point_data) and ('P' in mesh.point_data)):
-                    raise ValueError('Could not find U and P in cell or point data, point data requested')
-
-
-            selected = mesh.select_enclosed_points(boundary_mesh, tolerance=1.0e-10, inside_out=False, check_surface=True)
-
-            # remove the exterior 
-            # all_scalars=True keeps cells that intersect boundary 
-            # all_scalars=False keeps cells that have at least one interior point 
-            mesh_inside = selected.threshold(0.5, scalars="SelectedPoints", all_scalars=False) 
-            #mesh_inside = selected.threshold(0.5, scalars="SelectedPoints", all_scalars=True) 
+                mesh_inside = combine_mesh_blocks(selected_blocks, merge_points=False)
 
             mesh_inside.save(fname_out)
 
@@ -225,28 +238,39 @@ def remove_eulerian_space_single_frame(basename,
 
     fname_out = basename + label + str(i).zfill(4) + '.' + extension
 
-    # read distributed vtr 
-    mesh = read_distributed_vtr(dir_name)
+    if os.path.isfile(fname_out):
+        print(f"Skipping existing output file: {fname_out}")
+        return
 
-    fname_out_cells = basename + "no_restrict_cells" + str(i).zfill(4) + '.' + extension
-    mesh.save(fname_out_cells)
+    # read distributed vtr blocks without merging into a single mesh
+    blocks = read_distributed_vtr(dir_name, combine=False)
 
     if point_data:
+        selected_blocks = []
+        for block in blocks:
+            if ('U' in block.cell_data) and ('P' in block.cell_data):
+                mesh_point_data = convert_mesh_to_center_points(block)
+            elif ('U' in block.point_data) and ('P' in block.point_data):
+                mesh_point_data = block
+            else:
+                raise ValueError('Could not find U and P in block cell or point data, point data requested')
 
-        if (NX is None) or (NY is None) or (NZ is None):
-            raise ValueError("Must provide values for NX,NY,NZ when calling points")
+            selected = mesh_point_data.select_enclosed_points(boundary_mesh, tolerance=1.0e-10, inside_out=False, check_surface=True)
+            mesh_inside_block = selected.threshold(0.5, scalars="SelectedPoints", all_scalars=False)
+            if mesh_inside_block.n_points > 0:
+                selected_blocks.append(mesh_inside_block)
 
-        mesh_point_data = convert_mesh_to_center_points(mesh, NX, NY, NZ)
-        selected = mesh_point_data.select_enclosed_points(boundary_mesh, tolerance=1.0e-10, inside_out=False, check_surface=True)
+        mesh_inside = combine_mesh_blocks(selected_blocks, merge_points=False)
 
     else:
-        selected = mesh.select_enclosed_points(boundary_mesh, tolerance=1.0e-10, inside_out=False, check_surface=True)
+        selected_blocks = []
+        for block in blocks:
+            selected = block.select_enclosed_points(boundary_mesh, tolerance=1.0e-10, inside_out=False, check_surface=True)
+            mesh_inside_block = selected.threshold(0.5, scalars="SelectedPoints", all_scalars=False)
+            if mesh_inside_block.n_cells > 0:
+                selected_blocks.append(mesh_inside_block)
 
-    # remove the exterior 
-    # all_scalars=True keeps cells that intersect boundary 
-    # all_scalars=False keeps cells that have at least one interior point 
-    mesh_inside = selected.threshold(0.5, scalars="SelectedPoints", all_scalars=False) 
-    #mesh_inside = selected.threshold(0.5, scalars="SelectedPoints", all_scalars=True) 
+        mesh_inside = combine_mesh_blocks(selected_blocks, merge_points=False)
 
     mesh_inside.save(fname_out)
 
