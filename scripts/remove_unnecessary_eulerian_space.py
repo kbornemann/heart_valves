@@ -149,9 +149,9 @@ def remove_eulerian_space(basename,
                           proc_num=0, 
                           nprocs=1):
 
-    # Ensure nsteps is a list
+    # Ensure nsteps is a list of frame indices
     if isinstance(nsteps, int):
-        nsteps = [nsteps]
+        nsteps = list(range(nsteps))
     else:
         nsteps = list(nsteps)
     
@@ -159,10 +159,10 @@ def remove_eulerian_space(basename,
     
     # Scan current working directory for matching files
     for filename in os.listdir('.'):
-        if filename.startswith('eulerian_vars_restricted_points0') and filename.endswith(f'.{extension}'):
+        if filename.startswith('eulerian_vars_restricted_points') and filename.endswith(f'.{extension}'):
             # Extract the step number from filename
             # Format: 'eulerian_vars_restricted_points0{nsteps:04d}.{extension}'
-            step_str = filename.replace('eulerian_vars_restricted_points0', '').replace(f'.{extension}', '')
+            step_str = filename.replace('eulerian_vars_restricted_points', '').replace(f'.{extension}', '')
             try:
                 step = int(step_str)
                 existing_steps.add(step)
@@ -170,10 +170,10 @@ def remove_eulerian_space(basename,
                 # Skip files that don't have a valid integer step
                 pass
     
-    # Update nsteps with all found steps and sort them
+    # Update nsteps with all found frame indices and sort them
     nsteps = sorted(list(existing_steps)) 
 
-    for i in range(nsteps):
+    for i in nsteps:
         if (i % nprocs) == proc_num:
 
             dir_name = basename + str(i).zfill(4)
@@ -524,4 +524,3 @@ if __name__ == '__main__':
         mesh_inside = selected.threshold(0.5, scalars="SelectedPoints", all_scalars=True) 
 
         mesh_inside.save(fname)
-
