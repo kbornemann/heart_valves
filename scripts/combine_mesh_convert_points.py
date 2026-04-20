@@ -87,10 +87,9 @@ def generate_cells(NX,NY,NZ):
     '''
 
     get_1d_idx = lambda i,j,k : i + j*NX + k*NX*NY
-    n_cells = (NX-1) * (NY-1) * (NZ-1)
-    cells = np.empty((n_cells, 8), dtype=np.int32)
 
-    idx = 0
+    cells = []
+
     # every point gets a cell 
     # no cells on the top row of points 
     for i in range(NX-1):
@@ -99,15 +98,17 @@ def generate_cells(NX,NY,NZ):
 
                 # vtk order points the normal of the "bottom" face up 
                 # and the top face also up 
-                cells[idx, 0] = get_1d_idx(i  , j  , k  )
-                cells[idx, 1] = get_1d_idx(i+1, j  , k  )
-                cells[idx, 2] = get_1d_idx(i+1, j+1, k  )
-                cells[idx, 3] = get_1d_idx(i  , j+1, k  )
-                cells[idx, 4] = get_1d_idx(i  , j  , k+1)
-                cells[idx, 5] = get_1d_idx(i+1, j  , k+1)
-                cells[idx, 6] = get_1d_idx(i+1, j+1, k+1)
-                cells[idx, 7] = get_1d_idx(i  , j+1, k+1)
-                idx += 1
+                cell_tmp = []
+                cell_tmp.append(get_1d_idx(i  , j  , k  ))
+                cell_tmp.append(get_1d_idx(i+1, j  , k  ))
+                cell_tmp.append(get_1d_idx(i+1, j+1, k  ))
+                cell_tmp.append(get_1d_idx(i  , j+1, k  ))
+                cell_tmp.append(get_1d_idx(i  , j  , k+1))
+                cell_tmp.append(get_1d_idx(i+1, j  , k+1))
+                cell_tmp.append(get_1d_idx(i+1, j+1, k+1))
+                cell_tmp.append(get_1d_idx(i  , j+1, k+1))
+
+                cells.append(cell_tmp)
 
     return cells 
 
@@ -350,3 +351,6 @@ if __name__ == '__main__':
                      NX,
                      NY, 
                      NZ)
+
+
+
