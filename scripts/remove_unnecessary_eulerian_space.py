@@ -283,7 +283,7 @@ if __name__ == '__main__':
 
         # first make sure there is a times file 
         if not os.path.isfile('times.txt'):
-            subprocess.call('visit -cli -nowin -s ~/heart_valves/scripts/write_times_file_visit.py', shell=True)
+            subprocess.call('visit -cli -nowin -s ~/heart_valves_preop/scripts/write_times_file_visit.py', shell=True)
 
         times = []
         times_file = open('times.txt', 'r')
@@ -328,8 +328,8 @@ if __name__ == '__main__':
 
         # grab this file if it's not here... 
         if not os.path.isfile(boundary_mesh_name):
-            if os.path.isfile('~/heart_valves/' + boundary_mesh_name):
-                shutil.copy('~/heart_valves/' + boundary_mesh_name, '.') 
+            if os.path.isfile('~/heart_valves_preop/' + boundary_mesh_name):
+                shutil.copy('~/heart_valves_preop/' + boundary_mesh_name, '.') 
             else: 
                 raise FileNotFoundError("cannot find boundary_mesh_name file = ", boundary_mesh_name)
 
@@ -431,12 +431,12 @@ if __name__ == '__main__':
         extension = 'vtu'
 
         # compute masks for all 
-        boundary_mesh_name = 'aorta_truncal_postop_shortextender_morphed_wcaps.vtp'
+        boundary_mesh_name = 'aorta_truncal_preop_inextender_morphed_wcaps.vtp'
 
         # grab this file if it's not here... 
         if not os.path.isfile(boundary_mesh_name):
-            if os.path.isfile('~/heart_valves/' + boundary_mesh_name):
-                shutil.copy('~/heart_valves/' + boundary_mesh_name, '.') 
+            if os.path.isfile('~/heart_valves_preop/' + boundary_mesh_name):
+                shutil.copy('~/heart_valves_preop/' + boundary_mesh_name, '.') 
             else: 
                 raise FileNotFoundError("cannot find boundary_mesh_name file = ", boundary_mesh_name)
 
