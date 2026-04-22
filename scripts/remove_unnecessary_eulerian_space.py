@@ -176,9 +176,13 @@ def remove_eulerian_space(basename,
     for i in nsteps:
         if (i % nprocs) == proc_num:
 
+            
+
             dir_name = basename + str(i).zfill(4)
 
             fname_out = basename + label + str(i).zfill(4) + '.' + extension
+
+            print(fname_out)
 
             # read distributed vtr 
             mesh = read_distributed_vtr(dir_name)
