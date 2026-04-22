@@ -8,7 +8,7 @@ import multiprocessing
 import pdb
 import numpy as np 
 import re
-import shutil
+
 
 def write_pvd(basename, dt, nsteps, extension, nprocs_sim=1):
 
@@ -142,67 +142,33 @@ def remove_eulerian_space(basename,
                           nsteps, 
                           label='_restricted_cells', 
                           extension='vtu', 
-                          convert_to_point_data=True, 
+                          point_data=False, 
                           NX=None, 
                           NY=None, 
                           NZ=None, 
                           proc_num=0, 
                           nprocs=1):
 
-    # Ensure nsteps is a list of frame indices
-    if isinstance(nsteps, int):
-        nsteps = list(range(nsteps))
-    else:
-        nsteps = list(nsteps)
-    
-    existing_steps = set(nsteps)
-    
-    # Scan current working directory for matching files
-    for filename in os.listdir('.'):
-        if filename.startswith('eulerian_vars_restricted_points') and filename.endswith(f'.{extension}'):
-            # Extract the step number from filename
-            # Format: 'eulerian_vars_restricted_points0{nsteps:04d}.{extension}'
-            step_str = filename.replace('eulerian_vars_restricted_points', '').replace(f'.{extension}', '')
-            try:
-                step = int(step_str)
-                existing_steps.add(step)
-            except ValueError:
-                # Skip files that don't have a valid integer step
-                pass
-    
-    # Update nsteps with all found frame indices and sort them
-    nsteps = sorted(list(existing_steps)) 
-
-    for i in nsteps:
+    for i in range(nsteps):
         if (i % nprocs) == proc_num:
-
-            
 
             dir_name = basename + str(i).zfill(4)
 
             fname_out = basename + label + str(i).zfill(4) + '.' + extension
 
-            print(fname_out)
-
             # read distributed vtr 
             mesh = read_distributed_vtr(dir_name)
 
-            # if there is cell data convert it 
-            if convert_to_point_data:
+            if point_data:
 
-                if ('U' in mesh.cell_data) and ('P' in mesh.cell_data):
+                if (NX is None) or (NY is None) or (NZ is None):
+                    raise ValueError("Must provide values for NX,NY,NZ when calling points")
 
-                    if (NX is None) or (NY is None) or (NZ is None):
-                        raise ValueError("Must provide values for NX,NY,NZ when converting cell to point data")
+                mesh_point_data = convert_mesh_to_center_points(mesh, NX, NY, NZ)
+                selected = mesh_point_data.select_enclosed_points(boundary_mesh, tolerance=1.0e-10, inside_out=False, check_surface=True)
 
-                    mesh = convert_mesh_to_center_points(mesh, NX, NY, NZ)
-
-                # check that there is point data if there was no cell data to convert 
-                elif not (('U' in mesh.point_data) and ('P' in mesh.point_data)):
-                    raise ValueError('Could not find U and P in cell or point data, point data requested')
-
-
-            selected = mesh.select_enclosed_points(boundary_mesh, tolerance=1.0e-10, inside_out=False, check_surface=True)
+            else:
+                selected = mesh.select_enclosed_points(boundary_mesh, tolerance=1.0e-10, inside_out=False, check_surface=True)
 
             # remove the exterior 
             # all_scalars=True keeps cells that intersect boundary 
@@ -313,15 +279,7 @@ if __name__ == '__main__':
             boundary_mesh_name = sys.argv[2]
         # compute masks for all 
         else:
-            boundary_mesh_name = '2_aorta_remeshed_pt5mm_capped.vtp'
-
-        if not os.path.isfile(boundary_mesh_name):
-            if os.path.isfile('../' + boundary_mesh_name):
-                shutil.copy('../' + boundary_mesh_name, '.') 
-            elif os.path.isfile(os.path.expanduser('~') + '/heart_valves/' + boundary_mesh_name):
-                shutil.copy(os.path.expanduser('~') + '/heart_valves/' + boundary_mesh_name, '.') 
-            else: 
-                raise FileNotFoundError("cannot find boundary_mesh_name file = ", boundary_mesh_name)
+            boundary_mesh_name = 'aorta_truncal_postop_shortextender_morphed_wcaps.vtp'
 
         # first make sure there is a times file 
         if not os.path.isfile('times.txt'):
@@ -361,9 +319,6 @@ if __name__ == '__main__':
         basename = "eulerian_vars"
         nsteps = len(times)
 
-        convert_to_point_data = True
-
-        point_data = True 
         if point_data:
             label = '_restricted_points'
         else: 
@@ -373,8 +328,8 @@ if __name__ == '__main__':
 
         # grab this file if it's not here... 
         if not os.path.isfile(boundary_mesh_name):
-            if os.path.isfile('~/heart_valves_preop/' + boundary_mesh_name):
-                shutil.copy('~/heart_valves_preop/' + boundary_mesh_name, '.') 
+            if os.path.isfile('~/heart_valves/' + boundary_mesh_name):
+                shutil.copy('~/heart_valves/' + boundary_mesh_name, '.') 
             else: 
                 raise FileNotFoundError("cannot find boundary_mesh_name file = ", boundary_mesh_name)
 
@@ -395,7 +350,7 @@ if __name__ == '__main__':
                                                                                 nsteps, 
                                                                                 label, 
                                                                                 extension,
-                                                                                convert_to_point_data, 
+                                                                                point_data, 
                                                                                 NX,
                                                                                 NY, 
                                                                                 NZ, 
@@ -476,12 +431,12 @@ if __name__ == '__main__':
         extension = 'vtu'
 
         # compute masks for all 
-        boundary_mesh_name = 'aorta_truncal_preop_inextender_morphed_wcaps.vtp'
+        boundary_mesh_name = 'aorta_truncal_postop_shortextender_morphed_wcaps.vtp'
 
         # grab this file if it's not here... 
         if not os.path.isfile(boundary_mesh_name):
-            if os.path.isfile('~/heart_valves_preop/' + boundary_mesh_name):
-                shutil.copy('~/heart_valves_preop/' + boundary_mesh_name, '.') 
+            if os.path.isfile('~/heart_valves/' + boundary_mesh_name):
+                shutil.copy('~/heart_valves/' + boundary_mesh_name, '.') 
             else: 
                 raise FileNotFoundError("cannot find boundary_mesh_name file = ", boundary_mesh_name)
 
@@ -528,3 +483,7 @@ if __name__ == '__main__':
         mesh_inside = selected.threshold(0.5, scalars="SelectedPoints", all_scalars=True) 
 
         mesh_inside.save(fname)
+
+        
+
+
