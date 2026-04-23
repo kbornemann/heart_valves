@@ -186,7 +186,7 @@ class optimizer_class():
         print("volume_lv_initial = ", volume_lv_initial)
 
         for idx,t in enumerate(times):
-            if t >= 0.2:
+            if t >= 0.25:
                 print("at t = ", t, ", p_aortic_valve_mmHg = ", p_aorta[idx]/MMHG_TO_CGS)
                 break 
 
@@ -361,8 +361,8 @@ if __name__== "__main__":
     run_opt = True
     if run_opt:
 
-        cycle_duration = 0.8
-        maxit = 10000
+        cycle_duration = 0.382
+        maxit = 1000000
 
         fwd_sim_file = "chamber_elastance_two_hill_valve_rcr.json"
 
@@ -373,16 +373,16 @@ if __name__== "__main__":
 
         targets_all = ['Emax', 'Emin', 't_shift', 'tau_1', 'tau_2', 'm1', 'm2', 'C', 'Rd', 'Rp']
 
-        bounds_all = {'Emax'    : [0.0, 1e4], 
-                      'Emin'    : [0.0, 1e3], 
+        bounds_all = {'Emax'    : [0.0, 1e5], 
+                      'Emin'    : [0.0, 1e4], 
                       't_shift' : [0.0, cycle_duration], 
                       'tau_1'   : [0.0, cycle_duration], 
                       'tau_2'   : [0.0, cycle_duration], 
-                      'm1'      : [0.0, 40.0], 
-                      'm2'      : [0.0, 40.0],
+                      'm1'      : [0.0, 100.0], 
+                      'm2'      : [0.0, 100.0],
                       'C'       : [0.0, 0.01],
-                      'Rd'      : [0.0, 4000.0],
-                      'Rp'      : [0.0, 500.0]
+                      'Rd'      : [0.0, 100000.0],
+                      'Rp'      : [0.0, 5000.0]
                       }
 
 
@@ -437,10 +437,35 @@ if __name__== "__main__":
         optimizer.print_summary(targets_all)        
         optimizer.plot('after rcr')
 
+
+        
+
         optimizer.variables_to_opt = ["flow:ventricle:valve1", "pressure:ventricle:valve1", "pressure:vessel:OUTLET"]    
         result = run_optimization(optimizer, targets_all)    
         print("result = ", result)    
         optimizer.print_summary(targets_all)                
+
+
+        targets = ['Emax', 'Emin', 't_shift', 'tau_1', 'tau_2', 'm1', 'm2']
+        optimizer.variables_to_opt = ["flow:ventricle:valve1", "pressure:ventricle:valve1"]
+        result = run_optimization(optimizer, targets)
+        print("result = ", result)
+        optimizer.print_summary(targets_all)
+        optimizer.plot('after chamber')
+
+        targets = ['C', 'Rd', 'Rp']
+        optimizer.variables_to_opt = ["flow:ventricle:valve1", "pressure:vessel:OUTLET"]
+        result = run_optimization(optimizer, targets)
+        print("result = ", result)
+        optimizer.print_summary(targets_all)
+        optimizer.plot('after rcr')
+
+
+
+        optimizer.variables_to_opt = ["flow:ventricle:valve1", "pressure:ventricle:valve1", "pressure:vessel:OUTLET"]
+        result = run_optimization(optimizer, targets_all)
+        print("result = ", result)
+        optimizer.print_summary(targets_all)
 
 
         # print("resulting Emax = ", optimizer.fwd_sim_obj['chambers'][0]['values']['Emax'])

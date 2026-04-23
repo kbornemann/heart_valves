@@ -55,20 +55,22 @@ end
 times_three_cycle = [times; times+cycle_length; times+(2*cycle_length)]; 
 vals_three_cycle = [vals; vals; vals]; 
 
-% fig = figure; 
-% plot(times_three_cycle, vals_three_cycle)
-% title('three cycle')
-
 % scaling factor that gives appropriate radius 
 h = (2/pi) * bump_radius; 
 
 % this should integrate to one 
 cos_bump = @(x) (abs(x) <= bump_radius) .* (1/h) .* (2/pi) .* cos(x/h).^2; 
 
+
+
 % want this mesh to be aligned with the previous mesh
 % shift by scalar to be approx centered at zero 
+
+floor(length(times_three_cycle)/2)
 mesh_bump = times_three_cycle - times_three_cycle(floor(length(times_three_cycle)/2)); 
 bump_vals = cos_bump(mesh_bump); 
+
+
 
 if debug 
     fig = figure; 
@@ -89,6 +91,8 @@ if plots
     plot(times, smoothed_one_cycle ); 
     title('After convolution, one cycle')
 end 
+
+
 
 [a_0 a_n b_n Series Series_derivative] = fourier_series_uniform(times, smoothed_one_cycle, cycle_length, n_fourier_coeffs, dt); 
 
