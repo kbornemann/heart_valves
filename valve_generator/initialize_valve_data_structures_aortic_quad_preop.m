@@ -92,8 +92,8 @@ if valve.in_heart
     % valve.initial_rotation_aortic = rotation_matrix_z(pi/4); 
     
     % for normal_3
-    th = 1.75*pi; 
-    valve.initial_translation_aortic = 0.005 * [cos(th); sin(th); 0]; 
+    th = 1.75*pi; %2.25*pi;  
+    valve.initial_translation_aortic = 0.005 * [cos(th); sin(th); 0]; %-0.02 * [cos(th); sin(th); 0]; 
     valve.initial_rotation_aortic = rotation_matrix_z(pi/3 + pi/12 + pi/2 + pi/48 + (cusp_fused * 2*pi/3));
     valve.transformation_vertex_file = 'aortic_annulus_truncal_preop.vertex';
     
