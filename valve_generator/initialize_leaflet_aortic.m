@@ -82,9 +82,9 @@ if isfield(leaflet, 'variety') && strcmp(leaflet.variety, 'bicuspid') && (mod(N,
     error('Bicuspid aortic valve N must be a multiple of two'); 
 end
     
-if mod(N,3) ~= 0
-    error('Aortic valve N must be a multiple of three'); 
-end 
+%if mod(N,3) ~= 0
+%    error('Aortic valve N must be a multiple of three'); 
+%end
 
 
 leaflet.du = 1/N; 

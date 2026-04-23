@@ -1,4 +1,4 @@
-function [valve] = initialize_valve_data_structures_aortic_generic(N)
+function [valve] = initialize_valve_data_structures_aortic_quad_postop(N)
 % 
 % Initializes data structures for full solve.  
 % 
@@ -41,6 +41,7 @@ function [valve] = initialize_valve_data_structures_aortic_generic(N)
 valve.N = N; 
 
 valve.rotate_identical_leaflets = true;
+valve.translate_identical_leaflets = false;
 
 % effective infinity by default 
 valve.max_it                = 1e8; 
@@ -70,6 +71,9 @@ valve.jacobian  = @build_jacobian_aortic;
 name = 'aortic'; 
 valve.name = name; 
 
+variety= 'quadricuspid'; 
+valve.variety = variety;
+
 % does not place partition
 valve.in_heart = true; 
 
@@ -88,13 +92,13 @@ if valve.in_heart
     % valve.initial_rotation_aortic = rotation_matrix_z(pi/4); 
     
     % for normal_3
-    th = 2*pi/3; 
-    valve.initial_translation_aortic = -0.05 * [cos(th); sin(th); 0]; 
-    valve.initial_rotation_aortic = rotation_matrix_z(pi/3 + pi/12 + pi/48 + (cusp_fused * 2*pi/3));
-    valve.transformation_vertex_file = 'aortic_annulus.vertex';
+    th = 1.0*pi; 
+    valve.initial_translation_aortic = -0.06 * [cos(th); sin(th); 0]; 
+    valve.initial_rotation_aortic = rotation_matrix_z(pi/3 + pi/12 + 7*pi/30 + pi/48 + (cusp_fused * 2*pi/3));
+    valve.transformation_vertex_file = 'aortic_annulus_truncal_postop.vertex';
     
 else 
-    valve.base_name = sprintf('aortic_%d', N); 
+    valve.base_name = sprintf('aortic_%d', N);
 end 
 MMHG_TO_CGS     = 1333.22368;
 
@@ -110,7 +114,7 @@ valve.X_config_is_reference = true;
 % places this many exact copies of the leaflet downward in z 
 % spring constants are all reduced by num_copies 
 % spacing is always half a mesh width 
-valve.num_copies = 3; 
+valve.num_copies = 5; 
 
 % valve.copy_spring_weights = [1/2 1/4 1/4];
 
@@ -152,7 +156,7 @@ valve.annulus_flattened_normalized = [
 
 valve.normal_thicken = true; 
 % nominal aortic valve thickness
-valve.normal_thickness = 0.044 * (384/N); 
+valve.normal_thickness = 0.05; %0.044 * (384/N); 
 
 valve.extrusion_out = true;
 
@@ -191,7 +195,9 @@ valve.tol_global = 1e-3;
 
 % commissural tree version 
 % but without explicit commissural leaflets 
-valve.p_physical = 60 * MMHG_TO_CGS; 
+% Pressure scales ALL stiffnesses - choose slightly lower than diastolic
+% pressure
+valve.p_physical = 10 * MMHG_TO_CGS; %30 * MMHG_TO_CGS; 
 
 % Pressure on each leaflet is constant, negative since normal is outward facing 
 p_0 = -valve.p_physical; 
@@ -204,9 +210,9 @@ valve.p_final = 0 * MMHG_TO_CGS;
 
 valve.L = 2.25; 
 
-r_stj = 2.5/2; % 25 mm valve 
-r_temp = 2.5/2; % vbr radius
-hc = 0.5 * r_stj; 
+r_stj = 0.81/2; % 25 mm valve 
+r_temp = 0.81/2; % vbr radius
+hc = 0.5*r_stj; %0.5 * r_stj; 
 h1 = 1.4 * r_stj - hc; 
 r_commissure = r_stj; 
 % place the post only if not using the full annulus geometry 
@@ -255,7 +261,7 @@ tension_coeffs.c_circ_dec_free_edge_percentage = 0.0;
 % and scaling for copies is handled by the output routine 
 
 % scales for by mesh width for consistant total mesh force on ring 
-valve.target_net_unscaled       = (8 / valve.N) * (192/N); 
+valve.target_net_unscaled       = (8 / valve.N) * (256/N); 
 
 % does not scale since total number of points is constant 
 valve.target_papillary_unscaled = 2 * 40/128; 
@@ -269,18 +275,19 @@ valve.eta_papillary_unscaled = 0.0; valve.target_papillary_unscaled/500;
 % if nonzero, linear springs of rest length with spacing between the layers 
 % are placed with this value 
 % final formula is multiplied by valve.tension_base  
-valve.kappa_cross_layer_multipler = 10 * (384/N)^2 * 1e4 / 256^2;
+% layer stiffness
+valve.kappa_cross_layer_multipler = (384/N)^2 * 1e4 / 256^2; %10 * (512/N)^2 * 1e4 / 256^2;
 
 % valve.k_bend_radial = [0 0 1e5 1e5] * 192/N;
-valve.k_bend_radial = 1e4 * 192/N;
+valve.k_bend_radial = 1e4 * 384/N;
 % valve.k_bend_radial_annulus = 1e2 * 192/N;
-valve.k_bend_radial_free_edge = 0; 1e4 * 192/N;
+valve.k_bend_radial_free_edge = 0; %1e4 * 256/N;
 valve.k_bend_radial_free_edge_percentage = 0; 
-valve.k_bend_circ = 1e4 * 192/N; 
+valve.k_bend_circ = 1e4 * 384/N; 
 valve.k_bend_circ_free_edge = 0; 
 valve.k_bend_circ_free_edge_percentage = 0;
 
-valve.k_bend_cross_layer = 1e4 * 192/N;
+valve.k_bend_cross_layer = 1e4 * 384/N;
 
 if valve.in_heart
     
@@ -288,7 +295,7 @@ if valve.in_heart
     valve.ds = dx/2; %2*pi*valve.skeleton.r / N; 
 
     % if min radius lower than 2.5cm, increase ring thickness accordingly 
-    thickness_cylinder = 0.3 + (2.5/2 - valve.r); 
+    thickness_cylinder = 0.4 + (r_stj/2 - valve.r); 
     valve.n_layers_cylinder = ceil(thickness_cylinder/valve.ds) + 1; 
 
     h_scaffold_min = -0.05;
@@ -301,14 +308,15 @@ if valve.in_heart
 
     % value from least squares on pulm 
     % p = 3.095653361985474; 
-    p = 100; 
+    p = 20; %100; 
 
     % function with unspecified power 
     % valve.z_max_cylinder = @(theta) h_top_scaffold_min * ones(size(theta))  +  h_top_scaffold_amplitude * abs(cos(theta)).^(p); 
 
-    cos_power = @(theta) h_top_scaffold_min * ones(size(theta)) + (0.05 + h_top_scaffold_max) * abs(cos((3/2) * theta)).^(p); 
+    cos_power = @(theta) h_top_scaffold_min * ones(size(theta)) + (h_top_scaffold_max) * abs(cos((4/2) * theta)).^(p); 
+    %cos_power = @(theta) h_top_scaffold_min * ones(size(theta)) + (0.05 + h_top_scaffold_max) * abs(cos((4/2) * theta)).^(p); 
 
-    annulus_min_fn = @(theta) h_top_scaffold_max * interp1(valve.annulus_flattened_normalized(:,1), valve.annulus_flattened_normalized(:,2), mod(theta,2*pi/3)/(2*pi/3), 'pchip'); 
+    annulus_min_fn = @(theta) h_top_scaffold_max * interp1(valve.annulus_flattened_normalized(:,1), valve.annulus_flattened_normalized(:,2), mod(theta,2*pi/4)/(2*pi/4), 'pchip'); 
 
     h_top_min_adjust = @(theta) h_top_scaffold_min * ones(size(theta));
 
@@ -423,7 +431,7 @@ valve.leaflets(1).extrusion_out = valve.extrusion_out;
 
 if fused_commissure
     valve.leaflets(1).fused_commissure = true; 
-    valve.leaflets(1).fused_comm_idx    = 3; 
+    valve.leaflets(1).fused_comm_idx    = 4; 
 end 
 
 % viscoelastic damping coefficients springs 

@@ -1,4 +1,4 @@
-function valve = add_rotated_leaflets_aortic(valve)
+function valve = add_translated_leaflets_aortic(valve)
 
 N_leaflets = valve.leaflets(1).N_leaflets; 
 
@@ -26,11 +26,16 @@ for n = 2:N_leaflets
     
 end
 
+f = fopen('aortic_annulus_truncal_postop.vertex', 'r'); 
+vertices_ring_bdry = fscanf(f, '%f'); 
+fclose(f); 
 
+% first is number of vertices 
+n_pts_ring_from_file = vertices_ring_bdry(1); 
 
+% crop to keep just this 
+vertices_ring_bdry = vertices_ring_bdry(2:end); 
 
-
-
-
-
+vertices_ring_bdry = reshape(vertices_ring_bdry, 3, []); 
+[~, n_pts_ring] = size(vertices_ring_bdry);
 

@@ -1,9 +1,10 @@
 
-% add default location
-addpath ~/heart_valves_preop/valve_generator 
+% add two default locations 
+%addpath ~/heart_valves
+%addpath ~/mitral_fully_discrete/valve_generator 
 
-data_dir = pwd; 
-run_inv_transform = false; 
+data_dir = '~/heart_valves/valve_generator/test'; 
+run_inv_transform = true; 
 
 % if isfile('aortic_no_partition_384_final_data.mat')
 %     load('aortic_no_partition_384_final_data.mat', 'valve_with_reference', 'params');  
@@ -11,7 +12,7 @@ run_inv_transform = false;
 %     load('aortic_no_partition_192_final_data.mat', 'valve_with_reference', 'params');  
 % end 
 
-mat_file_list = dir('aortic_*final_data.mat'); 
+mat_file_list = dir('aortic_no_partition_192_final_data.mat'); 
 
 if length(mat_file_list) ~= 1 
     error('found too many mat files')
@@ -23,8 +24,6 @@ load(mat_file_name , 'valve_with_reference', 'params');
 cell_file_exported = false; 
 
 file_list = dir('aortic_*.csv');
-
-add_mechanics = false;
 
 for i = 1:length(file_list)
     
@@ -46,12 +45,15 @@ for i = 1:length(file_list)
 
         frame_num = str2num(name(end-3:end));
         
-        %if add_mechanics && ((frame_num == 662) || (frame_num == 837))
+        export_mechanics = false;
+        export_coaptation = false;
+
+        %if (frame_num == 662) || (frame_num == 837) 
         %    export_mechanics = true 
         %    export_coaptation = true
         %else 
-        export_mechanics = true;
-        export_coaptation = true;
+        %    export_mechanics = false
+        %    export_coaptation = false
         %end 
         
         export_aortic_vertices_cells(file_name, valve_with_reference, params, data_dir, run_inv_transform, export_cells, export_mechanics, export_coaptation); 

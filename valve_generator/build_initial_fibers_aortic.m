@@ -39,6 +39,8 @@ N_each = leaflet.N_each;
 
 if isfield(leaflet, 'N_leaflets')
     N_leaflets = leaflet.N_leaflets; 
+elseif quad==true
+    N_leaflets = 4;
 else 
     % default tricuspid
     N_leaflets = 3; 

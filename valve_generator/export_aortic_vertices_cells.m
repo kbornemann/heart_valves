@@ -5,7 +5,7 @@ function export_aortic_vertices_cells(file_name, valve_with_reference, params, d
 
 name_no_number = name(1:end-4); 
 
-n_layers = 5; %valve_with_reference.num_copies; %3; 
+n_layers = 3; 
 
 n_leaflets = length(valve_with_reference.leaflets);
 
@@ -23,13 +23,13 @@ k_max  = leaflets(1).k_max;
 n_vertices_total = j_max * k_max * n_layers * n_leaflets; 
 vertices = zeros(3,n_vertices_total); 
 
-%if ~exist('export_mechanics', 'var')
-export_mechanics = true; 
-%end 
+if ~exist('export_mechanics', 'var')
+    export_mechanics = false; 
+end 
 
-%if ~exist('export_coaptation', 'var')
-export_coaptation = true; 
-%end 
+if ~exist('export_coaptation', 'var')
+    export_coaptation = false; 
+end 
 
 
 indices_global_export = zeros(n_leaflets, n_layers, j_max, k_max); 
@@ -95,7 +95,8 @@ if export_coaptation
         
 end 
 
-       
+        
+        
 for leaflet_num = 1:n_leaflets
     for layer = 1:n_layers
         

@@ -141,6 +141,9 @@ if interactive && pass_all
     fig = figure; 
     valve_plot(valve, fig); 
     title('Valve in interactive mode'); 
+
+    valver = add_rotated_leaflets_aortic(valve);
+    valve_plot(valver,fig);
     
     fig_dissection_plot = figure; 
     if isfield(valve, 'name') && strcmp(valve.name, 'aortic') 
@@ -314,19 +317,11 @@ if build_reference
             
             plots = false; 
             fig = figure; 
-            [sigma_circ, sigma_rad, sigma_circ_mean, sigma_rad_mean, ~, ...
-            stress_circ, stress_rad, stress_circ_mean, stress_rad_mean, k_u_stress_mean, k_v_stress_mean] ...
-                = estimate_tangent_modulus_aortic_with_reference(valve_with_reference.leaflets(i), valve.normal_thickness, fig);
+            [sigma_circ, sigma_rad, sigma_circ_mean, sigma_rad_mean]  = estimate_tangent_modulus_aortic_with_reference(valve_with_reference.leaflets(i), valve.normal_thickness, fig);
             valve_with_reference.leaflets(i).sigma_circ = sigma_circ; 
             valve_with_reference.leaflets(i).sigma_rad = sigma_rad; 
             valve_with_reference.leaflets(i).sigma_circ_mean = sigma_circ_mean;  
-            valve_with_reference.leaflets(i).sigma_rad_mean = sigma_rad_mean;                
-            valve_with_reference.leaflets(i).stress_circ = stress_circ; 
-            valve_with_reference.leaflets(i).stress_rad = stress_rad; 
-            valve_with_reference.leaflets(i).stress_circ_mean = stress_circ_mean;  
-            valve_with_reference.leaflets(i).stress_rad_mean = stress_rad_mean;                         
-            valve_with_reference.leaflets(i).k_u_stress_mean = k_u_stress_mean;  
-            valve_with_reference.leaflets(i).k_v_stress_mean = k_v_stress_mean; 
+            valve_with_reference.leaflets(i).sigma_rad_mean = sigma_rad_mean; 
             sigma_circ_mean  
             sigma_rad_mean
             fprintf('\n')
@@ -434,7 +429,7 @@ if build_reference
 
         max_continuations_relaxed = 6; 
 
-        fprintf('\n\nRefernece configuration initial solve:\n')
+        fprintf('\n\nReference configuration initial solve:\n')
         [valve_with_reference.leaflets(i) pass err any_passed] = solve_valve_pressure_auto_continuation(leaflet, tol_global, max_it, max_continuations_relaxed, p_easy, p_goal, max_consecutive_fails, max_total_fails); 
 
 
@@ -536,6 +531,12 @@ if build_reference
         
         if isfield(valve, 'rotate_identical_leaflets') && valve.rotate_identical_leaflets 
             valve_with_reference = add_rotated_leaflets_aortic(valve_with_reference);
+            valve = add_rotated_leaflets_aortic(valve);
+        end 
+
+        if isfield(valve, 'translate_identical_leaflets') && valve.translate_identical_leaflets 
+            valve_with_reference = add_translated_leaflets_aortic(valve_with_reference);
+            valve = add_translated_leaflets_aortic(valve);
         end 
         
         if pass
