@@ -1,0 +1,6 @@
+scp aortic_no_partition_384.* 'sherlock:/home/users/kmbo/heart_valves'
+scp aortic_no_partition_384.* 'sherlock:/home/users/kmbo/heart_valves/scripts'
+scp aortic_no_partition_384_cylinder.* 'sherlock:/home/users/kmbo/heart_valves'
+scp aortic_no_partition_384_cylinder.* 'sherlock:/home/users/kmbo/heart_valves/scripts'
+scp *final* 'sherlock:/home/users/kmbo/heart_valves'
+scp *final* 'sherlock:/home/users/kmbo/heart_valves/scripts'

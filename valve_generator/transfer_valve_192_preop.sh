@@ -1,0 +1,8 @@
+scp aortic_no_partition_192.* 'sherlock:/home/users/kmbo/heart_valves_preop'
+scp aortic_no_partition_192.* 'sherlock:/home/users/kmbo/heart_valves_preop/scripts'
+scp aortic_no_partition_192_cylinder.* 'sherlock:/home/users/kmbo/heart_valves_preop'
+scp aortic_no_partition_192_cylinder.* 'sherlock:/home/users/kmbo/heart_valves_preop/scripts'
+scp *final* 'sherlock:/home/users/kmbo/heart_valves_preop'
+scp *final* 'sherlock:/home/users/kmbo/heart_valves_preop/scripts'
+scp ../scripts/aorta* 'sherlock:/home/users/kmbo/heart_valves_preop'
+scp ../scripts/*bdry* 'sherlock:/home/users/kmbo/heart_valves_preop/scripts'

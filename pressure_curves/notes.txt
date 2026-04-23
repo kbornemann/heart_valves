@@ -1,0 +1,3510 @@
+
+min_p_aorta_after_first_beat =
+
+  37.711040562999997
+
+
+max_p_aorta_after_first_beat =
+
+  73.603655614000004
+
+
+mean_p_aorta =
+
+  41.111171514513316
+
+
+mean_p_wk =
+
+  50.905849023834335
+
+
+max_p_exender_mean =
+
+     0
+
+
+max_p_exender_point =
+
+     0
+
+
+mean_p_lv =
+
+  17.119346984637328
+
+
+end_flux =
+
+   0.899348152902092
+
+
+max_flux =
+
+   1.102710591242792
+
+
+min_p_aorta_after_first_beat =
+
+  37.711040562999997
+
+
+max_p_aorta_after_first_beat =
+
+  73.603655614000004
+
+
+mean_p_aorta =
+
+  41.111171514513316
+
+
+mean_p_wk =
+
+  50.905849023834335
+
+
+max_p_exender_mean =
+
+     0
+
+
+max_p_exender_point =
+
+     0
+
+
+mean_p_lv =
+
+  17.119346984637328
+
+
+end_flux =
+
+   0.899348152902092
+
+
+max_flux =
+
+   1.102710591242792
+
+
+min_p_aorta_after_first_beat =
+
+  37.711040562999997
+
+
+max_p_aorta_after_first_beat =
+
+  73.603655614000004
+
+
+mean_p_aorta =
+
+  41.111171514513316
+
+
+mean_p_wk =
+
+  50.905849023834335
+
+
+max_p_exender_mean =
+
+     0
+
+
+max_p_exender_point =
+
+     0
+
+
+mean_p_lv =
+
+  17.119346984637328
+
+
+end_flux =
+
+   0.899348152902092
+
+
+max_flux =
+
+   1.102710591242792
+
+
+min_p_aorta_after_first_beat =
+
+  37.711040562999997
+
+
+max_p_aorta_after_first_beat =
+
+  73.603655614000004
+
+
+mean_p_aorta =
+
+  41.111171514513316
+
+
+mean_p_wk =
+
+  50.905849023834335
+
+
+max_p_exender_mean =
+
+     0
+
+
+max_p_exender_point =
+
+     0
+
+
+mean_p_lv =
+
+  17.119346984637328
+
+
+end_flux =
+
+   0.899348152902092
+
+
+max_flux =
+
+   1.102710591242792
+
+
+min_p_aorta_after_first_beat =
+
+  37.711040562999997
+
+
+max_p_aorta_after_first_beat =
+
+  73.603655614000004
+
+
+mean_p_aorta =
+
+  41.111171514513316
+
+
+mean_p_wk =
+
+  50.905849023834335
+
+
+max_p_exender_mean =
+
+     0
+
+
+max_p_exender_point =
+
+     0
+
+
+mean_p_lv =
+
+  17.119346984637328
+
+
+end_flux =
+
+   0.899348152902092
+
+
+max_flux =
+
+   1.102710591242792
+
+
+min_p_aorta_after_first_beat =
+
+  37.711040562999997
+
+
+max_p_aorta_after_first_beat =
+
+  73.603655614000004
+
+
+mean_p_aorta =
+
+  41.111171514513316
+
+
+mean_p_wk =
+
+  50.905849023834335
+
+
+max_p_exender_mean =
+
+     0
+
+
+max_p_exender_point =
+
+     0
+
+
+mean_p_lv =
+
+  17.119346984637328
+
+
+end_flux =
+
+   0.899348152902092
+
+
+max_flux =
+
+   1.102710591242792
+
+
+min_p_aorta_after_first_beat =
+
+  37.711040562999997
+
+
+max_p_aorta_after_first_beat =
+
+  73.603655614000004
+
+
+mean_p_aorta =
+
+  41.111171514513316
+
+
+mean_p_wk =
+
+  50.905849023834335
+
+
+max_p_exender_mean =
+
+     0
+
+
+max_p_exender_point =
+
+     0
+
+
+mean_p_lv =
+
+  17.119346984637328
+
+
+end_flux =
+
+   0.899348152902092
+
+
+max_flux =
+
+   1.102710591242792
+
+
+min_p_aorta_after_first_beat =
+
+   37.7110
+
+
+max_p_aorta_after_first_beat =
+
+   73.6037
+
+
+mean_p_aorta =
+
+   41.1112
+
+
+mean_p_wk =
+
+   50.9058
+
+
+max_p_exender_mean =
+
+     0
+
+
+max_p_exender_point =
+
+     0
+
+
+mean_p_lv =
+
+   17.1193
+
+
+end_flux =
+
+    0.8993
+
+
+max_flux =
+
+    1.1027
+
+
+min_p_aorta_after_first_beat =
+
+   37.7110
+
+
+max_p_aorta_after_first_beat =
+
+   73.6037
+
+
+mean_p_aorta =
+
+   41.1112
+
+
+mean_p_wk =
+
+   50.9058
+
+
+max_p_exender_mean =
+
+     0
+
+
+max_p_exender_point =
+
+     0
+
+
+mean_p_lv =
+
+   17.1193
+
+
+end_flux =
+
+    0.8993
+
+
+max_flux =
+
+    1.1027
+
+
+min_p_aorta_after_first_beat =
+
+  37.711040562999997
+
+
+max_p_aorta_after_first_beat =
+
+  73.603655614000004
+
+
+mean_p_aorta =
+
+  41.111171514513316
+
+
+mean_p_wk =
+
+  50.905849023834335
+
+
+max_p_exender_mean =
+
+     0
+
+
+max_p_exender_point =
+
+     0
+
+
+mean_p_lv =
+
+  17.119346984637328
+
+
+end_flux =
+
+   0.899348152902092
+
+
+max_flux =
+
+   1.102710591242792
+
+
+min_p_aorta_after_first_beat =
+
+  37.711040562999997
+
+
+max_p_aorta_after_first_beat =
+
+  73.603655614000004
+
+
+mean_p_aorta =
+
+  41.111171514513316
+
+
+mean_p_wk =
+
+  50.905849023834335
+
+
+max_p_exender_mean =
+
+     0
+
+
+max_p_exender_point =
+
+     0
+
+
+mean_p_lv =
+
+  17.119346984637328
+
+
+end_flux =
+
+   0.899348152902092
+
+
+max_flux =
+
+   1.102710591242792
+
+
+min_p_aorta_after_first_beat =
+
+  37.711040562999997
+
+
+max_p_aorta_after_first_beat =
+
+  73.603655614000004
+
+
+mean_p_aorta =
+
+  41.111171514513316
+
+
+mean_p_wk =
+
+  50.905849023834335
+
+
+max_p_exender_mean =
+
+     0
+
+
+max_p_exender_point =
+
+     0
+
+
+mean_p_lv =
+
+  17.119346984637328
+
+
+end_flux =
+
+   0.899348152902092
+
+
+max_flux =
+
+   1.102710591242792
+
+
+min_p_aorta_after_first_beat =
+
+  37.711040562999997
+
+
+max_p_aorta_after_first_beat =
+
+  73.603655614000004
+
+
+mean_p_aorta =
+
+  41.111171514513316
+
+
+mean_p_wk =
+
+  50.905849023834335
+
+
+max_p_exender_mean =
+
+     0
+
+
+max_p_exender_point =
+
+     0
+
+
+mean_p_lv =
+
+  17.119346984637328
+
+
+end_flux =
+
+   0.899348152902092
+
+
+max_flux =
+
+   1.102710591242792
+
+
+min_p_aorta_after_first_beat =
+
+  37.711040562999997
+
+
+max_p_aorta_after_first_beat =
+
+  73.603655614000004
+
+
+mean_p_aorta =
+
+  41.111171514513316
+
+
+mean_p_wk =
+
+  50.905849023834335
+
+
+max_p_exender_mean =
+
+     0
+
+
+max_p_exender_point =
+
+     0
+
+
+mean_p_lv =
+
+  17.119346984637328
+
+
+end_flux =
+
+   0.899348152902092
+
+
+max_flux =
+
+   1.102710591242792
+
+
+min_p_aorta_after_first_beat =
+
+  37.711040562999997
+
+
+max_p_aorta_after_first_beat =
+
+  73.603655614000004
+
+
+mean_p_aorta =
+
+  41.111171514513316
+
+
+mean_p_wk =
+
+  50.905849023834335
+
+
+max_p_exender_mean =
+
+     0
+
+
+max_p_exender_point =
+
+     0
+
+
+mean_p_lv =
+
+  17.119346984637328
+
+
+end_flux =
+
+   0.899348152902092
+
+
+max_flux =
+
+   1.102710591242792
+
+
+min_p_aorta_after_first_beat =
+
+  37.711040562999997
+
+
+max_p_aorta_after_first_beat =
+
+  73.603655614000004
+
+
+mean_p_aorta =
+
+  41.111171514513316
+
+
+mean_p_wk =
+
+  50.905849023834335
+
+
+max_p_exender_mean =
+
+     0
+
+
+max_p_exender_point =
+
+     0
+
+
+mean_p_lv =
+
+  17.119346984637328
+
+
+end_flux =
+
+   0.899348152902092
+
+
+max_flux =
+
+   1.102710591242792
+
+
+min_p_aorta_after_first_beat =
+
+  37.711040562999997
+
+
+max_p_aorta_after_first_beat =
+
+  73.603655614000004
+
+
+mean_p_aorta =
+
+  41.111171514513316
+
+
+mean_p_wk =
+
+  50.905849023834335
+
+
+max_p_exender_mean =
+
+     0
+
+
+max_p_exender_point =
+
+     0
+
+
+mean_p_lv =
+
+  17.119346984637328
+
+
+end_flux =
+
+   0.899348152902092
+
+
+max_flux =
+
+   1.102710591242792
+
+
+min_p_aorta_after_first_beat =
+
+  37.711040562999997
+
+
+max_p_aorta_after_first_beat =
+
+  73.603655614000004
+
+
+mean_p_aorta =
+
+  41.111171514513316
+
+
+mean_p_wk =
+
+  50.905849023834335
+
+
+max_p_exender_mean =
+
+     0
+
+
+max_p_exender_point =
+
+     0
+
+
+mean_p_lv =
+
+  17.119346984637328
+
+
+end_flux =
+
+   0.899348152902092
+
+
+max_flux =
+
+   1.102710591242792
+
+
+min_p_aorta_after_first_beat =
+
+  37.711040562999997
+
+
+max_p_aorta_after_first_beat =
+
+  73.603655614000004
+
+
+mean_p_aorta =
+
+  41.111171514513316
+
+
+mean_p_wk =
+
+  50.905849023834335
+
+
+max_p_exender_mean =
+
+     0
+
+
+max_p_exender_point =
+
+     0
+
+
+mean_p_lv =
+
+  17.119346984637328
+
+
+end_flux =
+
+   0.899348152902092
+
+
+max_flux =
+
+   1.102710591242792
+
+
+min_p_aorta_after_first_beat =
+
+  37.711040562999997
+
+
+max_p_aorta_after_first_beat =
+
+  73.603655614000004
+
+
+mean_p_aorta =
+
+  41.111171514513316
+
+
+mean_p_wk =
+
+  50.905849023834335
+
+
+max_p_exender_mean =
+
+     0
+
+
+max_p_exender_point =
+
+     0
+
+
+mean_p_lv =
+
+  17.119346984637328
+
+
+end_flux =
+
+   0.899348152902092
+
+
+max_flux =
+
+   1.102710591242792
+
+
+min_p_aorta_after_first_beat =
+
+  37.711040562999997
+
+
+max_p_aorta_after_first_beat =
+
+  73.603655614000004
+
+
+mean_p_aorta =
+
+  41.111171514513316
+
+
+mean_p_wk =
+
+  50.905849023834335
+
+
+max_p_exender_mean =
+
+     0
+
+
+max_p_exender_point =
+
+     0
+
+
+mean_p_lv =
+
+  17.119346984637328
+
+
+end_flux =
+
+   0.899348152902092
+
+
+max_flux =
+
+   1.102710591242792
+
+
+min_p_aorta_after_first_beat =
+
+  37.711040562999997
+
+
+max_p_aorta_after_first_beat =
+
+  73.603655614000004
+
+
+mean_p_aorta =
+
+  41.111171514513316
+
+
+mean_p_wk =
+
+  50.905849023834335
+
+
+max_p_exender_mean =
+
+     0
+
+
+max_p_exender_point =
+
+     0
+
+
+mean_p_lv =
+
+  17.119346984637328
+
+
+end_flux =
+
+   0.899348152902092
+
+
+max_flux =
+
+   1.102710591242792
+
+
+min_p_aorta_after_first_beat =
+
+  37.711040562999997
+
+
+max_p_aorta_after_first_beat =
+
+  73.603655614000004
+
+
+mean_p_aorta =
+
+  41.111171514513316
+
+
+mean_p_wk =
+
+  50.905849023834335
+
+
+max_p_exender_mean =
+
+     0
+
+
+max_p_exender_point =
+
+     0
+
+
+mean_p_lv =
+
+  17.119346984637328
+
+
+end_flux =
+
+   0.899348152902092
+
+
+max_flux =
+
+   1.102710591242792
+
+
+min_p_aorta_after_first_beat =
+
+  37.711040562999997
+
+
+max_p_aorta_after_first_beat =
+
+  73.603655614000004
+
+
+mean_p_aorta =
+
+  41.111171514513316
+
+
+mean_p_wk =
+
+  50.905849023834335
+
+
+max_p_exender_mean =
+
+     0
+
+
+max_p_exender_point =
+
+     0
+
+
+mean_p_lv =
+
+  17.119346984637328
+
+
+end_flux =
+
+   0.899348152902092
+
+
+max_flux =
+
+   1.102710591242792
+
+
+min_p_aorta_after_first_beat =
+
+   37.7110
+
+
+max_p_aorta_after_first_beat =
+
+   73.6037
+
+
+mean_p_aorta =
+
+   41.1112
+
+
+mean_p_wk =
+
+   50.9058
+
+
+max_p_exender_mean =
+
+     0
+
+
+max_p_exender_point =
+
+     0
+
+
+mean_p_lv =
+
+   17.1193
+
+
+end_flux =
+
+    0.8993
+
+
+max_flux =
+
+    1.1027
+
+
+min_p_aorta_after_first_beat =
+
+  37.711040562999997
+
+
+max_p_aorta_after_first_beat =
+
+  73.603655614000004
+
+
+mean_p_aorta =
+
+  41.111171514513316
+
+
+mean_p_wk =
+
+  50.905849023834335
+
+
+max_p_exender_mean =
+
+     0
+
+
+max_p_exender_point =
+
+     0
+
+
+mean_p_lv =
+
+  17.119346984637328
+
+
+end_flux =
+
+   0.899348152902092
+
+
+max_flux =
+
+   1.102710591242792
+
+
+min_p_aorta_after_first_beat =
+
+  37.711040562999997
+
+
+max_p_aorta_after_first_beat =
+
+  73.603655614000004
+
+
+mean_p_aorta =
+
+  41.111171514513316
+
+
+mean_p_wk =
+
+  50.905849023834335
+
+
+max_p_exender_mean =
+
+     0
+
+
+max_p_exender_point =
+
+     0
+
+
+mean_p_lv =
+
+  17.119346984637328
+
+
+end_flux =
+
+   0.899348152902092
+
+
+max_flux =
+
+   1.102710591242792
+
+
+min_p_aorta_after_first_beat =
+
+  37.711040562999997
+
+
+max_p_aorta_after_first_beat =
+
+  73.603655614000004
+
+
+mean_p_aorta =
+
+  41.111171514513316
+
+
+mean_p_wk =
+
+  50.905849023834335
+
+
+max_p_exender_mean =
+
+     0
+
+
+max_p_exender_point =
+
+     0
+
+
+mean_p_lv =
+
+  17.119346984637328
+
+
+end_flux =
+
+   0.899348152902092
+
+
+max_flux =
+
+   1.102710591242792
+
+
+min_p_aorta_after_first_beat =
+
+  37.711040562999997
+
+
+max_p_aorta_after_first_beat =
+
+  73.603655614000004
+
+
+mean_p_aorta =
+
+  41.111171514513316
+
+
+mean_p_wk =
+
+  50.905849023834335
+
+
+max_p_exender_mean =
+
+     0
+
+
+max_p_exender_point =
+
+     0
+
+
+mean_p_lv =
+
+  17.119346984637328
+
+
+end_flux =
+
+   0.899348152902092
+
+
+max_flux =
+
+   1.102710591242792
+
+
+min_p_aorta_after_first_beat =
+
+  37.711040562999997
+
+
+max_p_aorta_after_first_beat =
+
+  73.603655614000004
+
+
+mean_p_aorta =
+
+  41.111171514513316
+
+
+mean_p_wk =
+
+  50.905849023834335
+
+
+max_p_exender_mean =
+
+     0
+
+
+max_p_exender_point =
+
+     0
+
+
+mean_p_lv =
+
+  17.119346984637328
+
+
+end_flux =
+
+   0.899348152902092
+
+
+max_flux =
+
+   1.102710591242792
+
+
+min_p_aorta_after_first_beat =
+
+  37.711040562999997
+
+
+max_p_aorta_after_first_beat =
+
+  73.603655614000004
+
+
+mean_p_aorta =
+
+  41.111171514513316
+
+
+mean_p_wk =
+
+  50.905849023834335
+
+
+max_p_exender_mean =
+
+     0
+
+
+max_p_exender_point =
+
+     0
+
+
+mean_p_lv =
+
+  17.119346984637328
+
+
+end_flux =
+
+   0.899348152902092
+
+
+max_flux =
+
+   1.102710591242792
+
+
+min_p_aorta_after_first_beat =
+
+  37.711040562999997
+
+
+max_p_aorta_after_first_beat =
+
+  73.603655614000004
+
+
+mean_p_aorta =
+
+  41.111171514513316
+
+
+mean_p_wk =
+
+  50.905849023834335
+
+
+max_p_exender_mean =
+
+     0
+
+
+max_p_exender_point =
+
+     0
+
+
+mean_p_lv =
+
+  17.119346984637328
+
+
+end_flux =
+
+   0.899348152902092
+
+
+max_flux =
+
+   1.102710591242792
+
+
+min_p_aorta_after_first_beat =
+
+  37.711040562999997
+
+
+max_p_aorta_after_first_beat =
+
+  73.603655614000004
+
+
+mean_p_aorta =
+
+  41.111171514513316
+
+
+mean_p_wk =
+
+  50.905849023834335
+
+
+max_p_exender_mean =
+
+     0
+
+
+max_p_exender_point =
+
+     0
+
+
+mean_p_lv =
+
+  17.119346984637328
+
+
+end_flux =
+
+   0.899348152902092
+
+
+max_flux =
+
+   1.102710591242792
+
+
+min_p_aorta_after_first_beat =
+
+  37.711040562999997
+
+
+max_p_aorta_after_first_beat =
+
+  73.603655614000004
+
+
+mean_p_aorta =
+
+  41.111171514513316
+
+
+mean_p_wk =
+
+  50.905849023834335
+
+
+max_p_exender_mean =
+
+     0
+
+
+max_p_exender_point =
+
+     0
+
+
+mean_p_lv =
+
+  17.119346984637328
+
+
+end_flux =
+
+   0.899348152902092
+
+
+max_flux =
+
+   1.102710591242792
+
+
+min_p_aorta_after_first_beat =
+
+  37.711040562999997
+
+
+max_p_aorta_after_first_beat =
+
+  73.603655614000004
+
+
+mean_p_aorta =
+
+  41.111171514513316
+
+
+mean_p_wk =
+
+  50.905849023834335
+
+
+max_p_exender_mean =
+
+     0
+
+
+max_p_exender_point =
+
+     0
+
+
+mean_p_lv =
+
+  17.119346984637328
+
+
+end_flux =
+
+   0.899348152902092
+
+
+max_flux =
+
+   1.102710591242792
+
+
+min_p_aorta_after_first_beat =
+
+  37.711040562999997
+
+
+max_p_aorta_after_first_beat =
+
+  73.603655614000004
+
+
+mean_p_aorta =
+
+  41.111171514513316
+
+
+mean_p_wk =
+
+  50.905849023834335
+
+
+max_p_exender_mean =
+
+     0
+
+
+max_p_exender_point =
+
+     0
+
+
+mean_p_lv =
+
+  17.119346984637328
+
+
+end_flux =
+
+   0.899348152902092
+
+
+max_flux =
+
+   1.102710591242792
+
+
+min_p_aorta_after_first_beat =
+
+  37.711040562999997
+
+
+max_p_aorta_after_first_beat =
+
+  73.603655614000004
+
+
+mean_p_aorta =
+
+  41.111171514513316
+
+
+mean_p_wk =
+
+  50.905849023834335
+
+
+max_p_exender_mean =
+
+     0
+
+
+max_p_exender_point =
+
+     0
+
+
+mean_p_lv =
+
+  17.119346984637328
+
+
+end_flux =
+
+   0.899348152902092
+
+
+max_flux =
+
+   1.102710591242792
+
+
+min_p_aorta_after_first_beat =
+
+  37.711040562999997
+
+
+max_p_aorta_after_first_beat =
+
+  73.603655614000004
+
+
+mean_p_aorta =
+
+  41.111171514513316
+
+
+mean_p_wk =
+
+  50.905849023834335
+
+
+max_p_exender_mean =
+
+     0
+
+
+max_p_exender_point =
+
+     0
+
+
+mean_p_lv =
+
+  17.119346984637328
+
+
+end_flux =
+
+   0.899348152902092
+
+
+max_flux =
+
+   1.102710591242792
+
+
+min_p_aorta_after_first_beat =
+
+  37.711040562999997
+
+
+max_p_aorta_after_first_beat =
+
+  73.603655614000004
+
+
+mean_p_aorta =
+
+  41.111171514513316
+
+
+mean_p_wk =
+
+  50.905849023834335
+
+
+max_p_exender_mean =
+
+     0
+
+
+max_p_exender_point =
+
+     0
+
+
+mean_p_lv =
+
+  17.119346984637328
+
+
+end_flux =
+
+   0.899348152902092
+
+
+max_flux =
+
+   1.102710591242792
+
+
+min_p_aorta_after_first_beat =
+
+  37.711040562999997
+
+
+max_p_aorta_after_first_beat =
+
+  73.603655614000004
+
+
+mean_p_aorta =
+
+  41.111171514513316
+
+
+mean_p_wk =
+
+  50.905849023834335
+
+
+max_p_exender_mean =
+
+     0
+
+
+max_p_exender_point =
+
+     0
+
+
+mean_p_lv =
+
+  17.119346984637328
+
+
+end_flux =
+
+   0.899348152902092
+
+
+max_flux =
+
+   1.102710591242792
+
+
+min_p_aorta_after_first_beat =
+
+  37.711040562999997
+
+
+max_p_aorta_after_first_beat =
+
+  73.603655614000004
+
+
+mean_p_aorta =
+
+  41.111171514513316
+
+
+mean_p_wk =
+
+  50.905849023834335
+
+
+max_p_exender_mean =
+
+     0
+
+
+max_p_exender_point =
+
+     0
+
+
+mean_p_lv =
+
+  17.119346984637328
+
+
+end_flux =
+
+   0.899348152902092
+
+
+max_flux =
+
+   1.102710591242792
+
+
+min_p_aorta_after_first_beat =
+
+  37.711040562999997
+
+
+max_p_aorta_after_first_beat =
+
+  73.603655614000004
+
+
+mean_p_aorta =
+
+  41.111171514513316
+
+
+mean_p_wk =
+
+  50.905849023834335
+
+
+max_p_exender_mean =
+
+     0
+
+
+max_p_exender_point =
+
+     0
+
+
+mean_p_lv =
+
+  17.119346984637328
+
+
+end_flux =
+
+   0.899348152902092
+
+
+max_flux =
+
+   1.102710591242792
+
+
+min_p_aorta_after_first_beat =
+
+  37.711040562999997
+
+
+max_p_aorta_after_first_beat =
+
+  73.603655614000004
+
+
+mean_p_aorta =
+
+  41.111171514513316
+
+
+mean_p_wk =
+
+  50.905849023834335
+
+
+max_p_exender_mean =
+
+     0
+
+
+max_p_exender_point =
+
+     0
+
+
+mean_p_lv =
+
+  17.119346984637328
+
+
+end_flux =
+
+   0.899348152902092
+
+
+max_flux =
+
+   1.102710591242792
+
+
+min_p_aorta_after_first_beat =
+
+  37.711040562999997
+
+
+max_p_aorta_after_first_beat =
+
+  73.603655614000004
+
+
+mean_p_aorta =
+
+  41.111171514513316
+
+
+mean_p_wk =
+
+  50.905849023834335
+
+
+max_p_exender_mean =
+
+     0
+
+
+max_p_exender_point =
+
+     0
+
+
+mean_p_lv =
+
+  17.119346984637328
+
+
+end_flux =
+
+   0.899348152902092
+
+
+max_flux =
+
+   1.102710591242792
+
+
+min_p_aorta_after_first_beat =
+
+  37.711040562999997
+
+
+max_p_aorta_after_first_beat =
+
+  73.603655614000004
+
+
+mean_p_aorta =
+
+  41.111171514513316
+
+
+mean_p_wk =
+
+  50.905849023834335
+
+
+max_p_exender_mean =
+
+     0
+
+
+max_p_exender_point =
+
+     0
+
+
+mean_p_lv =
+
+  17.119346984637328
+
+
+end_flux =
+
+   0.899348152902092
+
+
+max_flux =
+
+   1.102710591242792
+
+
+min_p_aorta_after_first_beat =
+
+  37.711040562999997
+
+
+max_p_aorta_after_first_beat =
+
+  73.603655614000004
+
+
+mean_p_aorta =
+
+  41.111171514513316
+
+
+mean_p_wk =
+
+  50.905849023834335
+
+
+max_p_exender_mean =
+
+     0
+
+
+max_p_exender_point =
+
+     0
+
+
+mean_p_lv =
+
+  17.119346984637328
+
+
+end_flux =
+
+   0.899348152902092
+
+
+max_flux =
+
+   1.102710591242792
+
+
+min_p_aorta_after_first_beat =
+
+  37.711040562999997
+
+
+max_p_aorta_after_first_beat =
+
+  73.603655614000004
+
+
+mean_p_aorta =
+
+  41.111171514513316
+
+
+mean_p_wk =
+
+  50.905849023834335
+
+
+max_p_exender_mean =
+
+     0
+
+
+max_p_exender_point =
+
+     0
+
+
+mean_p_lv =
+
+  17.119346984637328
+
+
+end_flux =
+
+   0.899348152902092
+
+
+max_flux =
+
+   1.102710591242792
+
+
+min_p_aorta_after_first_beat =
+
+  37.711040562999997
+
+
+max_p_aorta_after_first_beat =
+
+  73.603655614000004
+
+
+mean_p_aorta =
+
+  41.111171514513316
+
+
+mean_p_wk =
+
+  50.905849023834335
+
+
+max_p_exender_mean =
+
+     0
+
+
+max_p_exender_point =
+
+     0
+
+
+mean_p_lv =
+
+  17.119346984637328
+
+
+end_flux =
+
+   0.899348152902092
+
+
+max_flux =
+
+   1.102710591242792
+
+
+min_p_aorta_after_first_beat =
+
+  37.711040562999997
+
+
+max_p_aorta_after_first_beat =
+
+  73.603655614000004
+
+
+mean_p_aorta =
+
+  41.111171514513316
+
+
+mean_p_wk =
+
+  50.905849023834335
+
+
+max_p_exender_mean =
+
+     0
+
+
+max_p_exender_point =
+
+     0
+
+
+mean_p_lv =
+
+  17.119346984637328
+
+
+end_flux =
+
+   0.899348152902092
+
+
+max_flux =
+
+   1.102710591242792
+
+
+min_p_aorta_after_first_beat =
+
+  37.711040562999997
+
+
+max_p_aorta_after_first_beat =
+
+  73.603655614000004
+
+
+mean_p_aorta =
+
+  41.111171514513316
+
+
+mean_p_wk =
+
+  50.905849023834335
+
+
+max_p_exender_mean =
+
+     0
+
+
+max_p_exender_point =
+
+     0
+
+
+mean_p_lv =
+
+  17.119346984637328
+
+
+end_flux =
+
+   0.899348152902092
+
+
+max_flux =
+
+   1.102710591242792
+
+
+min_p_aorta_after_first_beat =
+
+  37.711040562999997
+
+
+max_p_aorta_after_first_beat =
+
+  73.603655614000004
+
+
+mean_p_aorta =
+
+  41.111171514513316
+
+
+mean_p_wk =
+
+  50.905849023834335
+
+
+max_p_exender_mean =
+
+     0
+
+
+max_p_exender_point =
+
+     0
+
+
+mean_p_lv =
+
+  17.119346984637328
+
+
+end_flux =
+
+   0.899348152902092
+
+
+max_flux =
+
+   1.102710591242792
+
+
+min_p_aorta_after_first_beat =
+
+  37.711040562999997
+
+
+max_p_aorta_after_first_beat =
+
+  73.603655614000004
+
+
+mean_p_aorta =
+
+  41.111171514513316
+
+
+mean_p_wk =
+
+  50.905849023834335
+
+
+max_p_exender_mean =
+
+     0
+
+
+max_p_exender_point =
+
+     0
+
+
+mean_p_lv =
+
+  17.119346984637328
+
+
+end_flux =
+
+   0.899348152902092
+
+
+max_flux =
+
+   1.102710591242792
+
+
+min_p_aorta_after_first_beat =
+
+  37.711040562999997
+
+
+max_p_aorta_after_first_beat =
+
+  73.603655614000004
+
+
+mean_p_aorta =
+
+  41.111171514513316
+
+
+mean_p_wk =
+
+  50.905849023834335
+
+
+max_p_exender_mean =
+
+     0
+
+
+max_p_exender_point =
+
+     0
+
+
+mean_p_lv =
+
+  17.119346984637328
+
+
+end_flux =
+
+   0.899348152902092
+
+
+max_flux =
+
+   1.102710591242792
+
+
+min_p_aorta_after_first_beat =
+
+  37.711040562999997
+
+
+max_p_aorta_after_first_beat =
+
+  73.603655614000004
+
+
+mean_p_aorta =
+
+  41.111171514513316
+
+
+mean_p_wk =
+
+  50.905849023834335
+
+
+max_p_exender_mean =
+
+     0
+
+
+max_p_exender_point =
+
+     0
+
+
+mean_p_lv =
+
+  17.119346984637328
+
+
+end_flux =
+
+   0.899348152902092
+
+
+max_flux =
+
+   1.102710591242792
+
+
+min_p_aorta_after_first_beat =
+
+  37.711040562999997
+
+
+max_p_aorta_after_first_beat =
+
+  73.603655614000004
+
+
+mean_p_aorta =
+
+  41.111171514513316
+
+
+mean_p_wk =
+
+  50.905849023834335
+
+
+max_p_exender_mean =
+
+     0
+
+
+max_p_exender_point =
+
+     0
+
+
+mean_p_lv =
+
+  17.119346984637328
+
+
+end_flux =
+
+   0.899348152902092
+
+
+max_flux =
+
+   1.102710591242792
+
+
+min_p_aorta_after_first_beat =
+
+  37.711040562999997
+
+
+max_p_aorta_after_first_beat =
+
+  73.603655614000004
+
+
+mean_p_aorta =
+
+  41.111171514513316
+
+
+mean_p_wk =
+
+  50.905849023834335
+
+
+max_p_exender_mean =
+
+     0
+
+
+max_p_exender_point =
+
+     0
+
+
+mean_p_lv =
+
+  17.119346984637328
+
+
+end_flux =
+
+   0.899348152902092
+
+
+max_flux =
+
+   1.102710591242792
+
+
+min_p_aorta_after_first_beat =
+
+  37.711040562999997
+
+
+max_p_aorta_after_first_beat =
+
+  73.603655614000004
+
+
+mean_p_aorta =
+
+  41.111171514513316
+
+
+mean_p_wk =
+
+  50.905849023834335
+
+
+max_p_exender_mean =
+
+     0
+
+
+max_p_exender_point =
+
+     0
+
+
+mean_p_lv =
+
+  17.119346984637328
+
+
+end_flux =
+
+   0.899348152902092
+
+
+max_flux =
+
+   1.102710591242792
+
+
+min_p_aorta_after_first_beat =
+
+  37.711040562999997
+
+
+max_p_aorta_after_first_beat =
+
+  73.603655614000004
+
+
+mean_p_aorta =
+
+  41.111171514513316
+
+
+mean_p_wk =
+
+  50.905849023834335
+
+
+max_p_exender_mean =
+
+     0
+
+
+max_p_exender_point =
+
+     0
+
+
+mean_p_lv =
+
+  17.119346984637328
+
+
+end_flux =
+
+   0.899348152902092
+
+
+max_flux =
+
+   1.102710591242792
+
+
+min_p_aorta_after_first_beat =
+
+  37.711040562999997
+
+
+max_p_aorta_after_first_beat =
+
+  73.603655614000004
+
+
+mean_p_aorta =
+
+  41.111171514513316
+
+
+mean_p_wk =
+
+  50.905849023834335
+
+
+max_p_exender_mean =
+
+     0
+
+
+max_p_exender_point =
+
+     0
+
+
+mean_p_lv =
+
+  17.119346984637328
+
+
+end_flux =
+
+   0.899348152902092
+
+
+max_flux =
+
+   1.102710591242792
+
+
+min_p_aorta_after_first_beat =
+
+  37.711040562999997
+
+
+max_p_aorta_after_first_beat =
+
+  73.603655614000004
+
+
+mean_p_aorta =
+
+  41.111171514513316
+
+
+mean_p_wk =
+
+  50.905849023834335
+
+
+max_p_exender_mean =
+
+     0
+
+
+max_p_exender_point =
+
+     0
+
+
+mean_p_lv =
+
+  17.119346984637328
+
+
+end_flux =
+
+   0.899348152902092
+
+
+max_flux =
+
+   1.102710591242792
+
+
+min_p_aorta_after_first_beat =
+
+  37.711040562999997
+
+
+max_p_aorta_after_first_beat =
+
+  73.603655614000004
+
+
+mean_p_aorta =
+
+  41.111171514513316
+
+
+mean_p_wk =
+
+  50.905849023834335
+
+
+max_p_exender_mean =
+
+     0
+
+
+max_p_exender_point =
+
+     0
+
+
+mean_p_lv =
+
+  17.119346984637328
+
+
+end_flux =
+
+   0.899348152902092
+
+
+max_flux =
+
+   1.102710591242792
+
+
+min_p_aorta_after_first_beat =
+
+  37.711040562999997
+
+
+max_p_aorta_after_first_beat =
+
+  73.603655614000004
+
+
+mean_p_aorta =
+
+  41.111171514513316
+
+
+mean_p_wk =
+
+  50.905849023834335
+
+
+max_p_exender_mean =
+
+     0
+
+
+max_p_exender_point =
+
+     0
+
+
+mean_p_lv =
+
+  17.119346984637328
+
+
+end_flux =
+
+   0.899348152902092
+
+
+max_flux =
+
+   1.102710591242792
+
+
+min_p_aorta_after_first_beat =
+
+  37.711040562999997
+
+
+max_p_aorta_after_first_beat =
+
+  73.603655614000004
+
+
+mean_p_aorta =
+
+  41.111171514513316
+
+
+mean_p_wk =
+
+  50.905849023834335
+
+
+max_p_exender_mean =
+
+     0
+
+
+max_p_exender_point =
+
+     0
+
+
+mean_p_lv =
+
+  17.119346984637328
+
+
+end_flux =
+
+   0.899348152902092
+
+
+max_flux =
+
+   1.102710591242792
+
+
+min_p_aorta_after_first_beat =
+
+   37.7110
+
+
+max_p_aorta_after_first_beat =
+
+   73.6037
+
+
+mean_p_aorta =
+
+   41.1112
+
+
+mean_p_wk =
+
+   50.9058
+
+
+max_p_exender_mean =
+
+     0
+
+
+max_p_exender_point =
+
+     0
+
+
+mean_p_lv =
+
+   17.1193
+
+
+end_flux =
+
+    0.8993
+
+
+max_flux =
+
+    1.1027
+
+
+min_p_aorta_after_first_beat =
+
+  37.711040562999997
+
+
+max_p_aorta_after_first_beat =
+
+  73.603655614000004
+
+
+mean_p_aorta =
+
+  41.111171514513316
+
+
+mean_p_wk =
+
+  50.905849023834335
+
+
+max_p_exender_mean =
+
+     0
+
+
+max_p_exender_point =
+
+     0
+
+
+mean_p_lv =
+
+  17.119346984637328
+
+
+end_flux =
+
+   0.899348152902092
+
+
+max_flux =
+
+   1.102710591242792
+
+
+min_p_aorta_after_first_beat =
+
+  31.659303146999999
+
+
+max_p_aorta_after_first_beat =
+
+  74.546791404000004
+
+
+mean_p_aorta =
+
+  41.160722951110131
+
+
+mean_p_wk =
+
+  47.888078752691989
+
+
+max_p_exender_mean =
+
+     0
+
+
+max_p_exender_point =
+
+     0
+
+
+mean_p_lv =
+
+  17.420683457598575
+
+
+end_flux =
+
+   1.511957606214101
+
+
+max_flux =
+
+   1.511957606214101
+
+
+min_p_aorta_after_first_beat =
+
+  31.659303146999999
+
+
+max_p_aorta_after_first_beat =
+
+  74.546791404000004
+
+
+mean_p_aorta =
+
+  41.160722951110131
+
+
+mean_p_wk =
+
+  47.888078752691989
+
+
+max_p_exender_mean =
+
+     0
+
+
+max_p_exender_point =
+
+     0
+
+
+mean_p_lv =
+
+  17.420683457598575
+
+
+end_flux =
+
+   1.511957606214101
+
+
+max_flux =
+
+   1.511957606214101
+
+
+min_p_aorta_after_first_beat =
+
+  31.659303146999999
+
+
+max_p_aorta_after_first_beat =
+
+  74.546791404000004
+
+
+mean_p_aorta =
+
+  41.160722951110131
+
+
+mean_p_wk =
+
+  47.888078752691989
+
+
+max_p_exender_mean =
+
+     0
+
+
+max_p_exender_point =
+
+     0
+
+
+mean_p_lv =
+
+  17.420683457598575
+
+
+end_flux =
+
+   1.511957606214101
+
+
+max_flux =
+
+   1.511957606214101
+
+
+min_p_aorta_after_first_beat =
+
+  31.659303146999999
+
+
+max_p_aorta_after_first_beat =
+
+  74.546791404000004
+
+
+mean_p_aorta =
+
+  41.160722951110131
+
+
+mean_p_wk =
+
+  47.888078752691989
+
+
+max_p_exender_mean =
+
+     0
+
+
+max_p_exender_point =
+
+     0
+
+
+mean_p_lv =
+
+  17.420683457598575
+
+
+end_flux =
+
+   1.511957606214101
+
+
+max_flux =
+
+   1.511957606214101
+
+
+min_p_aorta_after_first_beat =
+
+   31.6593
+
+
+max_p_aorta_after_first_beat =
+
+   74.5468
+
+
+mean_p_aorta =
+
+   44.5186
+
+
+mean_p_wk =
+
+   48.3846
+
+
+max_p_exender_mean =
+
+     0
+
+
+max_p_exender_point =
+
+     0
+
+
+mean_p_lv =
+
+   20.5212
+
+
+end_flux =
+
+    3.0218
+
+
+max_flux =
+
+    3.2627
+
+
+min_p_aorta_after_first_beat =
+
+   31.6593
+
+
+max_p_aorta_after_first_beat =
+
+   74.5468
+
+
+mean_p_aorta =
+
+   44.5186
+
+
+mean_p_wk =
+
+   48.3846
+
+
+max_p_exender_mean =
+
+     0
+
+
+max_p_exender_point =
+
+     0
+
+
+mean_p_lv =
+
+   20.5212
+
+
+end_flux =
+
+    3.0218
+
+
+max_flux =
+
+    3.2627
+
+
+min_p_aorta_after_first_beat =
+
+  31.659303146999999
+
+
+max_p_aorta_after_first_beat =
+
+  74.546791404000004
+
+
+mean_p_aorta =
+
+  44.518612682994750
+
+
+mean_p_wk =
+
+  48.384563182373768
+
+
+max_p_exender_mean =
+
+     0
+
+
+max_p_exender_point =
+
+     0
+
+
+mean_p_lv =
+
+  20.521179642329006
+
+
+end_flux =
+
+   3.021773226448333
+
+
+max_flux =
+
+   3.262697191892332
+
+
+min_p_aorta_after_first_beat =
+
+  31.659303146999999
+
+
+max_p_aorta_after_first_beat =
+
+  74.546791404000004
+
+
+mean_p_aorta =
+
+  44.518612682994750
+
+
+mean_p_wk =
+
+  48.384563182373768
+
+
+max_p_exender_mean =
+
+     0
+
+
+max_p_exender_point =
+
+     0
+
+
+mean_p_lv =
+
+  20.521179642329006
+
+
+end_flux =
+
+   3.021773226448333
+
+
+max_flux =
+
+   3.262697191892332
+
+
+min_p_aorta_after_first_beat =
+
+  31.659303146999999
+
+
+max_p_aorta_after_first_beat =
+
+  74.546791404000004
+
+
+mean_p_aorta =
+
+  44.518612682994750
+
+
+mean_p_wk =
+
+  48.384563182373768
+
+
+max_p_exender_mean =
+
+     0
+
+
+max_p_exender_point =
+
+     0
+
+
+mean_p_lv =
+
+  20.521179642329006
+
+
+end_flux =
+
+   3.021773226448333
+
+
+max_flux =
+
+   3.262697191892332
+
+
+min_p_aorta_after_first_beat =
+
+  31.659303146999999
+
+
+max_p_aorta_after_first_beat =
+
+  74.546791404000004
+
+
+mean_p_aorta =
+
+  44.518612682994750
+
+
+mean_p_wk =
+
+  48.384563182373768
+
+
+max_p_exender_mean =
+
+     0
+
+
+max_p_exender_point =
+
+     0
+
+
+mean_p_lv =
+
+  20.521179642329006
+
+
+end_flux =
+
+   3.021773226448333
+
+
+max_flux =
+
+   3.262697191892332
+
+
+min_p_aorta_after_first_beat =
+
+  31.659303146999999
+
+
+max_p_aorta_after_first_beat =
+
+  74.546791404000004
+
+
+mean_p_aorta =
+
+  44.518612682994750
+
+
+mean_p_wk =
+
+  48.384563182373768
+
+
+max_p_exender_mean =
+
+     0
+
+
+max_p_exender_point =
+
+     0
+
+
+mean_p_lv =
+
+  20.521179642329006
+
+
+end_flux =
+
+   3.021773226448333
+
+
+max_flux =
+
+   3.262697191892332
+
+
+min_p_aorta_after_first_beat =
+
+  31.659303146999999
+
+
+max_p_aorta_after_first_beat =
+
+  74.546791404000004
+
+
+mean_p_aorta =
+
+  44.518612682994750
+
+
+mean_p_wk =
+
+  48.384563182373768
+
+
+max_p_exender_mean =
+
+     0
+
+
+max_p_exender_point =
+
+     0
+
+
+mean_p_lv =
+
+  20.521179642329006
+
+
+end_flux =
+
+   3.021773226448333
+
+
+max_flux =
+
+   3.262697191892332
+
+
+min_p_aorta_after_first_beat =
+
+  31.659303146999999
+
+
+max_p_aorta_after_first_beat =
+
+  74.546791404000004
+
+
+mean_p_aorta =
+
+  44.518612682994750
+
+
+mean_p_wk =
+
+  48.384563182373768
+
+
+max_p_exender_mean =
+
+     0
+
+
+max_p_exender_point =
+
+     0
+
+
+mean_p_lv =
+
+  20.521179642329006
+
+
+end_flux =
+
+   3.021773226448333
+
+
+max_flux =
+
+   3.262697191892332
+
