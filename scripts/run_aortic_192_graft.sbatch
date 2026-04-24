@@ -20,7 +20,7 @@ TOTAL_TASKS=$(($SLURM_NTASKS_PER_NODE * $SLURM_NNODES))
 SRCDIR=$PWD
 
 # run in scratch, name with the job name
-RUNDIR=$SCRATCH/aortic_${SLURM_JOBID/.*}_192_8b6ec8_initial_quad_c30_r20_loaded
+RUNDIR=$SCRATCH/aortic_${SLURM_JOBID/.*}_192_graft_bicuspid_1pt57
 mkdir $RUNDIR
 
 # set up run info 
@@ -38,14 +38,12 @@ pwd
 cd $SRCDIR
 cp $BASE_NAME*                               $RUNDIR
 cp $BASE_NAME_VESSEL*                        $RUNDIR
-cp cylinder_bdry_max_192.vertex              $RUNDIR
-cp cylinder_bdry_min_192.vertex              $RUNDIR
+cp cylinder_bdry_max.vertex                  $RUNDIR
+cp cylinder_bdry_min.vertex                  $RUNDIR
 cp $INPUT_NAME                               $RUNDIR
 cp *.cpp                                     $RUNDIR
 cp main_aorta                                $RUNDIR
 cp fourier_coeffs_ventricle.txt              $RUNDIR
-cp fourier_coeffs_Q_mi.txt                   $RUNDIR
-cp fourier_coeffs_lv_activation_two_hill.txt $RUNDIR
 cp watchdog_job_restart.py                   $RUNDIR
 cp kill_all_mpi.sh                           $RUNDIR
 cp run_aortic_192_graft.sbatch               $RUNDIR
@@ -66,11 +64,6 @@ python watchdog_job_restart.py "$RUN_LINE" "$INPUT_NAME" "$OPTIONS"
 
 # load stuff for movie making 
 source ~/.bash_profile
-visit -cli -nowin -s ~/heart_valves/scripts/run_parallel_convert_visit_to_paraview.py $TOTAL_TASKS $TOTAL_TASKS
+visit -cli -nowin -s ~/copies_scripts/run_parallel_convert_visit_to_paraview.py $TOTAL_TASKS $TOTAL_TASKS
 
-# sbatch ~/heart_valves/scripts/post_process_aorta.sh 
-source ~/.bash_profile
-
-sbatch ~/copies_scripts/post_process_graft.sh
-
-
+# sbatch ~/copies_scripts/post_process_aorta.sh 

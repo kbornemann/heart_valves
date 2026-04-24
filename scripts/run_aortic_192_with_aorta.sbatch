@@ -45,7 +45,7 @@ cp *.cpp                                     $RUNDIR
 cp main_aorta                                $RUNDIR
 cp fourier_coeffs_ventricle.txt              $RUNDIR
 cp fourier_coeffs_Q_mi.txt                   $RUNDIR
-cp fourier_coeffs_lv_activation_two_hill.txt $RUNDIR
+cp fourier_coeffs_lv_activation.txt          $RUNDIR
 cp watchdog_job_restart.py                   $RUNDIR
 cp kill_all_mpi.sh                           $RUNDIR
 cp run_aortic_192_with_aorta.sbatch          $RUNDIR
@@ -64,15 +64,10 @@ python watchdog_job_restart.py "$RUN_LINE" "$INPUT_NAME" "$OPTIONS"
 
 touch done.txt
 
-# touch done.txt
+python3 ~/copies_scripts/fix_visit_files_automatic.py
 
-if [ -e done.txt ]
-then
-    module load python/3.9.0
+# load stuff for movie making 
+source ~/.bash_profile
+visit -cli -nowin -s ~/copies_scripts/run_parallel_convert_visit_to_paraview.py $TOTAL_TASKS $TOTAL_TASKS
 
-    # load stuff for movie making 
-    source ~/.bash_profile
-    visit -cli -nowin -s ~/heart_valves/scripts/run_parallel_convert_visit_to_paraview.py $TOTAL_TASKS $TOTAL_TASKS
-
-    sbatch ~/heart_valves/scripts/post_process_aorta.sh 
-fi
+sbatch ~/copies_scripts/post_process_aorta.sh 
